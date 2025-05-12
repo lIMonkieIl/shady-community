@@ -1,4 +1,4 @@
-import { type Observable, observable, observe } from "@legendapp/state";
+import { type Observable, observable } from "@legendapp/state";
 import SeedData from "../../data/seed_data.json";
 
 export const strains = {
@@ -17,8 +17,7 @@ export const growEnvironments = {
 	Outdoor: "outdoor",
 } as const;
 
-export type TGrowEnvironment =
-	(typeof growEnvironments)[keyof typeof growEnvironments];
+export type TGrowEnvironment = (typeof growEnvironments)[keyof typeof growEnvironments];
 
 export type TStrain = (typeof strains)[keyof typeof strains];
 
@@ -122,10 +121,7 @@ export const cropPlannerState$ = observable<ICropPlannerState>({
 				const dryersTotal = cropPlannerState$.computed.setup.dryers.tCost;
 
 				return includeSetup.get()
-					? potsTotal.get() +
-							lightsTotal.get() +
-							filtersTotal.get() +
-							dryersTotal.get()
+					? potsTotal.get() + lightsTotal.get() + filtersTotal.get() + dryersTotal.get()
 					: 0;
 			}),
 			pots: {

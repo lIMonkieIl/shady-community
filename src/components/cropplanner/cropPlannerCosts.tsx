@@ -2,7 +2,6 @@
 import { cropPlannerState$ } from "@/lib/state/local/cropPlanner";
 import { formatUSD } from "@/lib/utils/helpers";
 import { use$ } from "@legendapp/state/react";
-import type React from "react";
 import {
 	Table,
 	TableBody,
@@ -19,19 +18,16 @@ export default function CropPlannerCosts() {
 	const size = use$(cropPlannerState$.input.cropSize);
 	const setupCost = use$(cropPlannerState$.computed.setup.totalCost);
 	const cropCost = use$(cropPlannerState$.computed.cropCost);
-	const equipmentPerG =
-		setupCost / (selectedSeed.strainYield * selectedSeed.hours * size);
+	const equipmentPerG = setupCost / (selectedSeed.strainYield * selectedSeed.hours * size);
 
 	const equipmentCrop = setupCost;
 
 	const seedPerG =
-		(size * selectedSeed.price) /
-		(selectedSeed.strainYield * selectedSeed.hours * size);
+		(size * selectedSeed.price) / (selectedSeed.strainYield * selectedSeed.hours * size);
 
 	const seedCrop = size * selectedSeed.price;
 
-	const totalPerG =
-		cropCost / (selectedSeed.strainYield * selectedSeed.hours * size);
+	const totalPerG = cropCost / (selectedSeed.strainYield * selectedSeed.hours * size);
 
 	const totalCrop = cropCost;
 	return (
@@ -40,9 +36,7 @@ export default function CropPlannerCosts() {
 			<div className="p-2 flex flex-col gap-4">
 				<div className="theme-decorated decorator-top-right">
 					<Table className="card preset-tonal overflow-hidden">
-						<TableCaption className="text-tertiary-300-700/60">
-							Crop costs breakdown
-						</TableCaption>
+						<TableCaption className="text-tertiary-300-700/60">Crop costs breakdown</TableCaption>
 						<TableHeader className="[&_tr]:border-surface-50-950/55 [&_tr]:border-b-4">
 							<TableRow className="capitalize text-primary-950-50">
 								<TableHead />
@@ -60,9 +54,7 @@ export default function CropPlannerCosts() {
 								<TableCell />
 							</TableRow>
 							<TableRow className="border-surface-50-950/55 border-b-4">
-								<TableCell className="text-primary-950-50 capitalize font-semibold">
-									seed
-								</TableCell>
+								<TableCell className="text-primary-950-50 capitalize font-semibold">seed</TableCell>
 								<TableCell>{formatUSD(seedPerG)}</TableCell>
 								<TableCell>{formatUSD(seedCrop)}</TableCell>
 							</TableRow>

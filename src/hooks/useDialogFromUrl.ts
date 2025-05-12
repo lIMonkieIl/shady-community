@@ -17,5 +17,5 @@ export const useDialogFromUrl = (key: string) => {
 		window.history.pushState(null, "", `?${newParams.toString()}`);
 	};
 
-	return [isOpen, setOpen] as const;
+	return { open: isOpen, setOpen } as const;
 };

@@ -104,15 +104,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	}, [supabase]);
 
 	useObserve(() => {
-		if (
-			authState$.isAuthenticated.get() &&
-			uiState$.modals.state.auth.open.get()
-		) {
+		if (authState$.isAuthenticated.get() && uiState$.modals.state.auth.open.get()) {
 			uiState$.modals.closeModal("auth");
 		}
 	});
 
-	return (
-		<AuthContext.Provider value={authState$}>{children}</AuthContext.Provider>
-	);
+	return <AuthContext.Provider value={authState$}>{children}</AuthContext.Provider>;
 }

@@ -8,5 +8,7 @@ Monkie
 oklab
 skeletonlabs
 Skyscrapper
+stylesheet
 supabase
 vaul
+vercel

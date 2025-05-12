@@ -1,6 +1,4 @@
 "use client";
-
-import React from "react";
 import { MenuDrawerButton } from "./menuDrawerButton";
 import ThemeSwitcher from "./themeSwitcherV1";
 

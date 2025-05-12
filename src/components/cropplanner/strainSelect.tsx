@@ -5,22 +5,9 @@ import { cropPlannerState$ } from "@/lib/state/local/cropPlanner";
 import { cn } from "@/lib/utils/helpers";
 import { use$, useObservable } from "@legendapp/state/react";
 import { Check, ChevronDown } from "lucide-react";
-import React from "react";
 import { Button } from "../ui/button";
-import {
-	Drawer,
-	DrawerContent,
-	DrawerHeader,
-	DrawerTitle,
-	DrawerTrigger,
-} from "../ui/drawer";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "../ui/select";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "../ui/drawer";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 export default function SelectStrain() {
 	const selectedStringIndex = use$(cropPlannerState$.input.selectedSeedIndex);
@@ -45,9 +32,7 @@ export default function SelectStrain() {
 					)}
 					onClick={() => isOpen.set(true)}
 				>
-					<span className="capitalize">
-						{seeds[selectedStringIndex]?.strain}
-					</span>
+					<span className="capitalize">{seeds[selectedStringIndex]?.strain}</span>
 					<ChevronDown className="h-4 w-4 text-primary-500 opacity-50" />
 				</DrawerTrigger>
 				<DrawerContent className="card preset-filled-surface-50-950 rounded-b-none max-h-[70vh]">
@@ -73,14 +58,10 @@ export default function SelectStrain() {
 								)}
 								<div className="flex justify-between items-center w-full gap-2">
 									<div className=" flex flex-col grow items-start">
-										<span className="font-bold capitalize truncate">
-											{seed.strain}
-										</span>
+										<span className="font-bold capitalize truncate">{seed.strain}</span>
 										<div className="font-light text-surface-500 text-sm">
 											<span>environment: </span>
-											<span className="text-primary-300-700 font-semibold">
-												{seed.environment}
-											</span>
+											<span className="text-primary-300-700 font-semibold">{seed.environment}</span>
 										</div>
 									</div>
 									<div className="badge preset-filled-primary-400-600">
@@ -104,13 +85,8 @@ export default function SelectStrain() {
 			onOpenChange={(value) => isOpen.set(value)}
 		>
 			<SelectTrigger className="preset-outlined-surface-200-800 theme-decorated decorator-top-right focus:preset-outlined-primary-500 hover:preset-tonal">
-				<SelectValue
-					aria-label={selectedStringIndex.toString()}
-					placeholder="Strain..."
-				>
-					<span className="capitalize">
-						{seeds[selectedStringIndex]?.strain}
-					</span>
+				<SelectValue aria-label={selectedStringIndex.toString()} placeholder="Strain...">
+					<span className="capitalize">{seeds[selectedStringIndex]?.strain}</span>
 				</SelectValue>
 			</SelectTrigger>
 			<SelectContent
@@ -133,14 +109,10 @@ export default function SelectStrain() {
 						)}
 						<div className="flex justify-between items-center w-full gap-2">
 							<div className=" flex flex-col grow items-start">
-								<span className="font-bold capitalize truncate">
-									{seed.strain}
-								</span>
+								<span className="font-bold capitalize truncate">{seed.strain}</span>
 								<div className="font-light text-surface-500 text-sm">
 									<span>environment: </span>
-									<span className="text-primary-300-700 font-semibold">
-										{seed.environment}
-									</span>
+									<span className="text-primary-300-700 font-semibold">{seed.environment}</span>
 								</div>
 							</div>
 							<div className="badge preset-filled-primary-400-600">

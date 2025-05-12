@@ -1,7 +1,6 @@
 "use client";
 import { cropPlannerState$ } from "@/lib/state/local/cropPlanner";
 import { use$ } from "@legendapp/state/react";
-import type React from "react";
 import { formatWeight } from "../../lib/utils/helpers";
 import {
 	Table,
@@ -26,17 +25,14 @@ export default function CropPlannerYieldSingle() {
 
 	const dryPercent = `${selectedSeed.dryRate}%`;
 
-	const lossGrams =
-		selectedSeed.grams - selectedSeed.strainYield * selectedSeed.hours;
+	const lossGrams = selectedSeed.grams - selectedSeed.strainYield * selectedSeed.hours;
 
 	const lossPercent = `${100 - (selectedSeed?.dryRate ?? 0)}%`;
 	return (
 		<div className="card w-full overflow-hidden xl:w-[50%]  bg-surface-50-950/50 p-2">
 			<div className="space-x-2 flex items-center">
 				<span className="h6">Yield:</span>
-				<span className="badge text-xs preset-filled-secondary-400-600">
-					One Plant
-				</span>
+				<span className="badge text-xs preset-filled-secondary-400-600">One Plant</span>
 			</div>
 			<div className="p-2 flex flex-col gap-4">
 				<div className="theme-decorated decorator-top-right">
@@ -54,9 +50,7 @@ export default function CropPlannerYieldSingle() {
 						</TableHeader>
 						<TableBody>
 							<TableRow className="border-surface-50-950/55 border-b-4">
-								<TableCell className="capitalize text-primary-950-50">
-									Wet
-								</TableCell>
+								<TableCell className="capitalize text-primary-950-50">Wet</TableCell>
 								<TableCell>{formatWeight(wetGrams)}</TableCell>
 								<TableCell>{formatWeight(wetAmount)}</TableCell>
 								<TableCell />

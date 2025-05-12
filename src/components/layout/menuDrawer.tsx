@@ -9,9 +9,8 @@ import { uiState$ } from "@/lib/state/local/uiState";
 import { Show, use$ } from "@legendapp/state/react";
 import { Avatar } from "@skeletonlabs/skeleton-react";
 import { Cannabis, Sparkles } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import type React from "react";
 import WordCommunitySVG from "../logos/WordCommunity";
 import WordShadySVG from "../logos/WordShady";
@@ -50,7 +49,7 @@ export default function NavigationDrawer() {
 
 	// Height for mobile drawer
 	const mobileDrawerHeight = isMobile ? "h-[70vh]" : "h-full";
-	const [open, setOpen] = useDialogFromUrl("auth");
+	const { setOpen } = useDialogFromUrl("auth");
 	return (
 		<aside>
 			<Drawer
@@ -88,17 +87,13 @@ export default function NavigationDrawer() {
 													uiState$.drawer.close();
 												}}
 												className={`btn w-full items-center justify-start font-medium ${
-													isActive
-														? "preset-filled-primary-400-600"
-														: "btn preset-tonal-surface"
+													isActive ? "preset-filled-primary-400-600" : "btn preset-tonal-surface"
 												}`}
 											>
 												<Icon className="mr-3" />
 												<div className="flex flex-col">
 													<span className=" font-semibold">{item.name}</span>
-													<span className="text-xs font-light">
-														{item.description}
-													</span>
+													<span className="text-xs font-light">{item.description}</span>
 												</div>
 											</Link>
 										</li>

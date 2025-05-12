@@ -2,7 +2,6 @@
 import { cropPlannerState$ } from "@/lib/state/local/cropPlanner";
 import { formatWeight } from "@/lib/utils/helpers";
 import { use$ } from "@legendapp/state/react";
-import type React from "react";
 import {
 	Table,
 	TableBody,
@@ -26,8 +25,7 @@ export default function CropPlannerYieldCrop() {
 
 	const dryPercentC = `${selectedSeed.dryRate}%`;
 
-	const lossGramsC =
-		(selectedSeed.grams - selectedSeed.strainYield * selectedSeed.hours) * size;
+	const lossGramsC = (selectedSeed.grams - selectedSeed.strainYield * selectedSeed.hours) * size;
 
 	const lossPercentC = `${100 - (selectedSeed?.dryRate ?? 0)}%`;
 	return (
@@ -35,23 +33,17 @@ export default function CropPlannerYieldCrop() {
 			<div className="overflow-hidden">
 				<div className="space-x-2 flex items-center">
 					<span className="h6">Yield:</span>
-					<span className="badge text-xs preset-filled-secondary-400-600">
-						Crop
-					</span>
+					<span className="badge text-xs preset-filled-secondary-400-600">Crop</span>
 				</div>
 				<div className="p-2 flex flex-col gap-4">
 					<div className="theme-decorated decorator-top-left">
 						<Table className="card preset-tonal overflow-hidden">
-							<TableCaption className="text-tertiary-300-700/60">
-								Stats from the crop
-							</TableCaption>
+							<TableCaption className="text-tertiary-300-700/60">Stats from the crop</TableCaption>
 							<TableHeader className="[&_tr]:border-surface-50-950/55 [&_tr]:border-b-4">
 								<TableRow className=" text-primary-950-50">
 									<TableHead />
 									<TableHead className="font-semibold capitalize">g</TableHead>
-									<TableHead className="font-semibold capitalize">
-										g/h
-									</TableHead>
+									<TableHead className="font-semibold capitalize">g/h</TableHead>
 									<TableHead className="font-semibold capitalize">%</TableHead>
 								</TableRow>
 							</TableHeader>

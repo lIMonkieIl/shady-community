@@ -1,7 +1,6 @@
 "use client";
 import { cropPlannerState$ } from "@/lib/state/local/cropPlanner";
 import { use$ } from "@legendapp/state/react";
-import type React from "react";
 
 import { formatDuration } from "@/lib/utils/helpers";
 import { AlertCircle } from "lucide-react";
@@ -22,9 +21,7 @@ export default function CropPlannerActions() {
 					<label className="label flex-1">
 						<span className="label-text capitalize">sell price</span>
 						<div className="input-group grid-cols-[auto_1fr_auto]">
-							<div className="ig-cell  preset-filled-primary-400-600 text-xs">
-								$
-							</div>
+							<div className="ig-cell  preset-filled-primary-400-600 text-xs">$</div>
 							<input
 								className="ig-input"
 								value={sellPrice}
@@ -57,9 +54,7 @@ export default function CropPlannerActions() {
 								type="number"
 								placeholder="10"
 							/>
-							<div className="ig-cell preset-filled-primary-400-600 capitalize text-xs">
-								plants
-							</div>
+							<div className="ig-cell preset-filled-primary-400-600 capitalize text-xs">plants</div>
 						</div>
 					</label>
 				</div>
@@ -75,22 +70,14 @@ export default function CropPlannerActions() {
 					<AlertTitle className="font-bold">Tip:</AlertTitle>
 					<AlertDescription className="overflow-hidden">
 						<p className="">
-							This{" "}
-							<code className="code">
-								{selectedSeed.environment ?? "indoor"}
-							</code>{" "}
-							strain can take{" "}
-							<code className="code">
-								{formatDuration(selectedSeed.hours ?? 0)}
-							</code>{" "}
-							to grow. It needs to be watered{" "}
+							This <code className="code">{selectedSeed.environment ?? "indoor"}</code> strain can
+							take <code className="code">{formatDuration(selectedSeed.hours ?? 0)}</code> to grow.
+							It needs to be watered{" "}
 							<code className="code">
 								{Math.ceil(selectedSeed.hours / selectedSeed.waterPerHour)}
 							</code>{" "}
 							times, roughly every{" "}
-							<code className="code">
-								{formatDuration(selectedSeed.waterPerHour)}
-							</code>
+							<code className="code">{formatDuration(selectedSeed.waterPerHour)}</code>
 						</p>
 					</AlertDescription>
 				</Alert>

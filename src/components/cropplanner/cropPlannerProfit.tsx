@@ -2,7 +2,6 @@
 import { cropPlannerState$ } from "@/lib/state/local/cropPlanner";
 import { formatUSD } from "@/lib/utils/helpers";
 import { use$ } from "@legendapp/state/react";
-import type React from "react";
 import {
 	Table,
 	TableBody,
@@ -20,31 +19,21 @@ export default function CropPlannerProfit() {
 	const cropCost = use$(cropPlannerState$.computed.cropCost);
 	const sellGangPerG = 4;
 	const sellGangTotal =
-		(selectedSeed?.strainYield ?? 0) *
-		(selectedSeed?.hours ?? 0) *
-		size *
-		sellGangPerG;
+		(selectedSeed?.strainYield ?? 0) * (selectedSeed?.hours ?? 0) * size * sellGangPerG;
 
 	const profitGangPerG =
-		sellGangPerG -
-		cropCost / (selectedSeed.strainYield * selectedSeed.hours * size);
+		sellGangPerG - cropCost / (selectedSeed.strainYield * selectedSeed.hours * size);
 	const profitGangTotal =
-		selectedSeed.strainYield * selectedSeed.hours * size * sellGangPerG -
-		cropCost;
+		selectedSeed.strainYield * selectedSeed.hours * size * sellGangPerG - cropCost;
 
 	const sellClientPerG = use$(cropPlannerState$.input.sellPrice);
 	const sellClientTotal =
-		(selectedSeed?.strainYield ?? 0) *
-		(selectedSeed?.hours ?? 0) *
-		size *
-		sellClientPerG;
+		(selectedSeed?.strainYield ?? 0) * (selectedSeed?.hours ?? 0) * size * sellClientPerG;
 
 	const profitClientPerG =
-		sellClientPerG -
-		cropCost / (selectedSeed.strainYield * selectedSeed.hours * size);
+		sellClientPerG - cropCost / (selectedSeed.strainYield * selectedSeed.hours * size);
 	const profitClientTotal =
-		selectedSeed.strainYield * selectedSeed.hours * size * sellClientPerG -
-		cropCost;
+		selectedSeed.strainYield * selectedSeed.hours * size * sellClientPerG - cropCost;
 
 	return (
 		<div className="card w-full  overflow-hidden xl:w-[50%] bg-surface-50-950/50 p-2">

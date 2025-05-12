@@ -13,8 +13,7 @@ export default function Home() {
 							<h3 className="h3">This page is not finished yet!</h3>
 						</div>
 						<p className="opacity-60">
-							Please use the menu button (top left) or click me to go to the
-							crop planner
+							Please use the menu button (top left) or click me to go to the crop planner
 						</p>
 					</article>
 				</div>

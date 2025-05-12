@@ -51,11 +51,7 @@ export const formatWeight = (grams: number): string => {
  * @param {string} message - The message to be encoded and added as a query parameter.
  * @returns {never} This function doesn't return as it triggers a redirect.
  */
-export function encodedRedirect(
-	type: "error" | "success",
-	path: string,
-	message: string,
-) {
+export function encodedRedirect(type: "error" | "success", path: string, message: string) {
 	const url = new URL(path, "http://dummy"); // dummy origin just for parsing
 	url.searchParams.set(type, message);
 	return redirect(`${url.pathname}?${url.searchParams.toString()}`);

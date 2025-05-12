@@ -1,7 +1,6 @@
 "use client";
 import { cropPlannerState$ } from "@/lib/state/local/cropPlanner";
 import { use$ } from "@legendapp/state/react";
-import type React from "react";
 import { formatUSD } from "../../lib/utils/helpers";
 import { Button } from "../ui/button";
 import {
@@ -20,9 +19,7 @@ export default function CropPlannerSetup() {
 	const setupInclude = use$(cropPlannerState$.input.setup.include);
 	const potsRequired = use$(cropPlannerState$.computed.setup.pots.required);
 	const lightsRequired = use$(cropPlannerState$.computed.setup.lights.required);
-	const filtersRequired = use$(
-		cropPlannerState$.computed.setup.filters.required,
-	);
+	const filtersRequired = use$(cropPlannerState$.computed.setup.filters.required);
 	const dryersRequired = use$(cropPlannerState$.computed.setup.dryers.required);
 	const potsEach = use$(cropPlannerState$.computed.setup.pots.each);
 	const lightsEach = use$(cropPlannerState$.computed.setup.lights.each);
@@ -45,9 +42,7 @@ export default function CropPlannerSetup() {
 			<span className="h6">Equipment:</span>
 			<div className="p-2 flex flex-col gap-4">
 				<div className="label flex  flex-wrap items-center gap-2">
-					<span className="label-text  capitalize">
-						include equipment costs
-					</span>
+					<span className="label-text  capitalize">include equipment costs</span>
 					<nav className="btn-group preset-outlined-surface-200-800 p-1.5 flex w-fit">
 						<Button
 							size={"sm"}
@@ -77,18 +72,10 @@ export default function CropPlannerSetup() {
 							<TableHeader className="[&_tr]:border-surface-50-950/55 [&_tr]:border-b-4">
 								<TableRow className="text-primary-950-50">
 									<TableHead />
-									<TableHead className="font-semibold capitalize">
-										pots
-									</TableHead>
-									<TableHead className="font-semibold capitalize">
-										lights
-									</TableHead>
-									<TableHead className="font-semibold capitalize">
-										filters
-									</TableHead>
-									<TableHead className="font-semibold capitalize">
-										dryers
-									</TableHead>
+									<TableHead className="font-semibold capitalize">pots</TableHead>
+									<TableHead className="font-semibold capitalize">lights</TableHead>
+									<TableHead className="font-semibold capitalize">filters</TableHead>
+									<TableHead className="font-semibold capitalize">dryers</TableHead>
 								</TableRow>
 							</TableHeader>
 							<TableBody>

@@ -2,38 +2,18 @@
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Accents, type TAccentName } from "@/lib/constants/theme/Accents";
 import { BREAKPOINTS } from "@/lib/constants/theme/Breakpoints";
-import {
-	type TThemeMode,
-	type TThemeName,
-	ThemeModes,
-	Themes,
-} from "@/lib/constants/theme/Themes";
+import { type TThemeMode, type TThemeName, ThemeModes, Themes } from "@/lib/constants/theme/Themes";
 import { uiState$ } from "@/lib/state/local/uiState";
 import { cn } from "@/lib/utils/helpers";
 import { use$, useObservable } from "@legendapp/state/react";
-import { Check, ChevronDown, Sheet, SwatchBook } from "lucide-react";
+import { ChevronDown, SwatchBook } from "lucide-react";
 import { Moon as IconMoon } from "lucide-react";
 import { Sun as IconSun } from "lucide-react";
 import { Monitor as IconMonitor } from "lucide-react";
-import React, { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Button } from "../ui/button";
-import {
-	Drawer,
-	DrawerClose,
-	DrawerContent,
-	DrawerDescription,
-	DrawerFooter,
-	DrawerHeader,
-	DrawerTitle,
-	DrawerTrigger,
-} from "../ui/drawer";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "../ui/select";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "../ui/drawer";
+import { Select, SelectContent, SelectTrigger, SelectValue } from "../ui/select";
 export default function SelectStrain() {
 	const curTheme = use$(uiState$.theme.current);
 	const curAccent = use$(uiState$.theme.accent);
@@ -77,13 +57,8 @@ export default function SelectStrain() {
 	useEffect(() => {
 		const checkSystemMode = () => {
 			if (curMode === "system") {
-				const isDark = window.matchMedia(
-					"(prefers-color-scheme: dark)",
-				).matches;
-				document.documentElement.setAttribute(
-					"data-mode",
-					isDark ? "dark" : "light",
-				);
+				const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+				document.documentElement.setAttribute("data-mode", isDark ? "dark" : "light");
 			}
 		};
 
@@ -106,10 +81,7 @@ export default function SelectStrain() {
 
 		if (mode === "system") {
 			const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-			document.documentElement.setAttribute(
-				"data-mode",
-				isDark ? "dark" : "light",
-			);
+			document.documentElement.setAttribute("data-mode", isDark ? "dark" : "light");
 		} else {
 			document.documentElement.setAttribute("data-mode", mode);
 		}
@@ -134,9 +106,7 @@ export default function SelectStrain() {
 		return (
 			<Drawer onClose={() => isOpen.set(false)} open={open}>
 				<DrawerTrigger
-					className={cn(
-						"btn flex justify-between items-center preset-tonal gap-1",
-					)}
+					className={cn("btn flex justify-between items-center preset-tonal gap-1")}
 					onClick={() => isOpen.set(true)}
 				>
 					<span className="capitalize">
@@ -163,11 +133,7 @@ export default function SelectStrain() {
 										return (
 											<Button
 												size={"sm"}
-												variant={
-													curMode === mode
-														? "outlined-primary"
-														: "filled-primary"
-												}
+												variant={curMode === mode ? "outlined-primary" : "filled-primary"}
 												className={"text-sm"}
 												key={mode}
 												onClick={() => onModeSelection(mode)}
@@ -193,25 +159,15 @@ export default function SelectStrain() {
 									<Button
 										key={accent.label}
 										onClick={() => onDecorationSelection(accent.name)}
-										variant={
-											curAccent === accent.name
-												? "outlined-primary"
-												: "filled-primary"
-										}
+										variant={curAccent === accent.name ? "outlined-primary" : "filled-primary"}
 										className={"relative w-fit btn text-sm"}
 									>
 										{/* Hanging source in top-left */}
 										<div className="absolute -top-2 -left-2 shadow z-10">
 											{accent.source.endsWith(".svg") ? (
-												<img
-													src={accent.source}
-													alt={accent.label}
-													className="w-5 h-5"
-												/>
+												<img src={accent.source} alt={accent.label} className="w-5 h-5" />
 											) : (
-												<span className="text-xs bg-transparent">
-													{accent.source}
-												</span>
+												<span className="text-xs bg-transparent">{accent.source}</span>
 											)}
 										</div>
 
@@ -241,9 +197,7 @@ export default function SelectStrain() {
 										onClick={() => onSelection(theme.name)}
 									>
 										<span>{theme.emoji}</span>
-										<h3 className="text-sm capitalize font-bold text-left">
-											{theme.name}
-										</h3>
+										<h3 className="text-sm capitalize font-bold text-left">{theme.name}</h3>
 										<div className="flex justify-center items-center -space-x-1.5">
 											<div className="aspect-square w-4 bg-primary-500 border-[1px] border-black/10 rounded-full" />
 											<div className="aspect-square w-4 bg-secondary-500 border-[1px] border-black/10 rounded-full" />
@@ -291,9 +245,7 @@ export default function SelectStrain() {
 								return (
 									<Button
 										size={"sm"}
-										variant={
-											curMode === mode ? "outlined-primary" : "filled-primary"
-										}
+										variant={curMode === mode ? "outlined-primary" : "filled-primary"}
 										className={"text-sm"}
 										key={mode}
 										onClick={() => onModeSelection(mode)}
@@ -319,25 +271,15 @@ export default function SelectStrain() {
 							<Button
 								key={accent.label}
 								onClick={() => onDecorationSelection(accent.name)}
-								variant={
-									curAccent === accent.name
-										? "outlined-primary"
-										: "filled-primary"
-								}
+								variant={curAccent === accent.name ? "outlined-primary" : "filled-primary"}
 								className={"relative w-fit btn text-sm"}
 							>
 								{/* Hanging source in top-left */}
 								<div className="absolute -top-2 -left-2 shadow z-10">
 									{accent.source.endsWith(".svg") ? (
-										<img
-											src={accent.source}
-											alt={accent.label}
-											className="w-5 h-5"
-										/>
+										<img src={accent.source} alt={accent.label} className="w-5 h-5" />
 									) : (
-										<span className="text-xs bg-transparent">
-											{accent.source}
-										</span>
+										<span className="text-xs bg-transparent">{accent.source}</span>
 									)}
 								</div>
 
@@ -367,9 +309,7 @@ export default function SelectStrain() {
 								onClick={() => onSelection(theme.name)}
 							>
 								<span>{theme.emoji}</span>
-								<h3 className="text-sm capitalize font-bold text-left">
-									{theme.name}
-								</h3>
+								<h3 className="text-sm capitalize font-bold text-left">{theme.name}</h3>
 								<div className="flex justify-center items-center -space-x-1.5">
 									<div className="aspect-square w-4 bg-primary-500 border-[1px] border-black/10 rounded-full" />
 									<div className="aspect-square w-4 bg-secondary-500 border-[1px] border-black/10 rounded-full" />

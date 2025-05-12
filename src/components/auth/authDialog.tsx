@@ -18,20 +18,12 @@ import {
 import { useDialogFromUrl } from "@/hooks/useDialogFromUrl";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { signInSchema, signUpSchema } from "@/lib/schemas/auth";
-import { authState$ } from "@/lib/state/local/authState";
-import { uiState$ } from "@/lib/state/local/uiState";
 import { cn } from "@/lib/utils/helpers";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SiDiscord } from "@icons-pack/react-simple-icons";
 import { observable } from "@legendapp/state";
-import { Show, use$, useObservable } from "@legendapp/state/react";
-import {
-	startTransition,
-	useActionState,
-	useEffect,
-	useRef,
-	useState,
-} from "react";
+import { Show, use$ } from "@legendapp/state/react";
+import { startTransition, useActionState, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 import { Button } from "../ui/button";
@@ -39,7 +31,7 @@ import { Button } from "../ui/button";
 const signUp = observable(false);
 
 export function AuthDialog() {
-	const [open, setOpen] = useDialogFromUrl("auth");
+	const { open, setOpen } = useDialogFromUrl("auth");
 	const isDesktop = useMediaQuery("(min-width: 768px)");
 	const isSignUp = use$(signUp);
 	if (isDesktop) {
@@ -56,9 +48,7 @@ export function AuthDialog() {
 							{isSignUp ? "sign up" : "welcome back"}
 						</DialogTitle>
 						<DialogDescription className="text-center">
-							{isSignUp
-								? "Sign up with your Discord account"
-								: "Sign in with your Discord account"}
+							{isSignUp ? "Sign up with your Discord account" : "Sign in with your Discord account"}
 						</DialogDescription>
 					</DialogHeader>
 					<AuthForm className="p-4" isDesktop={isDesktop} />
@@ -75,9 +65,7 @@ export function AuthDialog() {
 						{isSignUp ? "sign up" : "welcome back"}
 					</DrawerTitle>
 					<DrawerDescription className="opacity-60">
-						{isSignUp
-							? "Sigin up with your Discord account"
-							: "Sigin in with your Discord account"}
+						{isSignUp ? "sign up with your Discord account" : "sign in with your Discord account"}
 					</DrawerDescription>
 				</DrawerHeader>
 				<AuthForm className="pb-6 px-10 flex flex-col" isDesktop={isDesktop} />
@@ -90,7 +78,7 @@ interface AuthFormProps extends React.ComponentProps<"div"> {
 	isDesktop: boolean;
 }
 
-function AuthForm({ className, isDesktop, ...props }: AuthFormProps) {
+function AuthForm({ className }: AuthFormProps) {
 	const isSignUp = use$(signUp);
 	const [isLoading, setIsLoading] = useState(false);
 	const [signInFormState, signInFormAction] = useActionState(signInAction, {
@@ -110,7 +98,7 @@ function AuthForm({ className, isDesktop, ...props }: AuthFormProps) {
 		register,
 		handleSubmit,
 		reset,
-		formState: { errors: rhfErrors, isSubmitSuccessful },
+		formState: { errors: rhfErrors },
 	} = useForm<z.infer<typeof currentSchema>>({
 		resolver: zodResolver(currentSchema),
 		defaultValues: {
@@ -143,9 +131,7 @@ function AuthForm({ className, isDesktop, ...props }: AuthFormProps) {
 				evt.preventDefault();
 				handleSubmit(() => {
 					startTransition(() =>
-						currentAction(
-							new FormData(formRef.current ? formRef.current : undefined),
-						),
+						currentAction(new FormData(formRef.current ? formRef.current : undefined)),
 					);
 				})(evt);
 				setIsLoading(false);
@@ -168,13 +154,7 @@ function AuthForm({ className, isDesktop, ...props }: AuthFormProps) {
 				<div className="grid gap-2">
 					<label htmlFor="email" className="label">
 						<span className="label-text">Email</span>
-						<input
-							required
-							id="email"
-							className="input"
-							type="email"
-							{...register("email")}
-						/>
+						<input required id="email" className="input" type="email" {...register("email")} />
 						{currentState?.errors?.email && (
 							<p className="text-destructive">{currentState?.errors?.email}</p>
 						)}
@@ -194,9 +174,7 @@ function AuthForm({ className, isDesktop, ...props }: AuthFormProps) {
 							{...register("password")}
 						/>
 						{currentState?.errors?.password && (
-							<p className="text-destructive">
-								{currentState?.errors?.password}
-							</p>
+							<p className="text-destructive">{currentState?.errors?.password}</p>
 						)}
 						{rhfErrors.password?.message && (
 							<p className="text-destructive">{rhfErrors.password?.message}</p>

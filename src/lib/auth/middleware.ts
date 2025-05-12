@@ -15,10 +15,7 @@ export function validatedAction<S extends z.ZodType>(
 	schema: S,
 	action: ValidatedActionFunction<S>,
 ) {
-	return async (
-		prevState: ActionState,
-		formData: FormData,
-	): Promise<ActionState> => {
+	return async (_prevState: ActionState, formData: FormData): Promise<ActionState> => {
 		if (!(formData instanceof FormData)) {
 			return {
 				success: false,

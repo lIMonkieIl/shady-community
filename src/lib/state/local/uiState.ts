@@ -1,4 +1,4 @@
-import { observable, observe } from "@legendapp/state";
+import { observable } from "@legendapp/state";
 import type { TAccentName } from "../../constants/theme/Accents";
 import type { TThemeMode, TThemeName } from "../../constants/theme/Themes";
 

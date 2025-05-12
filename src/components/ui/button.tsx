@@ -80,9 +80,7 @@ function Button({
 	return (
 		<Comp
 			data-slot="button"
-			className={
-				unstyled ? className : cn(buttonVariants({ variant, size, className }))
-			}
+			className={unstyled ? className : cn(buttonVariants({ variant, size, className }))}
 			type={type ?? "button"}
 			{...props}
 		/>

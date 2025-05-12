@@ -20,19 +20,11 @@ export default function ErrorPage({
 					<h2 className="mt-6 text-3xl font-extrabold text-gray-900 dark:text-gray-100">
 						Oops! Something went wrong.
 					</h2>
-					<p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-						Error: {error.message}
-					</p>
-					<p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-						Digest: {error.digest}
-					</p>
+					<p className="mt-2 text-sm text-gray-600 dark:text-gray-400">Error: {error.message}</p>
+					<p className="mt-2 text-sm text-gray-600 dark:text-gray-400">Digest: {error.digest}</p>
 				</div>
 				<div className="space-y-2">
-					<Button
-						variant={"outlined"}
-						className="w-full"
-						onClick={() => reset()}
-					>
+					<Button variant={"outlined"} className="w-full" onClick={() => reset()}>
 						Try again
 					</Button>
 					<Link

@@ -1,9 +1,6 @@
 import type { IItem, IItemPurchaseOption } from "../types/item";
 import type { IMix, IMixComponent, IMixProperties } from "../types/mix";
-import type {
-	IQualitativeRange,
-	TQualitativeValue,
-} from "../types/qualityValue";
+import type { IQualitativeRange, TQualitativeValue } from "../types/qualityValue";
 
 export function getQualitativeValue(
 	table: IQualitativeRange[],
@@ -27,9 +24,7 @@ export function getLowestPrice(
 ): IItemPurchaseOption | null {
 	const options = getPurchaseOptions(ingredients, ingredientId);
 	if (options.length === 0) return null;
-	return options.reduce((lowest, current) =>
-		current.price < lowest.price ? current : lowest,
-	);
+	return options.reduce((lowest, current) => (current.price < lowest.price ? current : lowest));
 }
 
 export function getMixStrengthMultiplier(
@@ -57,9 +52,7 @@ export function calculateProperty(
 		(mix.recipe as unknown as IMixComponent[]).reduce((sum, comp) => {
 			const ingredient = ingredients.find((i) => i.id === comp.id);
 			return (
-				sum +
-				((ingredient?.[property] || 0) / (ingredient?.mix_strengthening || 1)) *
-					comp.volume
+				sum + ((ingredient?.[property] || 0) / (ingredient?.mix_strengthening || 1)) * comp.volume
 			);
 		}, 0)
 	);
@@ -72,19 +65,14 @@ export function mixPurity(mainDrugVolume: number, totalVolume: number) {
 export function mixCost(mix: IMix, ingredients: IItem[] | IMix[]) {
 	return (mix.recipe as unknown as IMixComponent[]).reduce((sum, comp) => {
 		const purchaseOption = comp?.purchaseFrom
-			? getPurchaseOptions(ingredients, comp.id).find(
-					(opt) => opt.from === comp.purchaseFrom,
-				)
+			? getPurchaseOptions(ingredients, comp.id).find((opt) => opt.from === comp.purchaseFrom)
 			: getLowestPrice(ingredients, comp.id);
 		return sum + (purchaseOption?.price || 0) * comp.volume;
 	}, 0);
 }
 
 export function getMixTotalVolume(mix: IMix) {
-	return (mix.recipe as unknown as IMixComponent[]).reduce(
-		(sum, comp) => sum + comp?.volume,
-		0,
-	);
+	return (mix.recipe as unknown as IMixComponent[]).reduce((sum, comp) => sum + comp?.volume, 0);
 }
 
 export function getMixMainDrug(
@@ -105,10 +93,7 @@ export function sellPrice(sellPricePerGram: number, totalMixVolume: number) {
 export function mixAddedWeight(mainDrugVolume: number, totalMixVolume: number) {
 	return totalMixVolume - mainDrugVolume;
 }
-export function profitFromCutting(
-	sellPricePerGram: number,
-	addedWeight: number,
-) {
+export function profitFromCutting(sellPricePerGram: number, addedWeight: number) {
 	return sellPricePerGram * addedWeight;
 }
 
@@ -116,10 +101,7 @@ export function totalProfit(sellPricePerGram: number, mixCost: number) {
 	return sellPricePerGram - mixCost;
 }
 
-export function profitFromMarkup(
-	totalProfit: number,
-	profitFromCutting: number,
-) {
+export function profitFromMarkup(totalProfit: number, profitFromCutting: number) {
 	return totalProfit - profitFromCutting;
 }
 
@@ -160,9 +142,7 @@ export function calculateMixProperties(
 		cost: Number(cost.toFixed(2)),
 		profit: Number(profit.toFixed(2)),
 		profitFromCutting: Number(cuttingProfit.toFixed(2)),
-		profitFromMarkup: Number(
-			profitFromMarkup(profit, cuttingProfit).toFixed(2),
-		),
+		profitFromMarkup: Number(profitFromMarkup(profit, cuttingProfit).toFixed(2)),
 		sellPrice: Number(sellPrice(sellPricePerGram, totalVolume).toFixed(2)),
 		sellPricePerGram: Number(sellPricePerGram.toFixed(2)),
 		addedWeight,

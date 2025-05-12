@@ -1,10 +1,5 @@
-import * as React from "react";
 import type { SVGProps } from "react";
-const WordShadySVG = ({
-	width = "100%",
-	height = "auto",
-	...props
-}: SVGProps<SVGSVGElement>) => (
+const WordShadySVG = ({ width = "100%", height = "auto", ...props }: SVGProps<SVGSVGElement>) => (
 	<svg
 		width={width}
 		height={height}
