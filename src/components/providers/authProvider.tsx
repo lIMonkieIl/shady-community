@@ -1,9 +1,7 @@
 "use client";
 
 import { authState$ } from "@/lib/state/local/authState";
-import { uiState$ } from "@/lib/state/local/uiState";
 import { createClient } from "@/lib/supabase/client";
-import { useObserve } from "@legendapp/state/react";
 import type { ReactNode } from "react";
 import { createContext, useEffect } from "react";
 
@@ -102,12 +100,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			profileSubscription.unsubscribe();
 		};
 	}, [supabase]);
-
-	useObserve(() => {
-		if (authState$.isAuthenticated.get() && uiState$.modals.state.auth.open.get()) {
-			uiState$.modals.closeModal("auth");
-		}
-	});
 
 	return <AuthContext.Provider value={authState$}>{children}</AuthContext.Provider>;
 }
