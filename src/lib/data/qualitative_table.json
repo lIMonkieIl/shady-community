@@ -1,0 +1,44 @@
+[
+	{
+		"min": 0,
+		"max": 0.9,
+		"qualitative": "Very Low",
+		"color": "#00ffff"
+	},
+	{
+		"min": 1,
+		"max": 1.9,
+		"qualitative": "Low",
+		"color": "#6d9eeb"
+	},
+	{
+		"min": 2,
+		"max": 2.9,
+		"qualitative": "Medium",
+		"color": "#d9ead3"
+	},
+	{
+		"min": 3,
+		"max": 3.9,
+		"qualitative": "High",
+		"color": "#93c47d"
+	},
+	{
+		"min": 4,
+		"max": 5.9,
+		"qualitative": "Very High",
+		"color": "#f6b26b"
+	},
+	{
+		"min": 6,
+		"max": 9.9,
+		"qualitative": "Dangerous",
+		"color": "#e06666"
+	},
+	{
+		"min": 10,
+		"max": 25,
+		"qualitative": "Deadly",
+		"color": "#000000"
+	}
+]

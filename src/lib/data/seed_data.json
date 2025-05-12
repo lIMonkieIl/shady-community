@@ -1,0 +1,90 @@
+[
+    {
+        "strain": "ghetto kush",
+        "grams": 205,
+        "hours": 78,
+        "wet_amount": 2.62,
+        "dry_rate": 36,
+        "strain_yield": 0.95,
+        "price": 45,
+        "in_or_out": "indoor",
+        "water_per_hour": 12.5
+    },
+    {
+        "strain": "bong breaker",
+        "grams": 305,
+        "hours": 93,
+        "wet_amount": 3.39,
+        "dry_rate": 45,
+        "strain_yield": 1.53,
+        "price": 40,
+        "in_or_out": "indoor",
+        "water_per_hour": 12.5
+    },
+    {
+        "strain": "firecracker",
+        "grams": 312,
+        "hours": 100,
+        "wet_amount": 3.12,
+        "dry_rate": 40,
+        "strain_yield": 1.25,
+        "price": 40,
+        "in_or_out": "indoor",
+        "water_per_hour": 12.5
+    },
+    {
+        "strain": "stoner haze",
+        "grams": 322,
+        "hours": 108,
+        "wet_amount": 2.98,
+        "dry_rate": 35,
+        "strain_yield": 1.04,
+        "price": 45,
+        "in_or_out": "indoor",
+        "water_per_hour": 12.5
+    },
+    {
+        "strain": "ak-420",
+        "grams": 176,
+        "hours": 167,
+        "wet_amount": 1.05,
+        "dry_rate": 52,
+        "strain_yield": 0.55,
+        "price": 30,
+        "in_or_out": "outdoor",
+        "water_per_hour": 34
+    },
+    {
+        "strain": "brainfuck",
+        "grams": 192,
+        "hours": 176,
+        "wet_amount": 1.09,
+        "dry_rate": 47,
+        "strain_yield": 0.53,
+        "price": 30,
+        "in_or_out": "outdoor",
+        "water_per_hour": 34
+    },
+    {
+        "strain": "dubai sativa",
+        "grams": 220,
+        "hours": 183,
+        "wet_amount": 1.2,
+        "dry_rate": 50,
+        "strain_yield": 0.6,
+        "price": 35,
+        "in_or_out": "outdoor",
+        "water_per_hour": 34
+    },
+    {
+        "strain": "skyscrapper",
+        "grams": 250,
+        "hours": 185,
+        "wet_amount": 1.35,
+        "dry_rate": 50,
+        "strain_yield": 0.68,
+        "price": 35,
+        "in_or_out": "outdoor",
+        "water_per_hour": 34
+    }
+]

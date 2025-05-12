@@ -1,0 +1,1068 @@
+[
+	{
+		"id": "17aa1f5f-19a2-412e-bf5a-fedd7af2504a",
+		"name": "Acetone",
+		"category": "Additive",
+		"type": "Liquid",
+		"image": "FluidBottle_Icon.png",
+		"description": "Acetone (sometimes referred to as acethone) is an ingredient that can be bought from the gas station or the local shop and is used as solvent in mixing using liquid mixers. It is the most deadly substance in the game.",
+		"information": "Due to acetone being a liquid, it cannot be used as a filler because it will evaporate when drying or crystalizing the product. Its properties will not remain in the final product, This can be tested by adding 50g of acetone to meth in one batch and then adding 1g of acetone to another batch. After crystallizing, they will be able to merge into a container, indicating they have had no property changes. When liquid mixing only one gram of acetone is needed despite the amount of drugs.",
+		"toxicity": 25,
+		"strength": 4,
+		"addictiveness": 1,
+		"mix_strengthening": 3,
+		"purchase": [
+			{
+				"from": "Local Shop",
+				"price": 0.15
+			},
+			{
+				"from": "Gas Station",
+				"price": 0.15
+			}
+		],
+		"sell": {
+			"min": 0,
+			"max": 0
+		},
+		"demand": []
+	},
+	{
+		"id": "a82642a2-842c-44fc-9b35-64aacea47aa4",
+		"name": "Amphetamine",
+		"category": "Drug",
+		"type": "Powder",
+		"image": "BagPowder_Icon.png",
+		"description": "Amphetamines are stimulant drugs. They cause communication between the brain and the body to accelerate. As a result, you are more alert and physically active. Some people use amphetamines to stay awake at work or to study for a test. Others use them to improve their athletic performance, and others use them recreationally.",
+		"information": "",
+		"toxicity": 4,
+		"strength": 2.5,
+		"addictiveness": 1.7,
+		"mix_strengthening": 1.6,
+		"purchase": [
+			{
+				"from": "Eddie",
+				"price": 7
+			},
+			{
+				"from": "Small Lab",
+				"price": 6
+			},
+			{
+				"from": "Large Lab",
+				"price": 4.29
+			}
+		],
+		"sell": {
+			"min": 12,
+			"max": 23
+		},
+		"demand": [
+			{
+				"sector": "A",
+				"name": "East Oldtown",
+				"value": 10
+			},
+			{
+				"sector": "A",
+				"name": "West Oldtown",
+				"value": 12
+			},
+			{
+				"sector": "A",
+				"name": "Two Towers",
+				"value": 16
+			},
+			{
+				"sector": "A",
+				"name": "Old Market",
+				"value": 14
+			},
+			{
+				"sector": "A",
+				"name": "Stink",
+				"value": 15
+			},
+			{
+				"sector": "A",
+				"name": "Kennel",
+				"value": 17
+			},
+			{
+				"sector": "A",
+				"name": "Eastern Slums",
+				"value": 13
+			},
+			{
+				"sector": "B",
+				"name": "Supermarket",
+				"value": 3
+			},
+			{
+				"sector": "B",
+				"name": "Downtown",
+				"value": 6
+			},
+			{
+				"sector": "B",
+				"name": "West Deadtown",
+				"value": 8
+			},
+			{
+				"sector": "B",
+				"name": "Mid Deadtown",
+				"value": 5
+			},
+			{
+				"sector": "B",
+				"name": "Mid Deadtown",
+				"value": 2
+			},
+			{
+				"sector": "B",
+				"name": "Bad Asia",
+				"value": 14
+			},
+			{
+				"sector": "C",
+				"name": "Tower Blocks",
+				"value": 7
+			}
+		]
+	},
+	{
+		"id": "764e8e09-c264-42cf-900c-743df3f4d46f",
+		"name": "Baking Soda",
+		"category": "Filler",
+		"type": "Powder",
+		"image": "SpiceBag_Small_Icon.png",
+		"description": "Baking soda is an ingredient that can be bought from the gas station and can be used as a filler in drug mixing. ",
+		"information": "Statistically, it is the best ingredient to use as filler to make a drug mix less toxic due to it being the only ingredient to have zeros in toxicity, strength, and addictiveness, but due to its small packaging size, it can be debated on whether or not it is the best, especially late game.",
+		"toxicity": 0,
+		"strength": 0,
+		"addictiveness": 0,
+		"mix_strengthening": 0.9,
+		"purchase": [
+			{
+				"from": "Gas Station",
+				"price": 0.67
+			}
+		],
+		"sell": {
+			"min": 0,
+			"max": 0
+		},
+		"demand": []
+	},
+	{
+		"id": "af29564d-9cdc-4150-85f1-0961f1f538f3",
+		"name": "Cocaine",
+		"category": "Drug",
+		"type": "Powder",
+		"image": "BagPowder_Icon.png",
+		"description": "Gram for gram, cocaine is the most valuable and potentially the most profitable drug available for you to deal with. It has a high base value and can be mixed with many other substances, giving you the opportunity to make very large profits out of smaller volumes of cocaine.",
+		"information": "",
+		"toxicity": 5,
+		"strength": 4,
+		"addictiveness": 3,
+		"mix_strengthening": 2,
+		"purchase": [
+			{
+				"from": "Eddie",
+				"price": 25
+			},
+			{
+				"from": "Small Lab",
+				"price": 23
+			},
+			{
+				"from": "Large Lab",
+				"price": 16.43
+			}
+		],
+		"sell": {
+			"min": 45,
+			"max": 87
+		},
+		"demand": [
+			{
+				"sector": "B",
+				"name": "Downtown",
+				"value": 2
+			},
+			{
+				"sector": "B",
+				"name": "West Deadtown",
+				"value": 4
+			},
+			{
+				"sector": "B",
+				"name": "Mid Deadtown",
+				"value": 3
+			},
+			{
+				"sector": "B",
+				"name": "Bad Asia",
+				"value": 4
+			},
+			{
+				"sector": "C",
+				"name": "Tower Blocks",
+				"value": 12
+			},
+			{
+				"sector": "C",
+				"name": "Construction",
+				"value": 12
+			},
+			{
+				"sector": "C",
+				"name": "Fancy Hill",
+				"value": 30
+			},
+			{
+				"sector": "C",
+				"name": "Commune",
+				"value": 14
+			},
+			{
+				"sector": "C",
+				"name": "Factory South",
+				"value": 15
+			},
+			{
+				"sector": "C",
+				"name": "Factory North",
+				"value": 12
+			}
+		]
+	},
+	{
+		"id": "2a463845-528f-4dc8-9572-d6892fe3c3a6",
+		"name": "Crystal Meth",
+		"category": "Drug",
+		"type": "Crystal",
+		"image": "BagCrystal_Icon.png",
+		"description": "The next drug available to you after Ecstasy, will be Crystal Meth, also known as meth or crystal. The only drug in the game currently which takes the form of crystals, it's very addictive.",
+		"information": "To mix it, you have to use liquid mixing equipment with 1g of acetone. After mixing you then can recrystallize it through the crystallizer or in some cases dryer can also be used.",
+		"toxicity": 5.5,
+		"strength": 3,
+		"addictiveness": 3,
+		"mix_strengthening": 2.4,
+		"purchase": [
+			{
+				"from": "Eddie",
+				"price": 9
+			},
+			{
+				"from": "Small Lab",
+				"price": 8
+			},
+			{
+				"from": "Large Lab",
+				"price": 5.71
+			}
+		],
+		"sell": {
+			"min": 14,
+			"max": 27
+		},
+		"demand": [
+			{
+				"sector": "A",
+				"name": "Two Towers",
+				"value": 15
+			},
+			{
+				"sector": "A",
+				"name": "Stink",
+				"value": 3
+			},
+			{
+				"sector": "A",
+				"name": "Kennel",
+				"value": 3
+			},
+			{
+				"sector": "A",
+				"name": "Eastern Slums",
+				"value": 3
+			},
+			{
+				"sector": "A",
+				"name": "Camp",
+				"value": 3
+			},
+			{
+				"sector": "B",
+				"name": "Supermarket",
+				"value": 13
+			},
+			{
+				"sector": "B",
+				"name": "Downtown",
+				"value": 22
+			},
+			{
+				"sector": "B",
+				"name": "West Deadtown",
+				"value": 20
+			},
+			{
+				"sector": "B",
+				"name": "Mid Deadtown",
+				"value": 19
+			},
+			{
+				"sector": "B",
+				"name": "East Deadtown",
+				"value": 22
+			},
+			{
+				"sector": "B",
+				"name": "Bad Asia",
+				"value": 18
+			},
+			{
+				"sector": "C",
+				"name": "Tower Blocks",
+				"value": 6
+			},
+			{
+				"sector": "C",
+				"name": "Construction",
+				"value": 5
+			},
+			{
+				"sector": "C",
+				"name": "Commune",
+				"value": 7
+			},
+			{
+				"sector": "C",
+				"name": "Factory North",
+				"value": 5
+			}
+		]
+	},
+	{
+		"id": "e368381f-213f-4f84-a5aa-04ced3802485",
+		"name": "DMT",
+		"category": "Drug",
+		"type": "Powder",
+		"image": "BagPowder_Icon.png",
+		"description": "DMT is one of three drug unlocked by completing the Psychedelic Gang questline. Although less profitable than the other drugs, it's a good source of XP due to how much clients order and how cheap it is.",
+		"information": "Another use for DMT is in mixing; due to its low toxicity and high addictiveness, it makes a great ingredient for mixes.",
+		"toxicity": 1.6,
+		"strength": 2.5,
+		"addictiveness": 3,
+		"mix_strengthening": 1.2,
+		"purchase": [
+			{
+				"from": "Eddie",
+				"price": 5
+			},
+			{
+				"from": "Walther",
+				"price": 5
+			}
+		],
+		"sell": {
+			"min": 7,
+			"max": 13
+		},
+		"demand": [
+			{
+				"sector": "A",
+				"name": "Eastern Slums",
+				"value": 8
+			},
+			{
+				"sector": "A",
+				"name": "Camp",
+				"value": 8
+			},
+			{
+				"sector": "B",
+				"name": "East Deadtown",
+				"value": 7
+			},
+			{
+				"sector": "B",
+				"name": "Bad Asia",
+				"value": 8
+			},
+			{
+				"sector": "C",
+				"name": "Fancy Hill",
+				"value": 5
+			},
+			{
+				"sector": "C",
+				"name": "Commune",
+				"value": 7
+			}
+		]
+	},
+	{
+		"id": "94cb0ae2-6d05-4aec-825c-b52b7e18c59f",
+		"name": "Ecstasy",
+		"category": "Drug",
+		"type": "Pills",
+		"image": "BagPills_Icon.png",
+		"description": "The first drug you'll unlock after amphetamine and marihuana and also the only drug in the game that takes the form of pills, ecstasy is a rather unique drug.",
+		"information": "To mix it, you need a pill machine as well as a grinder. For mixing, it's essentially a slightly cut-down version of amphetamine; it has lower stats but also lower toxicity.",
+		"toxicity": 3.5,
+		"strength": 2,
+		"addictiveness": 1.3,
+		"mix_strengthening": 1.3,
+		"purchase": [
+			{
+				"from": "Eddie",
+				"price": 7
+			},
+			{
+				"from": "Small Lab",
+				"price": 6
+			},
+			{
+				"from": "Large Lab",
+				"price": 4.29
+			}
+		],
+		"sell": {
+			"min": 10,
+			"max": 19
+		},
+		"demand": [
+			{
+				"sector": "A",
+				"name": "Two Towers",
+				"value": 12
+			},
+			{
+				"sector": "A",
+				"name": "Old Market",
+				"value": 4
+			},
+			{
+				"sector": "A",
+				"name": "Stink",
+				"value": 6
+			},
+			{
+				"sector": "A",
+				"name": "Kennel",
+				"value": 4
+			},
+			{
+				"sector": "B",
+				"name": "Supermarket",
+				"value": 5
+			},
+			{
+				"sector": "B",
+				"name": "West Deadtown",
+				"value": 8
+			},
+			{
+				"sector": "B",
+				"name": "Bad Asia",
+				"value": 13
+			},
+			{
+				"sector": "C",
+				"name": "Fancy Hill",
+				"value": 7
+			}
+		]
+	},
+	{
+		"id": "69eedaf5-f675-4af0-8efd-7140052f6056",
+		"name": "Fentanyl",
+		"category": "Additive",
+		"type": "Powder",
+		"image": "BagPowder_Icon.png",
+		"description": "Fentanyl is a extremely toxic heroin additive. Unique among the drugs which you can get from the cartel",
+		"information": "Impossible to sell Fentanyl by itself. Instead, it's intended to be mixed with other drugs, such as heroin.",
+		"toxicity": 18,
+		"strength": 6,
+		"addictiveness": 9,
+		"mix_strengthening": 3,
+		"purchase": [
+			{
+				"from": "Eddie",
+				"price": 20
+			},
+			{
+				"from": "Walther",
+				"price": 20
+			}
+		],
+		"sell": {
+			"min": 0,
+			"max": 0
+		},
+		"demand": []
+	},
+	{
+		"id": "d825cc42-0f08-40b7-973f-6ac4253b83c1",
+		"name": "Heroin",
+		"category": "Drug",
+		"type": "Powder",
+		"image": "BagPowder_Icon.png",
+		"description": "The second-to-last drug available to you from the cartel, heroin, is unlocked a few levels after cocaine, but it is worth less. However, it's a lot more addictive than cocaine, meaning you are more likely to cut it with other substances to reduce costs and increase profits.",
+		"information": "",
+		"toxicity": 6,
+		"strength": 4,
+		"addictiveness": 4.5,
+		"mix_strengthening": 3,
+		"purchase": [
+			{
+				"from": "Eddie",
+				"price": 17
+			},
+			{
+				"from": "Small Lab",
+				"price": 16
+			},
+			{
+				"from": "Large Lab",
+				"price": 11.43
+			}
+		],
+		"sell": {
+			"min": 35,
+			"max": 77
+		},
+		"demand": [
+			{
+				"sector": "A",
+				"name": "Kennel",
+				"value": 2
+			},
+			{
+				"sector": "A",
+				"name": "Eastern Slums",
+				"value": 2
+			},
+			{
+				"sector": "B",
+				"name": "Supermarket",
+				"value": 6
+			},
+			{
+				"sector": "B",
+				"name": "Downtown",
+				"value": 3
+			},
+			{
+				"sector": "B",
+				"name": "Mid Deadtown",
+				"value": 5
+			},
+			{
+				"sector": "B",
+				"name": "East Deadtown",
+				"value": 7
+			},
+			{
+				"sector": "B",
+				"name": "Bad Asia",
+				"value": 2
+			},
+			{
+				"sector": "C",
+				"name": "Tower Blocks",
+				"value": 10
+			},
+			{
+				"sector": "C",
+				"name": "Construction",
+				"value": 7
+			},
+			{
+				"sector": "C",
+				"name": "Commune",
+				"value": 22
+			},
+			{
+				"sector": "C",
+				"name": "Factory South",
+				"value": 12
+			},
+			{
+				"sector": "C",
+				"name": "Factory North",
+				"value": 10
+			}
+		]
+	},
+	{
+		"id": "c9a61cb2-73fe-4c83-8c14-1629a65fce2e",
+		"name": "Ibuprofen",
+		"category": "Additive",
+		"type": "Pills",
+		"image": "PillsBox_Small_Icon.png",
+		"description": "Ibuprofen is an ingredient that can be bought at the gas station, Jamie's Pharmacy, and the grocery store and can be used as an addictive in drug mixing.",
+		"information": "It is usually the first addictive ingredient players use in mixing and stays relevant during mid game due to its high strength, allowing mixes to be less pure. Due to it being a pill, players have to grind it up using a mortar and pestle or a coffee mill to be able to mix with powders, making it harder to use early game",
+		"toxicity": 12,
+		"strength": 3,
+		"addictiveness": 3,
+		"mix_strengthening": 1.3,
+		"purchase": [
+			{
+				"from": "Gas Station",
+				"price": 2.5
+			},
+			{
+				"from": "Drug Store",
+				"price": 2.75
+			},
+			{
+				"from": "Local Shop",
+				"price": 2.5
+			}
+		],
+		"sell": {
+			"min": 0,
+			"max": 0
+		},
+		"demand": []
+	},
+	{
+		"id": "cfc89861-bf2f-44b3-a4ed-b4861dad529b",
+		"name": "LSD Mix",
+		"category": "Drug",
+		"type": "Powder",
+		"image": "BagLSD_Icon.png",
+		"description": "LSD mix is one of three drug unlocked by completing the Psychedelic Gang questline. Although less profitable than the other drugs",
+		"information": "it's a good source of XP due to how much clients order and how cheap it is.",
+		"toxicity": 1.2,
+		"strength": 2,
+		"addictiveness": 1,
+		"mix_strengthening": 1,
+		"purchase": [
+			{
+				"from": "Eddie",
+				"price": 4
+			},
+			{
+				"from": "Walther",
+				"price": 4
+			}
+		],
+		"sell": {
+			"min": 7,
+			"max": 13
+		},
+		"demand": [
+			{
+				"sector": "A",
+				"name": "Two Towers",
+				"value": 5
+			},
+			{
+				"sector": "B",
+				"name": "Supermarket",
+				"value": 6
+			},
+			{
+				"sector": "B",
+				"name": "Downtown",
+				"value": 5
+			},
+			{
+				"sector": "B",
+				"name": "West Deadtown",
+				"value": 6
+			},
+			{
+				"sector": "B",
+				"name": "East Deadtown",
+				"value": 6
+			},
+			{
+				"sector": "B",
+				"name": "Bad Asia",
+				"value": 6
+			},
+			{
+				"sector": "C",
+				"name": "Tower Blocks",
+				"value": 4
+			},
+			{
+				"sector": "C",
+				"name": "Construction",
+				"value": 5
+			},
+			{
+				"sector": "C",
+				"name": "Factory South",
+				"value": 6
+			},
+			{
+				"sector": "C",
+				"name": "Factory North",
+				"value": 6
+			}
+		]
+	},
+	{
+		"id": "ae9cb95f-9099-4977-b3a7-c668bdfd4912",
+		"name": "Marihuana",
+		"category": "Drug",
+		"type": "Dried Plant",
+		"image": "Marihuana.png",
+		"description": "Likely to feature heavily at the beginning of your drug dealing empire, marijuana is also referred to by several other names, including grass, ganja, weed, and MJ.",
+		"information": "To mix it, you must take dried weed and add it to acetone in a liquid mixing tray. Mix it like meth, but you must put it in a dryer instead of a crystallizer. Keep in mind that it has to be dried weed; mixing it with wet weed will simply crystallize when it is put into the dryer. To add it as an ingredient to a powder drug, you have to crystalize it whenever it's wet and then mill it into a powder.",
+		"toxicity": 0.5,
+		"strength": 2,
+		"addictiveness": 0.8,
+		"mix_strengthening": 1,
+		"purchase": [
+			{
+				"from": "Eddie",
+				"price": 5
+			},
+			{
+				"from": "Small Lab",
+				"price": 5
+			},
+			{
+				"from": "Large Lab",
+				"price": 3.57
+			},
+			{
+				"from": "Ghetto Kush",
+				"price": 0.61
+			},
+			{
+				"from": "Bong Breaker",
+				"price": 0.28
+			},
+			{
+				"from": "Firecracker",
+				"price": 0.32
+			},
+			{
+				"from": "Stoner Haze",
+				"price": 0.4
+			},
+			{
+				"from": "AK-420",
+				"price": 0.33
+			},
+			{
+				"from": "Brainfuck",
+				"price": 0.32
+			},
+			{
+				"from": "Dubai Sativa",
+				"price": 0.32
+			}
+		],
+		"sell": {
+			"min": 10,
+			"max": 19
+		},
+		"demand": [
+			{
+				"sector": "A",
+				"name": "East Oldtown",
+				"value": 15
+			},
+			{
+				"sector": "A",
+				"name": "West Oldtown",
+				"value": 13
+			},
+			{
+				"sector": "A",
+				"name": "Two Towers",
+				"value": 10
+			},
+			{
+				"sector": "A",
+				"name": "Old Market",
+				"value": 10
+			},
+			{
+				"sector": "A",
+				"name": "Stink",
+				"value": 13
+			},
+			{
+				"sector": "A",
+				"name": "Kennel",
+				"value": 13
+			},
+			{
+				"sector": "A",
+				"name": "Eastern Slums",
+				"value": 17
+			},
+			{
+				"sector": "A",
+				"name": "Camp",
+				"value": 15
+			},
+			{
+				"sector": "B",
+				"name": "Supermarket",
+				"value": 13
+			},
+			{
+				"sector": "B",
+				"name": "Downtown",
+				"value": 4
+			},
+			{
+				"sector": "B",
+				"name": "West Deadtown",
+				"value": 4
+			},
+			{
+				"sector": "B",
+				"name": "Mid Deadtown",
+				"value": 3
+			},
+			{
+				"sector": "B",
+				"name": "East Deadtown",
+				"value": 3
+			}
+		]
+	},
+	{
+		"id": "5e5eaccc-00a4-440f-ba95-4140ea0c6ea0",
+		"name": "Mushrooms",
+		"category": "Drug",
+		"type": "Mushrooms",
+		"image": "BagShrooms_Icon.png",
+		"description": "Mushrooms is one of three drug unlocked by completing the Psychedelic Gang questline. Although less profitable than the other drugs, it's a good source of XP due to how much clients order and how cheap it is.",
+		"information": "",
+		"toxicity": 0.6,
+		"strength": 1.5,
+		"addictiveness": 1,
+		"mix_strengthening": 1,
+		"purchase": [
+			{
+				"from": "Eddie",
+				"price": 4
+			},
+			{
+				"from": "Walther",
+				"price": 4
+			}
+		],
+		"sell": {
+			"min": 8,
+			"max": 15
+		},
+		"demand": [
+			{
+				"sector": "A",
+				"name": "Two Towers",
+				"value": 5
+			},
+			{
+				"sector": "A",
+				"name": "Old Market",
+				"value": 4
+			},
+			{
+				"sector": "A",
+				"name": "Stink",
+				"value": 6
+			},
+			{
+				"sector": "A",
+				"name": "Eastern Slums",
+				"value": 8
+			},
+			{
+				"sector": "A",
+				"name": "Camp",
+				"value": 8
+			},
+			{
+				"sector": "B",
+				"name": "East Deadtown",
+				"value": 7
+			},
+			{
+				"sector": "C",
+				"name": "Tower Blocks",
+				"value": 4
+			},
+			{
+				"sector": "C",
+				"name": "Commune",
+				"value": 6
+			},
+			{
+				"sector": "C",
+				"name": "Factory North",
+				"value": 6
+			}
+		]
+	},
+	{
+		"id": "374987aa-ca21-47eb-85b5-08cf11db02db",
+		"name": "Nebilanex",
+		"category": "Additive",
+		"type": "Pills",
+		"image": "PillsBox_Big_Icon.png",
+		"description": "Nebilanex is an ingredient that can be bought at Jamie's Pharmacy and can be used as a filler in drug mixing.",
+		"information": "Nebilanex has no use in normal mixing, similar to washing powder. But it can be used as a way to help with overdose achievements. Due to it being a pill, players have to grind it up using a mortar and pestle or a coffee mill to be able to mix with powders.",
+		"toxicity": 15,
+		"strength": 2,
+		"addictiveness": 1.4,
+		"mix_strengthening": 2,
+		"purchase": [
+			{
+				"from": "Drug Store",
+				"price": 6
+			}
+		],
+		"sell": {
+			"min": 0,
+			"max": 0
+		},
+		"demand": []
+	},
+	{
+		"id": "6bf182b9-5a5c-4b9b-a5a2-def933499940",
+		"name": "Paracetamol",
+		"category": "Additive",
+		"type": "Pills",
+		"image": "PillsBox_Small_Icon.png",
+		"description": "Paracetamol is an ingredient that can be bought at Jamie's Pharmacy and can be used as an addictive in drug mixing.",
+		"information": "Essentially, paracetamol is a better version of ibuprofen and can be used in a similar manner because of its high strength, allowing mixes to be less pure. Due to it being a pill, players have to grind it up using a mortar and pestle or a coffee mill to be able to mix with powders.",
+		"toxicity": 12,
+		"strength": 3,
+		"addictiveness": 4,
+		"mix_strengthening": 1.3,
+		"purchase": [
+			{
+				"from": "Drug Store",
+				"price": 2.25
+			}
+		],
+		"sell": {
+			"min": 0,
+			"max": 0
+		},
+		"demand": []
+	},
+	{
+		"id": "91acd46d-89f0-4c6a-986e-7529c052e1a5",
+		"name": "Salt",
+		"category": "Filler",
+		"type": "Powder",
+		"image": "SpiceBag_Big_Icon.png",
+		"description": "Salt is an ingredient that can be bought from the gas station or the grocery store and can be used as a filler in drug mixing.",
+		"information": "It's the most practical filler early on due to its packaging size, price, mixing stats, and being a powder. Less used mid to late-game as sugar is overall better",
+		"toxicity": 2,
+		"strength": 0.5,
+		"addictiveness": 0,
+		"mix_strengthening": 1,
+		"purchase": [
+			{
+				"from": "Local Shop",
+				"price": 0.18
+			},
+			{
+				"from": "Gas Station",
+				"price": 0.18
+			}
+		],
+		"sell": {
+			"min": 0,
+			"max": 0
+		},
+		"demand": []
+	},
+	{
+		"id": "6226c760-a1e1-43bd-85dd-a63047fe53f4",
+		"name": "Sugar",
+		"category": "Filler",
+		"type": "Crystal",
+		"image": "Sugar.png",
+		"description": "Sugar is an ingredient that can be bought from the gas station or the local shop and can be used as a filler in drug mixing.",
+		"information": "Sugar is the most commonly used filler ingredient because of its low stature, price, and large packaging size. The only downside is that to mix with powders, you have to grind them up using a mortar and pestle or a coffee mill, making it harder to use early game.",
+		"toxicity": 1.3,
+		"strength": 0,
+		"addictiveness": 0,
+		"mix_strengthening": 1,
+		"purchase": [
+			{
+				"from": "Local Shop",
+				"price": 0.15
+			},
+			{
+				"from": "Gas Station",
+				"price": 0.15
+			}
+		],
+		"sell": {
+			"min": 0,
+			"max": 0
+		},
+		"demand": []
+	},
+	{
+		"id": "e51c4415-317d-439b-8c64-af578e0945a0",
+		"name": "Viagra",
+		"category": "Additive",
+		"type": "Pills",
+		"image": "PillsBox_Big_Icon.png",
+		"description": "Viagra is an ingredient that can be bought at Jamie's Pharmacy and can be used as an addictive in drug mixing.",
+		"information": "Viagra is arguably the best addictive to use for mixing because of its low toxicity and high addictiveness, making it less risky than fentanyl, which has a much higher toxicity. Due to it being a pill, players have to grind it up using a mortar and pestle or a coffee mill to be able to mix with powders.",
+		"toxicity": 3,
+		"strength": 2,
+		"addictiveness": 7,
+		"mix_strengthening": 1.6,
+		"purchase": [
+			{
+				"from": "Drug Store",
+				"price": 4.66
+			}
+		],
+		"sell": {
+			"min": 0,
+			"max": 0
+		},
+		"demand": []
+	},
+	{
+		"id": "be0b2be7-41f8-4232-805e-da24d108c293",
+		"name": "Washing Powder",
+		"category": "Filler",
+		"type": "Granulate",
+		"image": "Box200g_Icon.png",
+		"description": "Washing powder is an ingredient that can be bought from the gas station or the grocery store and can be used as a filler in drug mixin",
+		"information": "Even though it's labeled as a granulate, it can still be used normally as a powder for mixing. Despite its cheap price and large packaging size, it should not be used as a normal mixing ingredient due to its high toxicity. Is usually used by new players unknowing of the effects or players looking to get the overdose achievements.",
+		"toxicity": 9,
+		"strength": 0,
+		"addictiveness": 0,
+		"mix_strengthening": 1.1,
+		"purchase": [
+			{
+				"from": "Local Shop",
+				"price": 0.25
+			},
+			{
+				"from": "Gas Station",
+				"price": 0.25
+			}
+		],
+		"sell": {
+			"min": 0,
+			"max": 0
+		},
+		"demand": []
+	}
+]

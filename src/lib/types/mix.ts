@@ -1,0 +1,46 @@
+import type { IItem, TItemPurchaseOptionFrom } from "./item";
+
+export interface IMixComponent {
+	id: string;
+	name: string;
+	volume: number;
+	purchaseFrom: TItemPurchaseOptionFrom;
+}
+export type TMixCategory = "Mix" | "Pre-Mix";
+export type TMixBase =
+	| "acetone"
+	| "amphetamine"
+	| "baking_soda"
+	| "cocaine"
+	| "crystal_meth"
+	| "dmt"
+	| "ecstasy"
+	| "fentanyl"
+	| "heroin"
+	| "ibuprofen"
+	| "lsd_mix"
+	| "marihuana"
+	| "mushrooms"
+	| "nebilanex"
+	| "paracetamol"
+	| "salt"
+	| "sugar"
+	| "viagra"
+	| "washing_powder";
+export interface IMixProperties {
+	totalVolume: number;
+	purity: number;
+	cost: number;
+	profit: number;
+	profitFromCutting: number;
+	profitFromMarkup: number;
+	sellPrice: number;
+	sellPricePerGram: number;
+	addedWeight: number;
+}
+
+export interface IMix extends Omit<IItem, "category"> {
+	base_id: string;
+	category: TMixCategory;
+	recipe: IMixComponent[];
+}
