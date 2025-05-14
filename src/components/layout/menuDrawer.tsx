@@ -16,6 +16,7 @@ import WordCommunitySVG from "../logos/WordCommunity";
 import WordShadySVG from "../logos/WordShady";
 import { Button } from "../ui/button";
 import { Drawer, DrawerContent, DrawerTitle } from "../ui/drawer";
+import { SubmitButton } from "../ui/submitButton";
 // Define navigation items
 const navigationItems = [
 	{
@@ -115,9 +116,9 @@ export default function NavigationDrawer({
 									<div className="ml-3">
 										<p className="text-sm font-medium">{profile?.username}</p>
 										<form action={signOutAction}>
-											<Button type="submit" size={"sm"} variant={"tonal-error"}>
+											<SubmitButton variant="tonal-error" size="sm" showLoadingIcon={true}>
 												Sign out
-											</Button>
+											</SubmitButton>
 										</form>
 									</div>
 								</div>

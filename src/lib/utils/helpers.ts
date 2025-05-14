@@ -62,3 +62,9 @@ export function generateRandomUsername(): string {
 export function cn(...inputs: ClassValue[]): string {
 	return twMerge(clsx(inputs));
 }
+
+export const wait = (seconds: number) => {
+	return new Promise((resolve) => {
+		setTimeout(resolve, seconds * 1000);
+	});
+};

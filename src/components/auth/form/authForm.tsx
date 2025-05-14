@@ -1,6 +1,7 @@
 "use client";
 import { signInAction, signUpAction } from "@/app/(auth)/auth/actions";
 import { Button } from "@/components/ui/button";
+import { SubmitButton } from "@/components/ui/submitButton";
 import { signInSchema, signUpSchema } from "@/lib/schemas/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SiDiscord } from "@icons-pack/react-simple-icons";
@@ -10,48 +11,57 @@ import { startTransition, useActionState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
+// Create a type that can represent either schema
+type FormValues = z.infer<typeof signInSchema> | z.infer<typeof signUpSchema>;
+
 export default function AuthForm({ isSignUp }: { isSignUp?: boolean }) {
+	const formRef = useRef<HTMLFormElement>(null);
+
+	// Set up action states
 	const [signInFormState, signInFormAction] = useActionState(signInAction, {
 		success: false,
-		fields: { email: "example@example.com", password: "123456789" },
+		fields: { email: "", password: "" },
 	});
+
 	const [signUpFormState, signUpFormAction] = useActionState(signUpAction, {
 		success: false,
 	});
 
-	const formRef = useRef<HTMLFormElement>(null);
-
-	const currentAction = isSignUp ? signUpFormAction : signInFormAction;
-	const currentState = isSignUp ? signUpFormState : signInFormState;
 	const currentSchema = isSignUp ? signUpSchema : signInSchema;
+	const currentState = isSignUp ? signUpFormState : signInFormState;
 
 	const {
 		register,
-		handleSubmit,
-		reset,
 		formState: { errors: rhfErrors },
-	} = useForm<z.infer<typeof currentSchema>>({
+		setValue,
+	} = useForm<FormValues>({
 		resolver: zodResolver(currentSchema),
-		defaultValues: {
-			...(currentState?.fields ?? {}),
-		} as z.infer<typeof currentSchema>,
 		mode: "onBlur",
 	});
 
 	useEffect(() => {
-		const defaultVals = {
-			email: currentState?.fields?.email ?? "",
-			password: currentState?.fields?.password ?? "",
-			...(isSignUp
-				? {
-						confirmPassword:
-							// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-							(currentState?.fields as any)?.confirmPassword ?? "",
-					}
-				: {}),
-		};
-		reset(defaultVals as z.infer<typeof currentSchema>);
-	}, [isSignUp, reset, currentState?.fields]);
+		// Set default values if needed
+		setValue("email", currentState?.fields?.email || "");
+		setValue("password", currentState?.fields?.password || "");
+		if (isSignUp) {
+			setValue("confirmPassword", currentState?.fields?.confirmPassword || "");
+		}
+	}, [isSignUp, setValue, currentState?.fields]);
+
+	// Form submission handler
+	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		const formData = new FormData(e.currentTarget);
+
+		// Use startTransition for the server actions
+		startTransition(() => {
+			if (isSignUp) {
+				signUpFormAction(formData);
+			} else {
+				signInFormAction(formData);
+			}
+		});
+	};
 
 	return (
 		<div className="flex flex-col w-full gap-3 card preset-tonal-surface p-5">
@@ -72,28 +82,17 @@ export default function AuthForm({ isSignUp }: { isSignUp?: boolean }) {
 					<span className="text-tertiary-400-600">Or continue with</span>
 				</span>
 			</div>
-			<form
-				ref={formRef}
-				action={currentAction}
-				onSubmit={(evt) => {
-					evt.preventDefault();
-					handleSubmit(() => {
-						startTransition(() =>
-							currentAction(new FormData(formRef.current ? formRef.current : undefined)),
-						);
-					})(evt);
-				}}
-				className={"grid items-start gap-4"}
-			>
+
+			<form ref={formRef} onSubmit={handleSubmit} className={"grid items-start gap-4"}>
 				<div className="grid gap-2">
 					<label htmlFor="email" className="label">
 						<span className="label-text">Email</span>
 						<input required id="email" className="input" type="email" {...register("email")} />
 						{currentState?.errors?.email && (
-							<p className="text-destructive">{currentState?.errors?.email}</p>
+							<p className="text-destructive">{currentState.errors.email}</p>
 						)}
 						{rhfErrors.email?.message && (
-							<p className="text-destructive">{rhfErrors.email?.message}</p>
+							<p className="text-destructive">{rhfErrors.email.message}</p>
 						)}
 					</label>
 				</div>
@@ -108,55 +107,46 @@ export default function AuthForm({ isSignUp }: { isSignUp?: boolean }) {
 							{...register("password")}
 						/>
 						{currentState?.errors?.password && (
-							<p className="text-destructive">{currentState?.errors?.password}</p>
+							<p className="text-destructive">{currentState.errors.password}</p>
 						)}
 						{rhfErrors.password?.message && (
-							<p className="text-destructive">{rhfErrors.password?.message}</p>
+							<p className="text-destructive">{rhfErrors.password.message}</p>
 						)}
 					</label>
 				</div>
 				<Show if={isSignUp}>
 					<div className="grid gap-2">
-						<label htmlFor="confirm-Password" className="label">
+						<label htmlFor="confirm-password" className="label">
 							<span className="label-text">Confirm Password</span>
 							<input
 								required
 								id="confirm-password"
 								className="input"
 								type="password"
-								// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-								{...register("confirmPassword" as any)}
+								{...register("confirmPassword")}
 							/>
-							{/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
-							{isSignUp && (currentState?.errors as any)?.confirmPassword && (
-								<p className="text-destructive">
-									{/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
-									{(currentState?.errors as any)?.confirmPassword}
-								</p>
+							{isSignUp && currentState?.errors?.confirmPassword && (
+								<p className="text-destructive">{currentState.errors.confirmPassword}</p>
 							)}
 							{/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
 							{isSignUp && (rhfErrors as any).confirmPassword?.message && (
-								<p className="text-destructive">
-									{/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
-									{(rhfErrors as any).confirmPassword?.message}
-								</p>
+								// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+								<p className="text-destructive">{(rhfErrors as any).confirmPassword?.message}</p>
 							)}
 						</label>
 					</div>
 				</Show>
-				<Button
-					type="submit"
+				<SubmitButton
 					variant={"filled-primary"}
 					className="flex items-center justify-center gap-2"
+					pendingText={isSignUp ? "Signing up..." : "Signing in..."}
 				>
-					<span>{isSignUp ? "Sign up" : "Sign in"}</span>
-				</Button>
+					{isSignUp ? "Sign up" : "Sign in"}
+				</SubmitButton>
 				{currentState?.errors?.root && (
-					<p className="text-destructive">{currentState?.errors?.root}</p>
+					<p className="text-destructive">{currentState.errors.root}</p>
 				)}
-				{rhfErrors.root?.message && (
-					<p className="text-destructive">{rhfErrors.password?.message}</p>
-				)}
+				{rhfErrors.root?.message && <p className="text-destructive">{rhfErrors.root.message}</p>}
 			</form>
 
 			<div className="text-center text-sm">
