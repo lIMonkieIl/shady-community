@@ -25,9 +25,7 @@ export const signInAction = validatedAction(signInSchema, async (data, formData)
 		};
 	}
 
-	const headersList = await headers();
-	const referer = headersList.get("referer") || "/";
-	return encodedRedirect("success", referer, "Successfully authenticated");
+	return encodedRedirect("success", "/auth/sign-in", "Successfully authenticated");
 });
 
 export const signUpAction = validatedAction(signUpSchema, async (data, formData) => {
@@ -53,11 +51,17 @@ export const signUpAction = validatedAction(signUpSchema, async (data, formData)
 			errors: { root: [signUp.error.message] },
 		};
 	}
-	const headersList = await headers();
-	const referer = headersList.get("referer") || "/";
+
+	const {
+		data: { user },
+	} = await supabase.auth.getUser();
+	if (user) {
+		return encodedRedirect("success", "/auth/sign-in", "Successfully authenticated");
+	}
+
 	return encodedRedirect(
 		"success",
-		referer,
+		"/auth/sign-in",
 		"Thanks for signing up! Please check your email for a verification link.",
 	);
 });
@@ -66,7 +70,5 @@ export const signOutAction = async () => {
 	const supabase = await createClient();
 	await supabase.auth.signOut();
 
-	const headersList = await headers();
-	const referer = headersList.get("referer") || "/";
-	return encodedRedirect("success", referer, "Successfully signed out");
+	return encodedRedirect("success", "/", "Successfully signed out");
 };

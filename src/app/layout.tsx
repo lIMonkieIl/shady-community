@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import MenuDrawer from "@/components/layout/menuDrawer";
-import MenuHeader from "@/components/layout/menuHeader";
+import { ToastListener } from "@/components/layout/toastListener";
 import { Toaster } from "sonner";
-import { AuthDialog } from "../components/auth/authDialog";
-import { ToastListener } from "../components/layout/ToastListener";
-import { Providers } from "../components/providers/providers";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -42,7 +38,7 @@ export const metadata: Metadata = {
 	},
 };
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
@@ -59,24 +55,13 @@ export default function RootLayout({
 				<link rel="manifest" href="/manifest.json" />
 			</head>
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-				<Providers>
-					<div className="grid h-screen grid-rows-[auto_1fr_auto]">
-						{/* MenuHeader */}
-						<MenuHeader />
-						<div className="grid grid-cols-[auto_1fr_auto]">
-							{/* <!-- Sidebar (Left) --> */}
-							<MenuDrawer />
-
-							{/* <!-- Main --> */}
-							<main className="space-y-4 p-4 overflow-hidden">{children}</main>
-						</div>
-						{/* <!-- Footer --> */}
-						<footer className="p-4">(footer)</footer>
-					</div>
-					<Toaster position="top-right" />
-					<ToastListener />
-					<AuthDialog />
-				</Providers>
+				<div className="grid h-screen grid-rows-[auto_1fr_auto]">
+					{children}
+					{/* <!-- Footer --> */}
+					{/* <footer className="p-4">(footer)</footer> */}
+				</div>
+				<Toaster position="top-right" />
+				<ToastListener />
 			</body>
 		</html>
 	);

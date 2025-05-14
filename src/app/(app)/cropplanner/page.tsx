@@ -2,8 +2,8 @@ import CropPlannerActions from "@/components/cropplanner/cropPlannerActions";
 import CropPlannerCosts from "@/components/cropplanner/cropPlannerCosts";
 import CropPlannerProfit from "@/components/cropplanner/cropPlannerProfit";
 import CropPlannerSetup from "@/components/cropplanner/cropPlannerSetup";
+import CropPlannerYieldCrop from "@/components/cropplanner/cropPlannerYieldCrop";
 import CropPlannerYieldSingle from "@/components/cropplanner/cropPlannerYieldSingle";
-import CropPlannerYieldCrop from "../../components/cropplanner/cropPlannerYieldCrop";
 
 export default function CropPlanner() {
 	return (

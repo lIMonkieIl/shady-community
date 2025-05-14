@@ -14,7 +14,7 @@ import { useEffect } from "react";
 import { Button } from "../ui/button";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "../ui/drawer";
 import { Select, SelectContent, SelectTrigger, SelectValue } from "../ui/select";
-export default function SelectStrain() {
+export default function ThemeSwitcher() {
 	const curTheme = use$(uiState$.theme.current);
 	const curAccent = use$(uiState$.theme.accent);
 

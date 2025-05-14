@@ -1,6 +1,6 @@
 "use client";
 import { MenuDrawerButton } from "./menuDrawerButton";
-import ThemeSwitcher from "./themeSwitcherV1";
+import ThemeSwitcher from "./themeSwitcher";
 
 export default function Header() {
 	return (

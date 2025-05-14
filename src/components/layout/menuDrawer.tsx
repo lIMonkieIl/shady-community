@@ -1,13 +1,13 @@
 "use client";
 
-import { signOutAction } from "@/app/actions";
-import { useDialogFromUrl } from "@/hooks/useDialogFromUrl";
+import { signOutAction } from "@/app/(auth)/auth/actions";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { BREAKPOINTS } from "@/lib/constants/theme/Breakpoints";
-import { authState$ } from "@/lib/state/local/authState";
 import { uiState$ } from "@/lib/state/local/uiState";
-import { Show, use$ } from "@legendapp/state/react";
+import type { Tables } from "@/lib/types/supabase.types";
+import { use$ } from "@legendapp/state/react";
 import { Avatar } from "@skeletonlabs/skeleton-react";
+import type { User } from "@supabase/supabase-js";
 import { Cannabis, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -32,10 +32,11 @@ const navigationItems = [
 	},
 ];
 
-export default function NavigationDrawer() {
+export default function NavigationDrawer({
+	user,
+	profile,
+}: { user: User | null; profile: Tables<"profiles"> | null }) {
 	const pathname = usePathname();
-	const profile = use$(authState$.profile);
-	const user = use$(authState$.user);
 	const isMobile = useMediaQuery(`(max-width: ${BREAKPOINTS.sm}px)`);
 
 	// Set direction and styles based on screen size
@@ -49,7 +50,6 @@ export default function NavigationDrawer() {
 
 	// Height for mobile drawer
 	const mobileDrawerHeight = isMobile ? "h-[70vh]" : "h-full";
-	const { setOpen } = useDialogFromUrl("auth");
 	return (
 		<aside>
 			<Drawer
@@ -103,24 +103,7 @@ export default function NavigationDrawer() {
 						</nav>
 
 						<div className="p-4 border-t border-primary-50-950">
-							<Show
-								if={user && profile}
-								else={
-									<div className="relative w-full">
-										<Button
-											variant={"filled-secondary"}
-											className=" w-full"
-											// disabled
-											onClick={() => setOpen(true)}
-										>
-											Sign In / Register
-										</Button>
-										<div className="absolute top-0 left-0 font-semibold animate-bounce -rotate-12 chip preset-filled">
-											Soon
-										</div>
-									</div>
-								}
-							>
+							{user && profile ? (
 								<div className="flex items-center">
 									<Avatar
 										background="bg-secondary-400-600"
@@ -138,7 +121,21 @@ export default function NavigationDrawer() {
 										</form>
 									</div>
 								</div>
-							</Show>
+							) : (
+								<div className="relative w-full">
+									<Button
+										variant={"filled-secondary"}
+										className=" w-full"
+										// disabled
+										asChild
+									>
+										<Link href={"/auth/sign-in"}>Sign In / Register</Link>
+									</Button>
+									<div className="absolute top-0 left-0 font-semibold animate-bounce -rotate-12 chip preset-filled">
+										Soon
+									</div>
+								</div>
+							)}
 						</div>
 					</div>
 				</DrawerContent>

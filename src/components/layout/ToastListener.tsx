@@ -1,17 +1,14 @@
+// ToastListener.tsx
 "use client";
 
-import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect } from "react";
 import { toast } from "sonner";
 
-export function ToastListener() {
-	const pathname = usePathname();
+function ToastListenerContent() {
 	const searchParams = useSearchParams();
-	const hasShownToast = useRef(false); // Prevent duplicate toasts
 
 	useEffect(() => {
-		if (hasShownToast.current) return;
-
 		const success = searchParams.get("success");
 		const error = searchParams.get("error");
 
@@ -19,14 +16,20 @@ export function ToastListener() {
 		if (error) toast.error(error);
 
 		if (success || error) {
-			hasShownToast.current = true;
-
 			const url = new URL(window.location.href);
 			url.searchParams.delete("success");
 			url.searchParams.delete("error");
-			window.history.replaceState({}, "", pathname);
+			window.history.replaceState({}, "", url.toString());
 		}
-	}, [pathname, searchParams]);
+	}, [searchParams]);
 
 	return null;
+}
+
+export function ToastListener() {
+	return (
+		<Suspense fallback={null}>
+			<ToastListenerContent />
+		</Suspense>
+	);
 }

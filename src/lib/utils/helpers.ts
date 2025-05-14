@@ -9,6 +9,7 @@ export function capitalizeWords(str: string): string {
 		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
 		.join(" ");
 }
+
 export function formatDuration(hours: number): string {
 	const d = Math.floor(hours / 24);
 	const h = Math.floor(hours % 24);
@@ -24,14 +25,15 @@ export function formatDuration(hours: number): string {
 	return parts.join(", ");
 }
 
-export function formatUSD(value: number) {
+export function formatUSD(value: number): string {
 	return new Intl.NumberFormat("en-US", {
 		style: "currency",
 		currency: "USD",
 		minimumFractionDigits: 2,
 	}).format(value);
 }
-export const formatWeight = (grams: number): string => {
+
+export function formatWeight(grams: number): string {
 	if (grams < 1) {
 		return `${(grams * 1000).toFixed(0)} mg`;
 	}
@@ -42,19 +44,10 @@ export const formatWeight = (grams: number): string => {
 		return `${(grams / 1000).toFixed(2)} kg`;
 	}
 	return `${(grams / 1_000_000).toFixed(2)} t`;
-};
+}
 
-/**
- * Redirects to a specified path with an encoded message as a query parameter.
- * @param {('error' | 'success')} type - The type of message, either 'error' or 'success'.
- * @param {string} path - The path to redirect to.
- * @param {string} message - The message to be encoded and added as a query parameter.
- * @returns {never} This function doesn't return as it triggers a redirect.
- */
 export function encodedRedirect(type: "error" | "success", path: string, message: string) {
-	const url = new URL(path, "http://dummy"); // dummy origin just for parsing
-	url.searchParams.set(type, message);
-	return redirect(`${url.pathname}?${url.searchParams.toString()}`);
+	return redirect(`${path}?${type}=${encodeURIComponent(message)}`);
 }
 
 export function generateRandomUsername(): string {
@@ -65,6 +58,6 @@ export function generateRandomUsername(): string {
 	return capitalizeWords(`${randomAdjective}${randomAnimal}${randomNumber}`);
 }
 
-export function cn(...inputs: ClassValue[]) {
+export function cn(...inputs: ClassValue[]): string {
 	return twMerge(clsx(inputs));
 }
