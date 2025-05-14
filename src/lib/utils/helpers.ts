@@ -1,3 +1,4 @@
+import type { ToastTypeValue } from "@/components/layout/toastListener";
 import { type ClassValue, clsx } from "clsx";
 import { redirect } from "next/navigation";
 import { twMerge } from "tailwind-merge";
@@ -46,8 +47,8 @@ export function formatWeight(grams: number): string {
 	return `${(grams / 1_000_000).toFixed(2)} t`;
 }
 
-export function encodedRedirect(type: "error" | "success", path: string, message: string) {
-	return redirect(`${path}?${type}=${encodeURIComponent(message)}`);
+export function toastRedirect(type: ToastTypeValue, path: string, message: string) {
+	return redirect(`${path}?toast-${type}=${encodeURIComponent(message)}`);
 }
 
 export function generateRandomUsername(): string {

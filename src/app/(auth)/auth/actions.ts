@@ -3,7 +3,7 @@ import "server-only";
 import { validatedAction } from "@/lib/auth/middleware";
 import { signInSchema, signUpSchema } from "@/lib/schemas/auth";
 import { createClient } from "@/lib/supabase/server";
-import { encodedRedirect, generateRandomUsername } from "@/lib/utils/helpers";
+import { generateRandomUsername, toastRedirect } from "@/lib/utils/helpers";
 import { headers } from "next/headers";
 
 export const signInAction = validatedAction(signInSchema, async (data, formData) => {
@@ -25,7 +25,7 @@ export const signInAction = validatedAction(signInSchema, async (data, formData)
 		};
 	}
 
-	return encodedRedirect("success", "/auth/sign-in", "Successfully authenticated");
+	return toastRedirect("success", "/auth/sign-in", "Successfully authenticated");
 });
 
 export const signUpAction = validatedAction(signUpSchema, async (data, formData) => {
@@ -56,10 +56,10 @@ export const signUpAction = validatedAction(signUpSchema, async (data, formData)
 		data: { user },
 	} = await supabase.auth.getUser();
 	if (user) {
-		return encodedRedirect("success", "/auth/sign-in", "Successfully authenticated");
+		return toastRedirect("success", "/auth/sign-in", "Successfully authenticated");
 	}
 
-	return encodedRedirect(
+	return toastRedirect(
 		"success",
 		"/auth/sign-in",
 		"Thanks for signing up! Please check your email for a verification link.",
@@ -70,5 +70,5 @@ export const signOutAction = async () => {
 	const supabase = await createClient();
 	await supabase.auth.signOut();
 
-	return encodedRedirect("success", "/", "Successfully signed out");
+	return toastRedirect("success", "/", "Successfully signed out");
 };
