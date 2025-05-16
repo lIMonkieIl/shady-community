@@ -51,7 +51,7 @@ export default function SignUpForm() {
 		},
 	});
 	return (
-		<div className="flex flex-col w-full gap-3 card preset-tonal-surface p-5">
+		<div className="flex flex-col sm:max-w-[425px] w-full gap-3 card preset-tonal-surface p-5">
 			<div className="flex flex-col items-center">
 				<span className="h3">Sign Up</span>
 				<span className="text-current/70">Sign up using your discord account</span>

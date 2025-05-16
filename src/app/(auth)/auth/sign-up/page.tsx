@@ -1,5 +1,5 @@
 import SignUpForm from "@/components/auth/form/signUpForm";
 
-export default function AuthPage() {
+export default function SignUpPage() {
 	return <SignUpForm />;
 }

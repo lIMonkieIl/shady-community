@@ -1,5 +1,5 @@
 import SignInForm from "@/components/auth/form/signInForm";
 
-export default function SignInPage() {
+export default async function SignInPage() {
 	return <SignInForm />;
 }
