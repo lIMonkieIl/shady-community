@@ -5,9 +5,15 @@ import { cropPlannerState$ } from "@/lib/state/local/cropPlanner";
 import { cn } from "@/lib/utils/helpers";
 import { use$, useObservable } from "@legendapp/state/react";
 import { Check, ChevronDown } from "lucide-react";
-import { Button } from "../ui/button";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "../ui/drawer";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Button } from "../shared/ui/button";
+import {
+	Drawer,
+	DrawerContent,
+	DrawerHeader,
+	DrawerTitle,
+	DrawerTrigger,
+} from "../shared/ui/drawer";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../shared/ui/select";
 
 export default function SelectStrain() {
 	const selectedStringIndex = use$(cropPlannerState$.input.selectedSeedIndex);

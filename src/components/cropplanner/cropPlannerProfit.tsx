@@ -10,7 +10,7 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "../ui/table";
+} from "../shared/ui/table";
 
 export default function CropPlannerProfit() {
 	const selectedSeedIndex = use$(cropPlannerState$.input.selectedSeedIndex);

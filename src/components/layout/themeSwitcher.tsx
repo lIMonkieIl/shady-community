@@ -11,9 +11,15 @@ import { Moon as IconMoon } from "lucide-react";
 import { Sun as IconSun } from "lucide-react";
 import { Monitor as IconMonitor } from "lucide-react";
 import { useEffect } from "react";
-import { Button } from "../ui/button";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "../ui/drawer";
-import { Select, SelectContent, SelectTrigger, SelectValue } from "../ui/select";
+import { Button } from "../shared/ui/button";
+import {
+	Drawer,
+	DrawerContent,
+	DrawerHeader,
+	DrawerTitle,
+	DrawerTrigger,
+} from "../shared/ui/drawer";
+import { Select, SelectContent, SelectTrigger, SelectValue } from "../shared/ui/select";
 export default function ThemeSwitcher() {
 	const curTheme = use$(uiState$.theme.current);
 	const curAccent = use$(uiState$.theme.accent);

@@ -14,23 +14,27 @@ create policy "Public profiles are viewable by everyone." on profiles for
 select
   using (true);
 
-create function public.handle_new_user () returns trigger
+create or replace function public.handle_new_user () returns trigger
 set
   search_path='' as $$
 begin
   insert into public.profiles (id, username, avatar_url)
-  values (new.id, new.raw_user_meta_data->>'username', new.raw_user_meta_data->>'avatar_url');
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data->>'username', new.raw_user_meta_data->>'full_name'),
+    new.raw_user_meta_data->>'avatar_url'
+  );
   return new;
 end;
 $$ language plpgsql security definer;
 
-create function public.handle_user_update () returns trigger
+create or replace function public.handle_user_update () returns trigger
 set
   search_path='' as $$
 begin
   update public.profiles
   set 
-    username = new.raw_user_meta_data->>'username',
+    username = coalesce(new.raw_user_meta_data->>'username', new.raw_user_meta_data->>'full_name'),
     avatar_url = new.raw_user_meta_data->>'avatar_url'
   where id = new.id;
   return new;
@@ -42,8 +46,10 @@ after insert on auth.users for each row
 execute procedure public.handle_new_user ();
 
 create trigger on_auth_user_updated
-after update on auth.users for each row
-when (old.raw_user_meta_data IS DISTINCT FROM new.raw_user_meta_data)
+after
+update on auth.users for each row when (
+  old.raw_user_meta_data is distinct from new.raw_user_meta_data
+)
 execute procedure public.handle_user_update ();
 
 -- This will set the `created_at` column on create and `updated_at` column on every update

@@ -2,7 +2,7 @@
 
 import { uiState$ } from "@/lib/state/local/uiState";
 import { Menu as IconMenu } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "../shared/ui/button";
 
 export function MenuDrawerButton() {
 	return (

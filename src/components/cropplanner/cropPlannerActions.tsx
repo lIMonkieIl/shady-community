@@ -4,7 +4,7 @@ import { use$ } from "@legendapp/state/react";
 
 import { formatDuration } from "@/lib/utils/helpers";
 import { AlertCircle } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "../shared/ui/alert";
 import SelectStrain from "./strainSelect";
 
 export default function CropPlannerActions() {

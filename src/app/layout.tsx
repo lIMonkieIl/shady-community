@@ -38,10 +38,12 @@ export const metadata: Metadata = {
 	},
 };
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
+	modal,
 }: Readonly<{
 	children: React.ReactNode;
+	modal: React.ReactNode;
 }>) {
 	return (
 		<html data-decorator="hemp" data-mode="dark" data-theme="DDS" lang="en">
@@ -62,6 +64,7 @@ export default function RootLayout({
 				</div>
 				<Toaster position="top-right" />
 				<ToastListener />
+				{modal}
 			</body>
 		</html>
 	);

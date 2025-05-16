@@ -2,7 +2,7 @@
 import { cropPlannerState$ } from "@/lib/state/local/cropPlanner";
 import { use$ } from "@legendapp/state/react";
 import { formatUSD } from "../../lib/utils/helpers";
-import { Button } from "../ui/button";
+import { Button } from "../shared/ui/button";
 import {
 	Table,
 	TableBody,
@@ -11,7 +11,7 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "../ui/table";
+} from "../shared/ui/table";
 
 export default function CropPlannerSetup() {
 	const selectedSeedIndex = use$(cropPlannerState$.input.selectedSeedIndex);

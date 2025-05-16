@@ -1,23 +1,28 @@
 "use client";
 
-import { signOutAction } from "@/app/(auth)/auth/actions";
+import { signOutAction } from "@/actions/auth";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { BREAKPOINTS } from "@/lib/constants/theme/Breakpoints";
 import { uiState$ } from "@/lib/state/local/uiState";
+import { createClient } from "@/lib/supabase/client";
 import type { Tables } from "@/lib/types/supabase.types";
-import { use$ } from "@legendapp/state/react";
-import { Avatar } from "@skeletonlabs/skeleton-react";
-import type { User } from "@supabase/supabase-js";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { use$, useObservable, useObserveEffect } from "@legendapp/state/react";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { Cannabis, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import type React from "react";
+import { z } from "zod";
+import { getInitials } from "../../lib/utils/helpers";
 import WordCommunitySVG from "../logos/WordCommunity";
 import WordShadySVG from "../logos/WordShady";
-import { Button } from "../ui/button";
-import { Drawer, DrawerContent, DrawerTitle } from "../ui/drawer";
-import { SubmitButton } from "../ui/submitButton";
-// Define navigation items
+import Form from "../shared/form";
+import { Avatar, AvatarFallback, AvatarImage } from "../shared/ui/avatar";
+import { Button } from "../shared/ui/button";
+import { Drawer, DrawerContent, DrawerTitle } from "../shared/ui/drawer";
+import { SubmitButton } from "../shared/ui/submitButton";
+import { toast } from "../toast/toast";
 const navigationItems = [
 	{
 		name: "Community",
@@ -34,10 +39,33 @@ const navigationItems = [
 ];
 
 export default function NavigationDrawer({
-	user,
-	profile,
-}: { user: User | null; profile: Tables<"profiles"> | null }) {
+	serverProfile,
+}: { serverProfile: Tables<"profiles"> | null }) {
+	const profileState = useObservable<Tables<"profiles"> | null>(serverProfile);
+	const open = use$(uiState$.drawer.isOpen);
+	const profile = use$(profileState);
+	useObserveEffect(profileState, () => {
+		if (!profile) {
+			return;
+		}
+		const supabase = createClient();
+		const sub = supabase
+			.channel("realtime profile")
+			.on(
+				"postgres_changes",
+				{ event: "UPDATE", schema: "public", table: "profiles", filter: `id=eq.${profile.id}` },
+				(payload) => {
+					profileState.set(payload.new as Tables<"profiles">);
+				},
+			)
+			.subscribe();
+
+		return () => {
+			sub.unsubscribe();
+		};
+	});
 	const pathname = usePathname();
+	const router = useRouter();
 	const isMobile = useMediaQuery(`(max-width: ${BREAKPOINTS.sm}px)`);
 
 	// Set direction and styles based on screen size
@@ -51,13 +79,27 @@ export default function NavigationDrawer({
 
 	// Height for mobile drawer
 	const mobileDrawerHeight = isMobile ? "h-[70vh]" : "h-full";
+	const {
+		form,
+		action: { execute },
+	} = useHookFormAction(signOutAction, zodResolver(z.object({})), {
+		actionProps: {
+			onSuccess: ({ data }) => {
+				toast({ type: "success", description: data?.success ?? "", title: "Success" });
+				// Reset profile state to null to update UI
+				profileState.set(null);
+				// Hard redirect to home page to refetch server data
+				router.push("/");
+			},
+			onError: ({ error }) => {
+				console.log(error);
+				toast({ title: "Error", description: error.serverError ?? "", type: "error" });
+			},
+		},
+	});
 	return (
 		<aside>
-			<Drawer
-				open={use$(uiState$.drawer.isOpen)}
-				onClose={uiState$.drawer.close}
-				direction={direction}
-			>
+			<Drawer open={open} onClose={uiState$.drawer.close} direction={direction}>
 				<DrawerContent
 					className={contentClassName}
 					style={
@@ -104,27 +146,38 @@ export default function NavigationDrawer({
 						</nav>
 
 						<div className="p-4 border-t border-primary-50-950">
-							{user && profile ? (
+							{profile ? (
 								<div className="flex items-center">
-									<Avatar
+									{/* <Avatar
 										background="bg-secondary-400-600"
 										base="decorator-top-right theme-decorated w-10 h-10"
-										src={profile?.avatar_url ?? undefined}
-										name={profile?.username ?? "sc"}
-									/>
-
+										src={profile.avatar_url ?? undefined}
+										name={profile.username ?? "sc"}
+									/> */}
+									<div className="theme-decorated decorator-top-right">
+										<Avatar className="size-10">
+											<AvatarImage
+												className="theme-decorated"
+												src={profile.avatar_url ?? undefined}
+											/>
+											<AvatarFallback className="bg-secondary-400-600">
+												{getInitials(profile.username)}
+											</AvatarFallback>
+										</Avatar>
+									</div>
 									<div className="ml-3">
-										<p className="text-sm font-medium">{profile?.username}</p>
-										<form action={signOutAction}>
+										<p className="text-sm font-medium">{profile.username}</p>
+										<Form.Root form={form} action={execute}>
 											<SubmitButton variant="tonal-error" size="sm" showLoadingIcon={true}>
 												Sign out
 											</SubmitButton>
-										</form>
+										</Form.Root>
 									</div>
 								</div>
 							) : (
 								<div className="relative w-full">
 									<Button
+										onClick={() => uiState$.drawer.close()}
 										variant={"filled-secondary"}
 										className=" w-full"
 										// disabled

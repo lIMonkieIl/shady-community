@@ -1,7 +1,10 @@
+import Link from "next/link";
+
 export default function Home() {
 	return (
 		<div className="">
-			<a
+			<Link
+				prefetch
 				href="/cropplanner"
 				className="card w-fit block theme-decorated preset-filled-surface-100-900 border-[1px] border-surface-200-800 card-hover divide-surface-200-800"
 			>
@@ -17,7 +20,7 @@ export default function Home() {
 						</p>
 					</article>
 				</div>
-			</a>
+			</Link>
 		</div>
 	);
 }

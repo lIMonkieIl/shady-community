@@ -1,6 +1,4 @@
-import type { ToastTypeValue } from "@/components/layout/toast-notify";
 import { type ClassValue, clsx } from "clsx";
-import { redirect } from "next/navigation";
 import { twMerge } from "tailwind-merge";
 import { prefixes, titles } from "../constants/theme/username-data";
 
@@ -47,16 +45,17 @@ export function formatWeight(grams: number): string {
 	return `${(grams / 1_000_000).toFixed(2)} t`;
 }
 
-export function toastRedirect(type: ToastTypeValue, path: string, message: string) {
-	return redirect(`${path}?toast-${type}=${encodeURIComponent(message)}`);
+import { redirect } from "next/navigation";
+
+export function encodedRedirect(type: "error" | "success", path: string, message: string) {
+	return redirect(`${path}?${type}=${encodeURIComponent(message)}`);
 }
 
 export function generateRandomUsername(): string {
-	const randomAdjective = prefixes[Math.floor(Math.random() * prefixes.length)];
-	const randomAnimal = titles[Math.floor(Math.random() * titles.length)];
-	const randomNumber = Math.floor(Math.random() * 1000);
+	const randomPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+	const randomTitle = titles[Math.floor(Math.random() * titles.length)];
 
-	return capitalizeWords(`${randomAdjective}${randomAnimal}${randomNumber}`);
+	return capitalizeWords(`${randomPrefix}_${randomTitle}`);
 }
 
 export function cn(...inputs: ClassValue[]): string {
@@ -68,3 +67,17 @@ export const wait = (seconds: number) => {
 		setTimeout(resolve, seconds * 1000);
 	});
 };
+
+export function getInitials(name: string | null): string {
+	if (!name) return "sc";
+
+	// Split by spaces and get first letter of each word (up to 2)
+	const parts = name
+		.trim()
+		.split(/[\s\-_\.]+/)
+		.filter((part) => part.length > 0);
+	if (parts.length === 1) {
+		return parts[0].charAt(0).toUpperCase();
+	}
+	return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+}
