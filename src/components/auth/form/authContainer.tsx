@@ -1,5 +1,6 @@
 import WordCommunitySVG from "@/components/logos/WordCommunity";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/shared/ui/avatar";
+
 import Image from "next/image";
 import Link from "next/link";
 import WordShadySVG from "../../logos/WordShady";

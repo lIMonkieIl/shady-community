@@ -150,10 +150,11 @@ export default function NavigationDrawer() {
 										onClick={() => uiState$.drawer.close()}
 										variant={"filled-secondary"}
 										className=" w-full"
-										disabled
 										asChild
 									>
-										<Link href={"/auth/sign-in"}>Sign In / Register</Link>
+										<Link aria-disabled href={"/auth/sign-in"}>
+											Sign In / Register
+										</Link>
 									</Button>
 									<div className="absolute top-0 left-0 font-semibold animate-bounce -rotate-12 chip preset-filled">
 										Soon
