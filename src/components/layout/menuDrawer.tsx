@@ -150,7 +150,7 @@ export default function NavigationDrawer() {
 										onClick={() => uiState$.drawer.close()}
 										variant={"filled-secondary"}
 										className=" w-full"
-										// disabled
+										disabled
 										asChild
 									>
 										<Link href={"/auth/sign-in"}>Sign In / Register</Link>
