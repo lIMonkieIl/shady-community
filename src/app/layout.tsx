@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { AuthPageBodyClass } from "@/components/auth/authPageBodyClass";
+import { ThemeManagerProvider } from "@/components/theme/themeManagerProvider";
+
 import { Toaster } from "sonner";
+import { AuthProvider } from "../components/auth/authProvider";
 import { ToastListener } from "../components/layout/toast-notify";
 
 const geistSans = Geist({
@@ -38,13 +42,19 @@ export const metadata: Metadata = {
 	},
 };
 
-export default async function RootLayout({
+export default function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
 	return (
-		<html data-decorator="hemp" data-mode="dark" data-theme="DDS" lang="en">
+		<html
+			suppressHydrationWarning
+			data-decoration="none"
+			data-mode="dark"
+			data-theme="DDS"
+			lang="en"
+		>
 			<head>
 				<meta charSet="utf-8" />
 				<meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -55,13 +65,18 @@ export default async function RootLayout({
 				<link rel="manifest" href="/manifest.json" />
 			</head>
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-				<div className="grid h-screen grid-rows-[auto_1fr_auto]">
-					{children}
-					{/* <!-- Footer --> */}
-					{/* <footer className="p-4">(footer)</footer> */}
-				</div>
 				<Toaster position="top-right" />
 				<ToastListener />
+				<AuthProvider>
+					<AuthPageBodyClass />
+					<ThemeManagerProvider>
+						<div className="grid h-screen grid-rows-[auto_1fr_auto]">
+							{children}
+							{/* <!-- Footer --> */}
+							{/* <footer className="p-4">(footer)</footer> */}
+						</div>
+					</ThemeManagerProvider>
+				</AuthProvider>
 			</body>
 		</html>
 	);

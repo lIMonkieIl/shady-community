@@ -14,11 +14,5 @@ export default async function Layout({
 	if (user) {
 		return redirect("/");
 	}
-	return (
-		<div className="flex-centered h-screen">
-			{/* <!-- Main --> */}
-
-			<main className="overflow-hidden">{children}</main>
-		</div>
-	);
+	return <>{children}</>;
 }

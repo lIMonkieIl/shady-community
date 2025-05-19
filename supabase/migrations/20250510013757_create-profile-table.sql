@@ -3,7 +3,7 @@ create table profiles (
   id uuid references auth.users on delete cascade not null primary key,
   updated_at timestamp with time zone,
   created_at timestamptz default now(),
-  username text unique,
+  username text,
   avatar_url text,
   constraint username_length check (char_length(username)>=3)
 );

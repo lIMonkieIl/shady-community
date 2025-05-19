@@ -4,17 +4,16 @@ import { signOutAction } from "@/actions/auth";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { BREAKPOINTS } from "@/lib/constants/theme/Breakpoints";
 import { uiState$ } from "@/lib/state/local/uiState";
-import { createClient } from "@/lib/supabase/client";
-import type { Tables } from "@/lib/types/supabase.types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { use$, useObservable, useObserveEffect } from "@legendapp/state/react";
+import { use$ } from "@legendapp/state/react";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { Cannabis, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import type React from "react";
 import { z } from "zod";
 import { getInitials } from "../../lib/utils/helpers";
+import { useAuth } from "../auth/authProvider";
 import WordCommunitySVG from "../logos/WordCommunity";
 import WordShadySVG from "../logos/WordShady";
 import Form from "../shared/form";
@@ -38,36 +37,12 @@ const navigationItems = [
 	},
 ];
 
-export default function NavigationDrawer({
-	serverProfile,
-}: { serverProfile: Tables<"profiles"> | null }) {
-	const profileState = useObservable<Tables<"profiles"> | null>(serverProfile);
+export default function NavigationDrawer() {
 	const open = use$(uiState$.drawer.isOpen);
+	const { profile: profileState } = useAuth();
 	const profile = use$(profileState);
-	useObserveEffect(profileState, () => {
-		if (!profile) {
-			return;
-		}
-		const supabase = createClient();
-		const sub = supabase
-			.channel("realtime profile")
-			.on(
-				"postgres_changes",
-				{ event: "UPDATE", schema: "public", table: "profiles", filter: `id=eq.${profile.id}` },
-				(payload) => {
-					profileState.set(payload.new as Tables<"profiles">);
-				},
-			)
-			.subscribe();
-
-		return () => {
-			sub.unsubscribe();
-		};
-	});
 	const pathname = usePathname();
-	const router = useRouter();
 	const isMobile = useMediaQuery(`(max-width: ${BREAKPOINTS.sm}px)`);
-
 	// Set direction and styles based on screen size
 	const direction = isMobile ? "bottom" : "left";
 	const contentClassName = isMobile
@@ -86,13 +61,8 @@ export default function NavigationDrawer({
 		actionProps: {
 			onSuccess: ({ data }) => {
 				toast({ type: "success", description: data?.success ?? "", title: "Success" });
-				// Reset profile state to null to update UI
-				profileState.set(null);
-				// Hard redirect to home page to refetch server data
-				router.push("/");
 			},
 			onError: ({ error }) => {
-				console.log(error);
 				toast({ title: "Error", description: error.serverError ?? "", type: "error" });
 			},
 		},

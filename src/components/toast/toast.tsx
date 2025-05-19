@@ -3,8 +3,6 @@
 import { CircleCheck, CircleX, Info, OctagonAlert } from "lucide-react";
 import { toast as sonnerToast } from "sonner";
 
-/** I recommend abstracting the toast function
- *  so that you can call it without having to use toast.custom everytime. */
 export function toast(toast: Omit<ToastProps, "id">) {
 	return sonnerToast.custom(
 		(id) => <Toast type={toast.type} id={id} title={toast.title} description={toast.description} />,
@@ -26,7 +24,6 @@ function ToastIcon(type: ToastProps["type"]) {
 	}
 }
 
-/** A fully custom toast that still maintains the animations and interactions. */
 function Toast(props: ToastProps) {
 	const { title, description, type } = props;
 	const color = `preset-tonal-${type} preset-outlined-${type}-400-600`;

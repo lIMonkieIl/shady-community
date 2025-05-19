@@ -1,22 +1,23 @@
 "use client";
-import { useEffect, useState } from "react";
+import { use$, useObservable, useObserveEffect } from "@legendapp/state/react";
 
 export function useMediaQuery(query: string): boolean {
-	const [matches, setMatches] = useState(false);
+	const matches = useObservable(false);
+	const isMatches = use$(matches);
 
-	useEffect(() => {
+	useObserveEffect(() => {
 		if (typeof window === "undefined") return;
 
 		const media = window.matchMedia(query);
-		if (media.matches !== matches) {
-			setMatches(media.matches);
+		if (media.matches !== isMatches) {
+			matches.set(media.matches);
 		}
 
-		const listener = () => setMatches(media.matches);
+		const listener = () => matches.set(media.matches);
 		media.addEventListener("change", listener);
 
 		return () => media.removeEventListener("change", listener);
-	}, [query, matches]);
+	});
 
-	return matches;
+	return isMatches;
 }

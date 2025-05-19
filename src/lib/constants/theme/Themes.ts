@@ -26,13 +26,13 @@ export const ThemeNames = {
 
 export type TThemeName = keyof typeof ThemeNames;
 
-export interface ITheme {
+export interface IThemeNameList {
 	name: TThemeName;
 	label: string;
 	emoji: string;
 }
 
-export const Themes: ITheme[] = [
+export const ThemeNameList: IThemeNameList[] = [
 	{ name: "catppuccin", label: "Catppuccin", emoji: "🐈" },
 	{ name: "cerberus", label: "Cerberus", emoji: "🐺" },
 	{ name: "concord", label: "Concord", emoji: "🤖" },
@@ -65,3 +65,24 @@ export const ThemeModes = {
 } as const;
 
 export type TThemeMode = (typeof ThemeModes)[keyof typeof ThemeModes];
+export const ThemeModesList: TThemeMode[] = Object.values(ThemeModes);
+
+export const ThemeDecoration = {
+	none: "none",
+	hemp: "hemp",
+	skull: "skull",
+} as const;
+
+export type TThemeDecoration = keyof typeof ThemeDecoration;
+
+export interface IThemeDecorationList {
+	name: TThemeDecoration;
+	label: string;
+	source: string;
+}
+
+export const ThemeDecorationList: IThemeDecorationList[] = [
+	{ name: "none", label: "Blank", source: "" },
+	{ name: "hemp", label: "Hemp", source: "/hemp-hemp-svgrepo-com.svg" },
+	{ name: "skull", label: "Skull", source: "💀" },
+];

@@ -1,6 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
-import type { Database } from "../types/supabase.types";
+import type { Database } from "../types/database.types";
 
 export async function updateSession(request: NextRequest) {
 	try {

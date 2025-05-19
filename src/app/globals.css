@@ -25,7 +25,7 @@
 @import "@skeletonlabs/skeleton/themes/vintage";
 @import "@skeletonlabs/skeleton/themes/vox";
 @import "@skeletonlabs/skeleton/themes/wintry";
-@import "../drug-dealer-simulator.css";
+@import "../themes/drug-dealer-simulator.css";
 @import "tw-animate-css";
 @plugin '@tailwindcss/forms';
 
@@ -129,40 +129,42 @@ bg-noise {
 	background-blend-mode: overlay;
 }
 
-@utility gradient-homepage-one {
-	background-size: cover;
-	/* prettier-ignore */
+@utility gradient-auth {
+	background-attachment: fixed;
+	background-image: 		radial-gradient(
+		at 0% 25%,
+		color-mix(in oklab, var(--color-primary-500) 20%, transparent) 0px,
+		transparent 30%
+	),
+	radial-gradient(
+		at 15% 06%,
+		color-mix(in oklab, var(--color-secondary-500) 15%, transparent) 0px,
+		transparent 30%
+	),
+	radial-gradient(
+		at 100% 75%,
+		color-mix(in oklab, var(--color-tertiary-500) 20%, transparent) 0px,
+		transparent 30%
+	),radial-gradient(
+		at 85% 94%,
+		color-mix(in oklab, var(--color-primary-500) 15%, transparent) 0px,
+		transparent 30%
+	)
+}
+@utility gradient-bg {
+	background-attachment: fixed;
 	background-image: radial-gradient(
-			at 24% 25%,
-			color-mix(in oklab, var(--color-primary-500) 30%, transparent) 0px,
+			at 0% 25%,
+			color-mix(in oklab, var(--color-primary-500) 10%, transparent) 0px,
 			transparent 30%
 		),
 		radial-gradient(
-			at 35% 13%,
-			color-mix(in oklab, var(--color-success-500) 18%, transparent) 0px,
+			at 15% 06%,
+			color-mix(in oklab, var(--color-success-500) 5%, transparent) 0px,
 			transparent 30%
-		),
-		radial-gradient(
-			at 100% 64%,
-			color-mix(in oklab, var(--color-error-500) 3%, transparent) 0px,
-			transparent 40%
 		);
 }
 
-@utility gradient-homepage-two {
-	background-size: cover;
-	/* prettier-ignore */
-	background-image: radial-gradient(
-			at 25% 40%,
-			color-mix(in oklab, var(--color-primary-500) 10%, transparent) 0px,
-			transparent 35%
-		),
-		radial-gradient(
-			at 100% 58%,
-			color-mix(in oklab, var(--color-success-500) 5%, transparent) 0px,
-			transparent 35%
-		);
-}
 
 /* Inner Page Gradient */
 /*
@@ -189,17 +191,7 @@ bg-noise {
 [data-theme="vintage"],
 [data-theme="wintry"] {
 	& body {
-		background-attachment: fixed;
-		background-image: radial-gradient(
-				at 0% 25%,
-				color-mix(in oklab, var(--color-primary-500) 10%, transparent) 0px,
-				transparent 30%
-			),
-			radial-gradient(
-				at 15% 06%,
-				color-mix(in oklab, var(--color-success-500) 5%, transparent) 0px,
-				transparent 30%
-			);
+		@apply gradient-bg
 	}
 }
 /* Base element positioning */
@@ -257,37 +249,37 @@ bg-noise {
 	transform: rotate(15deg);
 }
 
-[data-decorator="hemp"] .theme-decorated::before {
+[data-decoration="hemp"] .theme-decorated::before {
 	background-image: url("/hemp-hemp-svgrepo-com.svg");
 	display: inline-block;
 	background-size: contain;
 	width: 1.1em;
 	height: 1.1em;
 }
-[data-decorator="skull"] .theme-decorated::before {
+[data-decoration="skull"] .theme-decorated::before {
 	content: "💀";
 	font-size: 22;
 }
 
-[data-decorator="santa"] .theme-decorated::before {
+[data-decoration="santa"] .theme-decorated::before {
 	content: "🎅";
 }
 
-[data-decorator="ghost"] .theme-decorated::before {
+[data-decoration="ghost"] .theme-decorated::before {
 	content: "👻";
 }
 
-[data-decorator="star"] .theme-decorated::before {
+[data-decoration="star"] .theme-decorated::before {
 	content: "⭐";
 }
 
-[data-decorator="easter"] .theme-decorated::before {
+[data-decoration="easter"] .theme-decorated::before {
 	content: "🐰";
 	font-size: 28px; /* Slightly larger for the Easter bunny */
 }
 
 /* Pattern decorator mappings */
-[data-decorator="stripes"] .theme-decorated::after {
+[data-decoration="stripes"] .theme-decorated::after {
 	background-image: repeating-linear-gradient(
 		45deg,
 		currentColor,
@@ -297,12 +289,12 @@ bg-noise {
 	);
 }
 
-[data-decorator="dots"] .theme-decorated::after {
+[data-decoration="dots"] .theme-decorated::after {
 	background-image: radial-gradient(circle, currentColor 3px, transparent 3px);
 	background-size: 15px 15px;
 }
 
-[data-decorator="zigzag"] .theme-decorated::after {
+[data-decoration="zigzag"] .theme-decorated::after {
 	background-image: linear-gradient(135deg, currentColor 25%, transparent 25%),
 		linear-gradient(225deg, currentColor 25%, transparent 25%),
 		linear-gradient(315deg, currentColor 25%, transparent 25%),
@@ -311,7 +303,7 @@ bg-noise {
 }
 
 /* Graffiti pattern with SVG background and glass effect */
-[data-decorator="graffiti"] .theme-decorated::after {
+[data-decoration="graffiti"] .theme-decorated::after {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100' fill='none'%3E%3Cpath d='M20,30 Q30,5 50,20 T80,30' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M25,60 Q40,40 60,70 T90,60' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M10,50 Q30,70 50,50 T80,50' stroke='%23000' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='15' cy='15' r='3' fill='%23000'/%3E%3Ccircle cx='85' cy='25' r='2' fill='%23000'/%3E%3Ccircle cx='45' cy='85' r='4' fill='%23000'/%3E%3Ccircle cx='75' cy='75' r='2' fill='%23000'/%3E%3C/svg%3E");
 	background-size: 100px 100px;
 	background-repeat: no-repeat;
@@ -326,12 +318,12 @@ bg-noise {
 }
 
 /* Glass effect for graffiti */
-[data-decorator="graffiti"] .theme-decorated {
+[data-decoration="graffiti"] .theme-decorated {
 	overflow: hidden; /* For the glass effect */
 }
 
 /* Apply a subtle gradient overlay for the glass effect */
-[data-decorator="graffiti"] .theme-decorated::after {
+[data-decoration="graffiti"] .theme-decorated::after {
 	background-color: rgba(255, 255, 255, 0.1);
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100' fill='none'%3E%3Cpath d='M20,30 Q30,5 50,20 T80,30' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M25,60 Q40,40 60,70 T90,60' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M10,50 Q30,70 50,50 T80,50' stroke='%23000' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='15' cy='15' r='3' fill='%23000'/%3E%3Ccircle cx='85' cy='25' r='2' fill='%23000'/%3E%3Ccircle cx='45' cy='85' r='4' fill='%23000'/%3E%3Ccircle cx='75' cy='75' r='2' fill='%23000'/%3E%3C/svg%3E"),
 		linear-gradient(
@@ -344,14 +336,14 @@ bg-noise {
 }
 
 /* Clear symbol for pattern decorators */
-[data-decorator="stripes"] .theme-decorated::before,
-[data-decorator="dots"] .theme-decorated::before,
-[data-decorator="zigzag"] .theme-decorated::before {
+[data-decoration="stripes"] .theme-decorated::before,
+[data-decoration="dots"] .theme-decorated::before,
+[data-decoration="zigzag"] .theme-decorated::before {
 	content: "";
 }
 
 /* Spray can icon for graffiti */
-[data-decorator="graffiti"] .theme-decorated::before {
+[data-decoration="graffiti"] .theme-decorated::before {
 	content: "🎨";
 	z-index: 20;
 	filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));

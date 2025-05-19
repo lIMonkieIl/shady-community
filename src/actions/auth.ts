@@ -5,6 +5,7 @@ import { signUpSchema } from "@/lib/schemas/auth";
 import { createClient } from "@/lib/supabase/server";
 import { generateRandomUsername } from "@/lib/utils/helpers";
 import { actionClient } from "@/lib/utils/safe-action";
+import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -50,6 +51,7 @@ export const signInAction = actionClient
 		if (signIn.error) {
 			throw signIn.error;
 		}
+		revalidatePath("/");
 
 		return { success: "Successfully authenticated." };
 	});

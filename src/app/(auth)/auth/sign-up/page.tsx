@@ -1,5 +1,10 @@
+import AuthContainer from "@/components/auth/form/authContainer";
 import SignUpForm from "@/components/auth/form/signUpForm";
 
 export default function SignUpPage() {
-	return <SignUpForm />;
+	return (
+		<AuthContainer>
+			<SignUpForm />
+		</AuthContainer>
+	);
 }
