@@ -13,7 +13,7 @@ import {
 	DrawerTitle,
 	DrawerTrigger,
 } from "../shared/ui/drawer";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../shared/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "../shared/ui/select";
 
 export default function SelectStrain() {
 	const selectedStringIndex = use$(cropPlannerState$.input.selectedSeedIndex);
@@ -90,10 +90,9 @@ export default function SelectStrain() {
 			open={open}
 			onOpenChange={(value) => isOpen.set(value)}
 		>
-			<SelectTrigger className="preset-outlined-surface-200-800 theme-decorated decorator-top-right focus:preset-outlined-primary-500 hover:preset-tonal">
-				<SelectValue aria-label={selectedStringIndex.toString()} placeholder="Strain...">
-					<span className="capitalize">{seeds[selectedStringIndex]?.strain}</span>
-				</SelectValue>
+			<SelectTrigger className="btn w-full justify-between flex preset-outlined-surface-200-800 theme-decorated decorator-top-right focus:preset-outlined-primary-500 hover:preset-tonal">
+				<span className="capitalize">{seeds[selectedStringIndex]?.strain}</span>
+				<ChevronDown className="h-4 w-4 text-primary-500 opacity-50" />
 			</SelectTrigger>
 			<SelectContent
 				className="card preset-filled-surface-50-950 preset-outlined-primary-50-950 overflow-y-auto"
