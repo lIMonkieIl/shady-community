@@ -9,10 +9,12 @@ import { createContext, useContext } from "react";
 type AuthContextProps = typeof authState$;
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
-
+const isServer = typeof window === "undefined";
 export const AuthProvider = observer(({ children }: { children: React.ReactNode }) => {
 	const supabase = createClient();
 	useObserveEffect(() => {
+		if (isServer) return;
+
 		const initializeAuth = async () => {
 			try {
 				authState$.isLoading.set(true);
@@ -48,7 +50,7 @@ export const AuthProvider = observer(({ children }: { children: React.ReactNode 
 
 		initializeAuth();
 
-		const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+		const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => {
 			authState$.assign({ session, user: session?.user });
 			if (!session) {
 				authState$.profile.set(null);

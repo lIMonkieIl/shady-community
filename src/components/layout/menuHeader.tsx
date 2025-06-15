@@ -3,7 +3,7 @@ import { MenuDrawerButton } from "./menuDrawerButton";
 
 export default function Header() {
 	return (
-		<header className="sticky top-0 z-20 bg-surface-50-950 p-4 flex items-center justify-between">
+		<header className="sticky top-0 z-20 px-4 h-10 pt-4 flex items-center justify-between">
 			{/* Left content */}
 			<div>
 				<MenuDrawerButton />

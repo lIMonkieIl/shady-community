@@ -101,7 +101,7 @@ const SelectItem = React.forwardRef<
 	<SelectPrimitive.Item
 		ref={ref}
 		className={cn(
-			"relative flex w-full cursor-default select-none items-center py-1.5 pl-8 pr-2 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+			"relative cursor-pointer flex w-full select-none items-center py-1.5 pl-8 pr-2 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
 			className,
 		)}
 		{...props}
@@ -111,6 +111,19 @@ const SelectItem = React.forwardRef<
 	</SelectPrimitive.Item>
 ));
 SelectItem.displayName = SelectPrimitive.Item.displayName;
+
+const SelectItemIndicator = React.forwardRef<
+	React.ComponentRef<typeof SelectPrimitive.ItemIndicator>,
+	React.ComponentPropsWithoutRef<typeof SelectPrimitive.ItemIndicator>
+>(({ className, children, ...props }, ref) => {
+	return (
+		<SelectPrimitive.ItemIndicator ref={ref} className={cn("", className)} {...props}>
+			{children}
+		</SelectPrimitive.ItemIndicator>
+	);
+});
+
+SelectItemIndicator.displayName = SelectPrimitive.ItemIndicator.displayName;
 
 const SelectSeparator = React.forwardRef<
 	React.ComponentRef<typeof SelectPrimitive.Separator>,
@@ -134,5 +147,6 @@ export {
 	SelectItem,
 	SelectSeparator,
 	SelectScrollUpButton,
+	SelectItemIndicator,
 	SelectScrollDownButton,
 };

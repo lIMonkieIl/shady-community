@@ -19,7 +19,7 @@ export default function DiscordSignInButton() {
 			// 	toast({ type: "success", description: data?.success ?? "", title: "Success" });
 			// },
 			onError: ({ error }) => {
-				toast({ title: "Error", description: error.serverError ?? "", type: "error" });
+				toast({ title: "Error", description: error.serverError ?? "", variant: "tonal-error" });
 			},
 		},
 	});

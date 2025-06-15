@@ -1,4 +1,4 @@
-import type { IItem, IItemPurchaseOption } from "../types/item";
+import type { IItem, IItemPurchaseOption } from "../types/ingredient";
 import type { IMix, IMixComponent, IMixProperties } from "../types/mix";
 import type { IQualitativeRange, TQualitativeValue } from "../types/qualityValue";
 

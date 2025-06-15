@@ -1,7 +1,7 @@
 "use client";
+import { useCropManager } from "@/hooks/useCropManager";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { BREAKPOINTS } from "@/lib/constants/theme/Breakpoints";
-import { cropPlannerState$ } from "@/lib/state/local/cropPlanner";
 import { cn } from "@/lib/utils/helpers";
 import { use$, useObservable } from "@legendapp/state/react";
 import { Check, ChevronDown } from "lucide-react";
@@ -16,14 +16,13 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../shared/ui/select";
 
 export default function SelectStrain() {
-	const selectedStringIndex = use$(cropPlannerState$.input.selectedSeedIndex);
-	const seeds = use$(cropPlannerState$.seeds);
+	const { selectedSeedIndex, selectedSeed, seeds, setSelectedSeedIndex } = useCropManager();
 	const isMobile = useMediaQuery(`(max-width: ${BREAKPOINTS.sm}px)`);
 	const isOpen = useObservable(false);
 	const open = use$(isOpen);
 
 	const handleSelect = (value: string) => {
-		cropPlannerState$.input.selectedSeedIndex.set(Number.parseInt(value));
+		setSelectedSeedIndex(Number.parseInt(value));
 		isOpen.set(false);
 	};
 
@@ -38,7 +37,7 @@ export default function SelectStrain() {
 					)}
 					onClick={() => isOpen.set(true)}
 				>
-					<span className="capitalize">{seeds[selectedStringIndex]?.strain}</span>
+					<span className="capitalize">{selectedSeed.strain}</span>
 					<ChevronDown className="h-4 w-4 text-primary-500 opacity-50" />
 				</DrawerTrigger>
 				<DrawerContent className="card preset-filled-surface-50-950 rounded-b-none max-h-[70vh]">
@@ -57,7 +56,7 @@ export default function SelectStrain() {
 									"capitalize hover:preset-tonal card",
 								)}
 							>
-								{selectedStringIndex === index && (
+								{selectedSeedIndex === index && (
 									<span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
 										<Check className="h-4 w-4 text-primary-300-700" />
 									</span>
@@ -85,13 +84,13 @@ export default function SelectStrain() {
 
 	return (
 		<Select
-			value={selectedStringIndex.toString()}
+			value={selectedSeedIndex.toString()}
 			onValueChange={handleSelect}
 			open={open}
 			onOpenChange={(value) => isOpen.set(value)}
 		>
 			<SelectTrigger className="btn w-full justify-between flex preset-outlined-surface-200-800 theme-decorated decorator-top-right focus:preset-outlined-primary-500 hover:preset-tonal">
-				<span className="capitalize">{seeds[selectedStringIndex]?.strain}</span>
+				<span className="capitalize">{selectedSeed.strain}</span>
 				<ChevronDown className="h-4 w-4 text-primary-500 opacity-50" />
 			</SelectTrigger>
 			<SelectContent
@@ -107,7 +106,7 @@ export default function SelectStrain() {
 						value={index.toString()}
 						className="capitalize hover:preset-tonal card"
 					>
-						{selectedStringIndex === index && (
+						{selectedSeedIndex === index && (
 							<span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
 								<Check className="h-4 w-4 text-primary-300-700" />
 							</span>

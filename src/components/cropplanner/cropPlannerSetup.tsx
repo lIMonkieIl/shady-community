@@ -1,6 +1,5 @@
 "use client";
-import { cropPlannerState$ } from "@/lib/state/local/cropPlanner";
-import { use$ } from "@legendapp/state/react";
+import { useCropManager } from "@/hooks/useCropManager";
 import { formatUSD } from "../../lib/utils/helpers";
 import { Button } from "../shared/ui/button";
 import {
@@ -14,25 +13,7 @@ import {
 } from "../shared/ui/table";
 
 export default function CropPlannerSetup() {
-	const selectedSeedIndex = use$(cropPlannerState$.input.selectedSeedIndex);
-	const selectedSeed = use$(cropPlannerState$.seeds[selectedSeedIndex]);
-	const setupInclude = use$(cropPlannerState$.input.setup.include);
-	const potsRequired = use$(cropPlannerState$.computed.setup.pots.required);
-	const lightsRequired = use$(cropPlannerState$.computed.setup.lights.required);
-	const filtersRequired = use$(cropPlannerState$.computed.setup.filters.required);
-	const dryersRequired = use$(cropPlannerState$.computed.setup.dryers.required);
-	const potsEach = use$(cropPlannerState$.computed.setup.pots.each);
-	const lightsEach = use$(cropPlannerState$.computed.setup.lights.each);
-	const filtersEach = use$(cropPlannerState$.computed.setup.filters.each);
-	const dryersEach = use$(cropPlannerState$.computed.setup.dryers.each);
-	const potsTCost = use$(cropPlannerState$.computed.setup.pots.tCost);
-	const lightsTCost = use$(cropPlannerState$.computed.setup.lights.tCost);
-	const filtersTCost = use$(cropPlannerState$.computed.setup.filters.tCost);
-	const dryersTCost = use$(cropPlannerState$.computed.setup.dryers.tCost);
-	const potsHave = use$(cropPlannerState$.input.setup.pots.have);
-	const lightsHave = use$(cropPlannerState$.input.setup.lights.have);
-	const filtersHave = use$(cropPlannerState$.input.setup.filters.have);
-	const dryersHave = use$(cropPlannerState$.input.setup.dryers.have);
+	const { selectedSeed, setup, setIncludeSetup, updateAlreadyOwnedItems } = useCropManager();
 
 	if (selectedSeed.environment === "outdoor") {
 		return null;
@@ -46,24 +27,24 @@ export default function CropPlannerSetup() {
 					<nav className="btn-group preset-outlined-surface-200-800 p-1.5 flex w-fit">
 						<Button
 							size={"sm"}
-							variant={!setupInclude ? "filled-primary" : "tonal"}
+							variant={!setup.include ? "filled-primary" : "tonal"}
 							className={"capitalize"}
-							onClick={() => cropPlannerState$.input.setup.include.set(false)}
+							onClick={() => setIncludeSetup(false)}
 						>
 							no
 						</Button>
 						<Button
 							size={"sm"}
-							variant={setupInclude ? "filled-primary" : "tonal"}
+							variant={setup.include ? "filled-primary" : "tonal"}
 							className={"capitalize"}
-							onClick={() => cropPlannerState$.input.setup.include.set(true)}
+							onClick={() => setIncludeSetup(true)}
 						>
 							yes
 						</Button>
 					</nav>
 				</div>
 
-				{setupInclude && (
+				{setup.include && (
 					<div className="theme-decorated decorator-top-left">
 						<Table className="card preset-tonal overflow-hidden">
 							<TableCaption className="text-tertiary-300-700/60">
@@ -83,28 +64,28 @@ export default function CropPlannerSetup() {
 									<TableCell className="text-primary-950-50 capitalize font font-semibold">
 										required
 									</TableCell>
-									<TableCell>{potsRequired}</TableCell>
-									<TableCell>{lightsRequired}</TableCell>
-									<TableCell>{filtersRequired}</TableCell>
-									<TableCell>{dryersRequired}</TableCell>
+									<TableCell>{setup.pots.required}</TableCell>
+									<TableCell>{setup.lights.required}</TableCell>
+									<TableCell>{setup.filters.required}</TableCell>
+									<TableCell>{setup.dryers.required}</TableCell>
 								</TableRow>
 								<TableRow className="border-surface-50-950/55 border-b-4">
 									<TableCell className="text-primary-950-50 capitalize font font-semibold">
 										price
 									</TableCell>
-									<TableCell>{formatUSD(potsEach)}</TableCell>
-									<TableCell>{formatUSD(lightsEach)}</TableCell>
-									<TableCell>{formatUSD(filtersEach)}</TableCell>
-									<TableCell>{formatUSD(dryersEach)}</TableCell>
+									<TableCell>{formatUSD(setup.pots.each)}</TableCell>
+									<TableCell>{formatUSD(setup.lights.each)}</TableCell>
+									<TableCell>{formatUSD(setup.filters.each)}</TableCell>
+									<TableCell>{formatUSD(setup.dryers.each)}</TableCell>
 								</TableRow>
 								<TableRow className="border-surface-50-950/55 border-b-4">
 									<TableCell className="text-primary-950-50 capitalize font font-semibold">
 										total
 									</TableCell>
-									<TableCell>{formatUSD(potsTCost)}</TableCell>
-									<TableCell>{formatUSD(lightsTCost)}</TableCell>
-									<TableCell>{formatUSD(filtersTCost)}</TableCell>
-									<TableCell>{formatUSD(dryersTCost)}</TableCell>
+									<TableCell>{formatUSD(setup.pots.tCost)}</TableCell>
+									<TableCell>{formatUSD(setup.lights.tCost)}</TableCell>
+									<TableCell>{formatUSD(setup.filters.tCost)}</TableCell>
+									<TableCell>{formatUSD(setup.dryers.tCost)}</TableCell>
 								</TableRow>
 								<TableRow>
 									<TableCell className="text-primary-950-50 capitalize font font-semibold">
@@ -113,9 +94,10 @@ export default function CropPlannerSetup() {
 									<TableCell>
 										<input
 											className="input min-w-16"
-											value={potsHave}
+											value={setup.pots.have}
 											onChange={(value) =>
-												cropPlannerState$.input.setup.pots.have.set(
+												updateAlreadyOwnedItems(
+													"pots",
 													value.currentTarget.value.length === 0
 														? 0
 														: Number.parseInt(value.currentTarget.value),
@@ -127,9 +109,10 @@ export default function CropPlannerSetup() {
 									<TableCell>
 										<input
 											className="input min-w-16"
-											value={lightsHave}
+											value={setup.lights.have}
 											onChange={(value) =>
-												cropPlannerState$.input.setup.lights.have.set(
+												updateAlreadyOwnedItems(
+													"lights",
 													value.currentTarget.value.length === 0
 														? 0
 														: Number.parseInt(value.currentTarget.value),
@@ -141,9 +124,10 @@ export default function CropPlannerSetup() {
 									<TableCell>
 										<input
 											className="input min-w-16"
-											value={filtersHave}
+											value={setup.filters.have}
 											onChange={(value) =>
-												cropPlannerState$.input.setup.filters.have.set(
+												updateAlreadyOwnedItems(
+													"filters",
 													value.currentTarget.value.length === 0
 														? 0
 														: Number.parseInt(value.currentTarget.value),
@@ -155,9 +139,10 @@ export default function CropPlannerSetup() {
 									<TableCell>
 										<input
 											className="input min-w-16"
-											value={dryersHave}
+											value={setup.dryers.have}
 											onChange={(value) =>
-												cropPlannerState$.input.setup.dryers.have.set(
+												updateAlreadyOwnedItems(
+													"dryers",
 													value.currentTarget.value.length === 0
 														? 0
 														: Number.parseInt(value.currentTarget.value),

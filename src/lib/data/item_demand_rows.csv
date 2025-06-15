@@ -1,4 +1,4 @@
-id,item_id,sector,location,demand_value,created_at,updated_at
+id,ingredient_id,sector,location,demand_value,created_at,updated_at
 00be0ef6-2b51-4323-a31c-cd8e8d4dd66a,94cb0ae2-6d05-4aec-825c-b52b7e18c59f,A,Kennel,4,2025-03-30 22:16:02.736656,2025-03-30 22:16:02.736656
 06128384-840a-4658-be53-a51ef05fdbf1,ae9cb95f-9099-4977-b3a7-c668bdfd4912,A,Old Market,10,2025-03-30 22:16:02.736656,2025-03-30 22:16:02.736656
 09df60f8-8ab3-409e-8ef1-9f3a64436f5e,2a463845-528f-4dc8-9572-d6892fe3c3a6,B,Bad Asia,18,2025-03-30 22:16:02.736656,2025-03-30 22:16:02.736656

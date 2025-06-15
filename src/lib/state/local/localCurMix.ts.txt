@@ -1,0 +1,268 @@
+import type { Tables } from "@/lib/types/supabase.types";
+import { observable, observe } from "@legendapp/state";
+import { getPurchaseById, getPurchasesByIngredientId } from "../cloud/ingredientPurchasesState";
+import { getIngredientById } from "../cloud/ingredientsState";
+
+export interface ICurrentMix
+	extends Omit<
+		Tables<"ingredients">,
+		"id" | "created_at" | "created_by" | "is_custom" | "updated_at"
+	> {
+	recipe: ICurrentMixRecipe[];
+	total_mix_weight: number;
+	purity: number;
+}
+
+interface ICurrentMixRecipe
+	extends Omit<
+		Tables<"ingredient_recipes">,
+		"id" | "updated_at" | "created_at" | "parent_ingredient_id" | "order_index"
+	> {
+	selected_purchase_option_id: string | null;
+	totalPrice: number;
+}
+
+export const currentMix$ = observable<ICurrentMix>({
+	name: "",
+	category: "Mix",
+	type: "",
+	image: "",
+	description: null,
+	information: null,
+	toxicity: 0,
+	strength: 0,
+	addictiveness: 0,
+	mix_strengthening: 0,
+	visibility: "Private",
+	recipe: [],
+	total_mix_weight: 0,
+	purity: 0,
+});
+export const addToCurrentMix = (ingredientId: string) => {
+	currentMix$.recipe.push({
+		amount: 1,
+		child_ingredient_id: ingredientId,
+		selected_purchase_option_id: null,
+		totalPrice: 0,
+	});
+};
+export const removeFromCurrentMix = (ingredientId: string) => {
+	currentMix$.recipe.set(
+		currentMix$.recipe.get().filter((item) => item.child_ingredient_id !== ingredientId),
+	);
+};
+export const setRecipeOrderIndex = (ingredientId: string, newIndex: number) => {
+	const recipe = [...currentMix$.recipe.get()];
+	const currentIndex = recipe.findIndex((i) => i.child_ingredient_id === ingredientId);
+	if (currentIndex === -1) return;
+
+	const [item] = recipe.splice(currentIndex, 1); // remove the item
+	recipe.splice(newIndex, 0, item); // insert at new index
+
+	currentMix$.recipe.set(
+		recipe.map((item) => ({
+			...item,
+		})),
+	);
+};
+export const setRecipeMainIngredient = (ingredientId: string) => {
+	const recipe = [...currentMix$.recipe.get()];
+	const index = recipe.findIndex((i) => i.child_ingredient_id === ingredientId);
+	if (index === -1) return;
+
+	const [item] = recipe.splice(index, 1); // remove the item
+	recipe.unshift(item); // insert at the beginning
+
+	currentMix$.recipe.set(
+		recipe.map((item) => ({
+			...item,
+		})),
+	);
+};
+export const moveUpRecipeIngredient = (ingredientId: string) => {
+	const recipe = [...currentMix$.recipe.get()];
+	const index = recipe.findIndex((i) => i.child_ingredient_id === ingredientId);
+	if (index <= 0) return;
+
+	[recipe[index - 1], recipe[index]] = [recipe[index], recipe[index - 1]];
+
+	currentMix$.recipe.set(recipe.map((item) => ({ ...item })));
+};
+export const moveDownRecipeIngredient = (ingredientId: string) => {
+	const recipe = [...currentMix$.recipe.get()];
+	const index = recipe.findIndex((i) => i.child_ingredient_id === ingredientId);
+
+	[recipe[index], recipe[index + 1]] = [recipe[index + 1], recipe[index]];
+
+	currentMix$.recipe.set(recipe.map((item) => ({ ...item })));
+};
+export const swapRecipeIngredient = (ingredientId1: string, ingredientId2: string) => {
+	const recipe = [...currentMix$.recipe.get()];
+	const index1 = recipe.findIndex((i) => i.child_ingredient_id === ingredientId1);
+	const index2 = recipe.findIndex((i) => i.child_ingredient_id === ingredientId2);
+	if (index1 === -1 || index2 === -1) return;
+
+	// swap
+	[recipe[index1], recipe[index2]] = [recipe[index2], recipe[index1]];
+
+	currentMix$.recipe.set(recipe.map((item) => ({ ...item })));
+};
+export const setRecipeIngredientAmount = (ingredientId: string, amount: number) => {
+	const safeAmount = Number.isNaN(amount) || typeof amount !== "number" || amount < 1 ? 1 : amount;
+
+	const index = currentMix$.recipe
+		.get()
+		.findIndex((recipe) => recipe.child_ingredient_id === ingredientId);
+
+	if (index === -1) return;
+
+	currentMix$.recipe[index].amount.set(safeAmount);
+};
+
+export const setRecipeIngredientPurchaseOption = (
+	ingredientId: string,
+	purchaseOptionId: string,
+) => {
+	const index = currentMix$.recipe
+		.get()
+		.findIndex((recipe) => recipe.child_ingredient_id === ingredientId);
+
+	currentMix$.recipe[index].selected_purchase_option_id.set(purchaseOptionId);
+};
+export const clearMix = () => {
+	// First clear the recipe which should trigger observer
+	currentMix$.recipe.set([]);
+};
+
+observe(() => {
+	console.log("running");
+	const recipe = currentMix$.recipe.get();
+	if (recipe.length === 0) {
+		currentMix$.assign({
+			type: "",
+			toxicity: 0,
+			strength: 0,
+			mix_strengthening: 0,
+			addictiveness: 0,
+
+			recipe: [],
+			total_mix_weight: 0,
+			purity: 0,
+		});
+		return;
+	}
+	const firstRecipeIngredient = recipe[0];
+	if (!firstRecipeIngredient) {
+		return;
+	}
+	const firstIngredient = getIngredientById(firstRecipeIngredient.child_ingredient_id);
+	currentMix$.type.set(firstIngredient.type);
+	currentMix$.total_mix_weight.set(getMixTotalWeight(recipe));
+	currentMix$.purity.set(getMixPurity(recipe[0].amount, currentMix$.total_mix_weight.get()));
+
+	for (const [index, r] of currentMix$.recipe.entries()) {
+		if (!r.selected_purchase_option_id) {
+			return;
+		}
+		const purchase = getPurchaseById(r.selected_purchase_option_id);
+		if (!purchase) {
+			return;
+		}
+		currentMix$.recipe[index].totalPrice.set(
+			Number.parseFloat((purchase.price * r.amount).toFixed(2)),
+		);
+	}
+	currentMix$.mix_strengthening.set(
+		getMixStrengthMultiplier(recipe, currentMix$.total_mix_weight.get()),
+	);
+	currentMix$.assign({
+		toxicity: calculateProperty(
+			"toxicity",
+			recipe,
+			currentMix$.mix_strengthening.get(),
+			currentMix$.total_mix_weight.get(),
+		),
+		addictiveness: calculateProperty(
+			"addictiveness",
+			recipe,
+			currentMix$.mix_strengthening.get(),
+			currentMix$.total_mix_weight.get(),
+		),
+		strength: calculateProperty(
+			"strength",
+			recipe,
+			currentMix$.mix_strengthening.get(),
+			currentMix$.total_mix_weight.get(),
+		),
+	});
+});
+
+function getMixTotalWeight(recipe: ICurrentMixRecipe[]) {
+	return recipe.reduce((sum, item) => sum + item?.amount, 0);
+}
+
+function getMixStrengthMultiplier(recipe: ICurrentMixRecipe[], totalMixWeight: number) {
+	return Number.parseFloat(
+		(
+			recipe.reduce((sum, comp) => {
+				const ingredient = getIngredientById(comp.child_ingredient_id);
+				return sum + (ingredient?.mix_strengthening || 0) * comp.amount;
+			}, 0) / totalMixWeight
+		).toFixed(2),
+	);
+}
+
+export function getMixPurity(ingredientWeight: number, totalWeight: number) {
+	return Number.parseFloat(((ingredientWeight / totalWeight) * 100).toFixed(2));
+}
+function calculateProperty(
+	property: "toxicity" | "strength" | "addictiveness",
+	recipe: ICurrentMixRecipe[],
+	mixStrengthMultiplier: number,
+	totalMixWeight: number,
+) {
+	return Number.parseFloat(
+		(
+			(mixStrengthMultiplier / totalMixWeight) *
+			recipe.reduce((sum, comp) => {
+				const ingredient = getIngredientById(comp.child_ingredient_id);
+				return (
+					sum + ((ingredient?.[property] || 0) / (ingredient?.mix_strengthening || 1)) * comp.amount
+				);
+			}, 0)
+		).toFixed(2),
+	);
+}
+
+export function sellPrice(sellPricePerGram: number, totalMixWeight: number) {
+	return sellPricePerGram * totalMixWeight;
+}
+export function mixAddedWeight(firstDrugWeight: number, totalMixWeight: number) {
+	return firstDrugWeight - totalMixWeight;
+}
+
+export function profitFromCutting(sellPricePerGram: number, addedWeight: number) {
+	return sellPricePerGram * addedWeight;
+}
+
+export function totalProfit(sellPricePerGram: number, mixCost: number) {
+	return sellPricePerGram - mixCost;
+}
+
+export function mixCost(recipe: ICurrentMixRecipe[]) {
+	return recipe.reduce((sum, comp) => {
+		const purchaseOption = comp?.selected_purchase_option_id
+			? getPurchaseById(comp.selected_purchase_option_id)
+			: getLowestPrice(comp.child_ingredient_id);
+		return sum + (purchaseOption?.price || 0) * comp.amount;
+	}, 0);
+}
+
+export function getLowestPrice(ingredientId: string) {
+	const options = getPurchasesByIngredientId(ingredientId);
+	if (Object.values(options).length === 0) return null;
+
+	return Object.values(options).reduce((lowest, current) =>
+		current.price < lowest.price ? current : lowest,
+	);
+}

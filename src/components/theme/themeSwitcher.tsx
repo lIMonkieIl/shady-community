@@ -38,7 +38,7 @@ export default function ThemeSwitcher() {
 					<DrawerHeader className="hidden">
 						<DrawerTitle className="font-bold">Theme</DrawerTitle>
 					</DrawerHeader>
-					<div className="theme-decorated left-2" />
+					<div className="theme-decorated decorator-top-right right-4 -top-5" />
 					<div className="p-4 space-y-2 flex-1 overflow-y-auto">
 						<ThemeManagerSelector />
 					</div>
@@ -55,9 +55,10 @@ export default function ThemeSwitcher() {
 			<PopoverContent
 				side="bottom"
 				sideOffset={10}
-				className="card mr-4 w-fit preset-filled-surface-50-950 theme-decorated preset-outlined-primary-50-950 overflow-x-scroll p-3"
+				className="card mr-4 w-fit preset-filled-surface-50-950  preset-outlined-primary-50-950 overflow-hidden overflow-y-scroll p-3"
 				style={{ maxHeight: "min(80vh, 600px)" }}
 			>
+				<div className="theme-decorated decorator-top-right " />
 				<ThemeManagerSelector />
 			</PopoverContent>
 		</Popover>

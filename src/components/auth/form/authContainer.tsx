@@ -1,11 +1,17 @@
+"use client";
+
 import WordCommunitySVG from "@/components/logos/WordCommunity";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/shared/ui/avatar";
 
+import { Button } from "@/components/shared/ui/button";
+import { Show, use$, useObservable } from "@legendapp/state/react";
 import Image from "next/image";
 import Link from "next/link";
 import WordShadySVG from "../../logos/WordShady";
 
 export default function AuthContainer({ children }: React.ComponentProps<"div">) {
+	const isDisabled = useObservable(true);
+
 	return (
 		<div className="grid min-h-svh lg:grid-cols-2">
 			<div className="flex  flex-col gap-4 p-6 md:p-10">
@@ -19,7 +25,21 @@ export default function AuthContainer({ children }: React.ComponentProps<"div">)
 					</Link>
 				</div>
 				<div className="flex flex-1 items-center justify-center">
-					<div className="w-full max-w-xs">{children}</div>
+					<div className="w-full max-w-xs">
+						<Show
+							if={!use$(isDisabled)}
+							else={
+								<div className="card flex-col gap-4 preset-glass-warning p-3 flex-centered">
+									<span>Auth is currently disabled</span>
+									<Button variant={"filled-primary"} asChild>
+										<Link href={"/"}>Got Home</Link>
+									</Button>
+								</div>
+							}
+						>
+							{children}
+						</Show>
+					</div>
 				</div>
 			</div>
 			<div className="relative hidden lg:block h-screen w-full">

@@ -1,17 +1,13 @@
 "use client";
-import { cropPlannerState$ } from "@/lib/state/local/cropPlanner";
-import { use$ } from "@legendapp/state/react";
 
+import { Alert, AlertDescription, AlertTitle } from "@/components/shared/ui/alert";
+import { useCropManager } from "@/hooks/useCropManager";
 import { formatDuration } from "@/lib/utils/helpers";
 import { AlertCircle } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "../shared/ui/alert";
 import SelectStrain from "./strainSelect";
 
 export default function CropPlannerActions() {
-	const sellPrice = use$(cropPlannerState$.input.sellPrice);
-	const selectedSeedIndex = use$(cropPlannerState$.input.selectedSeedIndex);
-	const selectedSeed = use$(cropPlannerState$.seeds[selectedSeedIndex]);
-	const cropSize = use$(cropPlannerState$.input.cropSize);
+	const { sellPrice, selectedSeed, cropSize, updateSellPrice, updateCropSize } = useCropManager();
 
 	return (
 		<div className="card xl:w-[50%] h-fit w-full bg-surface-50-950/50 p-2">
@@ -26,7 +22,7 @@ export default function CropPlannerActions() {
 								className="ig-input"
 								value={sellPrice}
 								onChange={(value) =>
-									cropPlannerState$.input.sellPrice.set(
+									updateSellPrice(
 										value.currentTarget.value.length === 0
 											? 0
 											: Number.parseInt(value.currentTarget.value),
@@ -45,7 +41,7 @@ export default function CropPlannerActions() {
 								className="ig-input"
 								value={cropSize}
 								onChange={(value) =>
-									cropPlannerState$.input.cropSize.set(
+									updateCropSize(
 										value.currentTarget.value.length === 0
 											? 0
 											: Number.parseInt(value.currentTarget.value),

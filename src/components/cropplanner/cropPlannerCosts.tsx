@@ -1,7 +1,4 @@
 "use client";
-import { cropPlannerState$ } from "@/lib/state/local/cropPlanner";
-import { formatUSD } from "@/lib/utils/helpers";
-import { use$ } from "@legendapp/state/react";
 import {
 	Table,
 	TableBody,
@@ -10,26 +7,23 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "../shared/ui/table";
+} from "@/components/shared/ui/table";
+import { useCropManager } from "@/hooks/useCropManager";
+import { formatUSD } from "@/lib/utils/helpers";
 
 export default function CropPlannerCosts() {
-	const selectedSeedIndex = use$(cropPlannerState$.input.selectedSeedIndex);
-	const selectedSeed = use$(cropPlannerState$.seeds[selectedSeedIndex]);
-	const size = use$(cropPlannerState$.input.cropSize);
-	const setupCost = use$(cropPlannerState$.computed.setup.totalCost);
-	const cropCost = use$(cropPlannerState$.computed.cropCost);
-	const equipmentPerG = setupCost / (selectedSeed.strainYield * selectedSeed.hours * size);
+	const { selectedSeed, cropSize, setup, cropCost } = useCropManager();
 
-	const equipmentCrop = setupCost;
+	const equipmentPerG =
+		setup.totalCost / (selectedSeed.strainYield * selectedSeed.hours * cropSize);
 
 	const seedPerG =
-		(size * selectedSeed.price) / (selectedSeed.strainYield * selectedSeed.hours * size);
+		(cropSize * selectedSeed.price) / (selectedSeed.strainYield * selectedSeed.hours * cropSize);
 
-	const seedCrop = size * selectedSeed.price;
+	const seedCrop = cropSize * selectedSeed.price;
 
-	const totalPerG = cropCost / (selectedSeed.strainYield * selectedSeed.hours * size);
+	const totalPerG = cropCost / (selectedSeed.strainYield * selectedSeed.hours * cropSize);
 
-	const totalCrop = cropCost;
 	return (
 		<div className="card w-full overflow-hidden xl:w-[50%] bg-surface-50-950/50 p-2">
 			<span className="h6">Costs:</span>
@@ -50,7 +44,7 @@ export default function CropPlannerCosts() {
 									equipment
 								</TableCell>
 								<TableCell>{formatUSD(equipmentPerG)}</TableCell>
-								<TableCell>{formatUSD(equipmentCrop)}</TableCell>
+								<TableCell>{formatUSD(setup.totalCost)}</TableCell>
 								<TableCell />
 							</TableRow>
 							<TableRow className="border-surface-50-950/55 border-b-4">
@@ -63,7 +57,7 @@ export default function CropPlannerCosts() {
 									total
 								</TableCell>
 								<TableCell>{formatUSD(totalPerG)}</TableCell>
-								<TableCell>{formatUSD(totalCrop)}</TableCell>
+								<TableCell>{formatUSD(cropCost)}</TableCell>
 							</TableRow>
 						</TableBody>
 					</Table>

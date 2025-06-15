@@ -1,24 +1,33 @@
+import type { ISynced } from "@/hooks/useCropManager";
 import type { MergeDeep } from "type-fest";
+import type { ICurrentMix } from "../state/local/localCurMix";
 import type { ITheme } from "./app";
-import type { Database as DatabaseGenerated } from "./supabase.types";
-// Override the type for a specific column in a view:export
+import type { Database as DatabaseGenerated, Tables } from "./supabase.types";
 export type Database = MergeDeep<
 	DatabaseGenerated,
 	{
 		public: {
 			Tables: {
 				user_preferences: {
-					Row: {
-						value: ITheme | null;
-					};
-					Insert: {
-						value?: ITheme | null;
-					};
-					Update: {
-						value?: ITheme | null;
-					};
+					Row: IDatabaseTheme | IDatabaseCurMix | IDatabaseCropPlanner;
+					Insert: IDatabaseTheme | IDatabaseCurMix | IDatabaseCropPlanner;
+					Update: IDatabaseTheme | IDatabaseCurMix | IDatabaseCropPlanner;
 				};
 			};
 		};
 	}
 >;
+
+interface IDatabaseTheme extends Tables<"user_preferences"> {
+	preference_type: "theme";
+	value: ITheme;
+}
+interface IDatabaseCurMix extends Tables<"user_preferences"> {
+	preference_type: "cur_mix";
+	value: ICurrentMix;
+}
+
+interface IDatabaseCropPlanner extends Tables<"user_preferences"> {
+	preference_type: "crop_planner";
+	value: ISynced;
+}

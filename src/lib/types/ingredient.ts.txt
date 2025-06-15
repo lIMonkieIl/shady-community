@@ -1,6 +1,6 @@
-export type TItemCategory = "Additive" | "Drug" | "Filler";
+export type TIngredientCategory = "Additive" | "Drug" | "Filler" | "Mix" | "Pre-mix";
 
-export type TItemType =
+export type TIngredientType =
 	| "Liquid"
 	| "Powder"
 	| "Crystal"
@@ -9,9 +9,9 @@ export type TItemType =
 	| "Dried Plant"
 	| "Mushrooms";
 
-export type TItemDemandSector = "A" | "B" | "C";
+export type TIngredientDemandSector = "A" | "B" | "C";
 
-export type TItemDemandName =
+export type TIngredientDemandLocation =
 	| "East Oldtown"
 	| "West Oldtown"
 	| "Two Towers"
@@ -33,7 +33,7 @@ export type TItemDemandName =
 	| "East Deadtown"
 	| "Camp";
 
-export type TItemPurchaseOptionFrom =
+export type TIngredientPurchaseOptionSource =
 	| "Local Shop"
 	| "Gas Station"
 	| "Eddie"
@@ -62,11 +62,11 @@ export type TItemPurchaseOptionFrom =
 	| "Brainfuck"
 	| "Dubai Sativa";
 
-export interface IItem {
+export interface IIngredient {
 	id: string;
 	name: string;
-	category: TItemCategory;
-	type: TItemType;
+	category: TIngredientCategory;
+	type: TIngredientType;
 	image: string;
 	description: string;
 	information: string;
@@ -74,23 +74,36 @@ export interface IItem {
 	strength: number;
 	addictiveness: number;
 	mix_strengthening: number;
-	purchase: IItemPurchaseOption[];
-	sell: IItemSellPrice;
-	demand: IItemDemand[];
+	purchases: IIngredientPurchaseOption[] | null;
+	sell_prices: IIngredientSellPrice | null;
+	demand: IIngredientDemand[] | null;
+	recipe: IIngredientRecipe[] | null;
+	is_custom: boolean;
+	visibility: TIngredientVisibility;
+	created_by: string | null;
 }
 
-export interface IItemPurchaseOption {
-	from: TItemPurchaseOptionFrom;
+export type TIngredientVisibility = "Private" | "Public" | "System";
+
+export interface IIngredientRecipe {
+	ingredientId: string;
+	amount: number;
+	order: number;
+}
+
+export interface IIngredientPurchaseOption {
+	id: string;
+	source: TIngredientPurchaseOptionSource;
 	price: number;
 }
 
-export interface IItemSellPrice {
-	min: number;
-	max: number;
+export interface IIngredientSellPrice {
+	min_price: number;
+	max_price: number;
 }
 
-export interface IItemDemand {
-	sector: TItemDemandSector;
-	name: TItemDemandName;
-	value: number;
+export interface IIngredientDemand {
+	sector: TIngredientDemandSector;
+	location: TIngredientDemandLocation;
+	demand_value: number;
 }

@@ -1,7 +1,6 @@
 "use client";
-import { cropPlannerState$ } from "@/lib/state/local/cropPlanner";
+import { useCropManager } from "@/hooks/useCropManager";
 import { formatWeight } from "@/lib/utils/helpers";
-import { use$ } from "@legendapp/state/react";
 import {
 	Table,
 	TableBody,
@@ -13,27 +12,34 @@ import {
 } from "../shared/ui/table";
 
 export default function CropPlannerYieldCrop() {
-	const selectedSeedIndex = use$(cropPlannerState$.input.selectedSeedIndex);
-	const selectedSeed = use$(cropPlannerState$.seeds[selectedSeedIndex]);
-	const size = use$(cropPlannerState$.input.cropSize);
-	const wetGramsC = selectedSeed.grams * size;
-	const wetAmountC = selectedSeed.wetAmount * size;
+	const { selectedSeed, cropSize } = useCropManager();
 
-	const dryGramsC = selectedSeed.strainYield * selectedSeed.hours * size;
+	const wetGrams = selectedSeed.grams * cropSize;
+	const wetAmount = selectedSeed.wetAmount * cropSize;
 
-	const dryAmountC = selectedSeed.strainYield * size;
+	const dryGrams = selectedSeed.strainYield * selectedSeed.hours * cropSize;
 
-	const dryPercentC = `${selectedSeed.dryRate}%`;
+	const dryAmount = selectedSeed.strainYield * cropSize;
 
-	const lossGramsC = (selectedSeed.grams - selectedSeed.strainYield * selectedSeed.hours) * size;
+	const dryPercent = `${selectedSeed.dryRate}%`;
 
-	const lossPercentC = `${100 - (selectedSeed?.dryRate ?? 0)}%`;
+	const lossGrams = (selectedSeed.grams - selectedSeed.strainYield * selectedSeed.hours) * cropSize;
+
+	const lossPercent = `${100 - (selectedSeed?.dryRate ?? 0)}%`;
 	return (
 		<div className="card w-full xl:w-[50%] bg-surface-50-950/50 p-2">
 			<div className="overflow-hidden">
-				<div className="space-x-2 flex items-center">
-					<span className="h6">Yield:</span>
-					<span className="badge text-xs preset-filled-secondary-400-600">Crop</span>
+				<div className="space-x-2 flex items-center justify-between">
+					<div className="flex items-center">
+						<span className="h6">Yield:</span>
+						<span className="badge text-xs preset-filled-secondary-400-600">Crop</span>
+					</div>
+					<div className="flex items-center">
+						<span className="h6">Total:</span>
+						<span className="badge text-xs preset-filled-secondary-400-600">
+							{formatWeight(dryGrams)}
+						</span>
+					</div>
 				</div>
 				<div className="p-2 flex flex-col gap-4">
 					<div className="theme-decorated decorator-top-left">
@@ -52,25 +58,25 @@ export default function CropPlannerYieldCrop() {
 									<TableCell className="capitalize font-semibold text-primary-950-50">
 										wet
 									</TableCell>
-									<TableCell>{formatWeight(wetGramsC)}</TableCell>
-									<TableCell>{formatWeight(wetAmountC)}</TableCell>
+									<TableCell>{formatWeight(wetGrams)}</TableCell>
+									<TableCell>{formatWeight(wetAmount)}</TableCell>
 									<TableCell />
 								</TableRow>
 								<TableRow className="border-surface-50-950/55 border-b-4">
 									<TableCell className="text-primary-950-50 capitalize font-semibold">
 										dry
 									</TableCell>
-									<TableCell>{formatWeight(dryGramsC)}</TableCell>
-									<TableCell>{formatWeight(dryAmountC)}</TableCell>
-									<TableCell>{dryPercentC}</TableCell>
+									<TableCell>{formatWeight(dryGrams)}</TableCell>
+									<TableCell>{formatWeight(dryAmount)}</TableCell>
+									<TableCell>{dryPercent}</TableCell>
 								</TableRow>
 								<TableRow className="border-surface-50-950/55 border-b-4">
 									<TableCell className="text-primary-950-50 capitalize font-semibold">
 										loss
 									</TableCell>
-									<TableCell>{formatWeight(lossGramsC)}</TableCell>
+									<TableCell>{formatWeight(lossGrams)}</TableCell>
 									<TableCell />
-									<TableCell>{lossPercentC}</TableCell>
+									<TableCell>{lossPercent}</TableCell>
 								</TableRow>
 							</TableBody>
 						</Table>

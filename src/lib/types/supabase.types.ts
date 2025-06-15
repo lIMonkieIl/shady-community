@@ -29,6 +29,213 @@ export type Database = {
   }
   public: {
     Tables: {
+      ingredient_demand: {
+        Row: {
+          created_at: string | null
+          demand_value: number
+          id: string
+          ingredient_id: string
+          location: string
+          sector: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          demand_value: number
+          id?: string
+          ingredient_id: string
+          location: string
+          sector: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          demand_value?: number
+          id?: string
+          ingredient_id?: string
+          location?: string
+          sector?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ingredient_demand_ingredient_id_fkey"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ingredient_purchases: {
+        Row: {
+          created_at: string | null
+          id: string
+          ingredient_id: string
+          price: number
+          source: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          ingredient_id: string
+          price: number
+          source: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          ingredient_id?: string
+          price?: number
+          source?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ingredient_purchases_ingredient_id_fkey"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ingredient_recipes: {
+        Row: {
+          amount: number
+          child_ingredient_id: string
+          created_at: string | null
+          id: string
+          order_index: number
+          parent_ingredient_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          child_ingredient_id: string
+          created_at?: string | null
+          id?: string
+          order_index: number
+          parent_ingredient_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          child_ingredient_id?: string
+          created_at?: string | null
+          id?: string
+          order_index?: number
+          parent_ingredient_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ingredient_recipes_child_ingredient_id_fkey"
+            columns: ["child_ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ingredient_recipes_parent_ingredient_id_fkey"
+            columns: ["parent_ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ingredient_sell_prices: {
+        Row: {
+          created_at: string | null
+          ingredient_id: string
+          max_price: number
+          min_price: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          ingredient_id: string
+          max_price: number
+          min_price: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          ingredient_id?: string
+          max_price?: number
+          min_price?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ingredient_sell_prices_ingredient_id_fkey"
+            columns: ["ingredient_id"]
+            isOneToOne: true
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ingredients: {
+        Row: {
+          addictiveness: number
+          category: string
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          image: string | null
+          information: string | null
+          is_custom: boolean
+          mix_strengthening: number
+          name: string
+          strength: number
+          toxicity: number
+          type: string
+          updated_at: string | null
+          visibility: string
+        }
+        Insert: {
+          addictiveness: number
+          category: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          image?: string | null
+          information?: string | null
+          is_custom?: boolean
+          mix_strengthening: number
+          name: string
+          strength: number
+          toxicity: number
+          type: string
+          updated_at?: string | null
+          visibility?: string
+        }
+        Update: {
+          addictiveness?: number
+          category?: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          image?: string | null
+          information?: string | null
+          is_custom?: boolean
+          mix_strengthening?: number
+          name?: string
+          strength?: number
+          toxicity?: number
+          type?: string
+          updated_at?: string | null
+          visibility?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -67,7 +274,7 @@ export type Database = {
           id?: string
           preference_type: string
           updated_at?: string | null
-          user_id: string
+          user_id?: string
           value: Json
         }
         Update: {
@@ -85,7 +292,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_ingredient_market_data: {
+        Args: { ingredient_uuid: string }
+        Returns: {
+          purchases: Json
+          sell_prices: Json
+          demand: Json
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

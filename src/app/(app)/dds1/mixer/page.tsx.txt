@@ -1,0 +1,13 @@
+import MixerActions from "@/components/mixer/mixerActions";
+import MixerData from "@/components/mixer/mixerData";
+import MixerIngredientList from "@/components/mixer/mixerIngredientList";
+
+export default function MixerPage() {
+	return (
+		<div className="space-y-4">
+			<MixerData />
+			<MixerActions />
+			<MixerIngredientList />
+		</div>
+	);
+}

@@ -1,7 +1,6 @@
 "use client";
-import { cropPlannerState$ } from "@/lib/state/local/cropPlanner";
+import { useCropManager } from "@/hooks/useCropManager";
 import { formatUSD } from "@/lib/utils/helpers";
-import { use$ } from "@legendapp/state/react";
 import {
 	Table,
 	TableBody,
@@ -13,27 +12,24 @@ import {
 } from "../shared/ui/table";
 
 export default function CropPlannerProfit() {
-	const selectedSeedIndex = use$(cropPlannerState$.input.selectedSeedIndex);
-	const selectedSeed = use$(cropPlannerState$.seeds[selectedSeedIndex]);
-	const size = use$(cropPlannerState$.input.cropSize);
-	const cropCost = use$(cropPlannerState$.computed.cropCost);
+	const { selectedSeed, cropSize, cropCost, sellPrice } = useCropManager();
+
 	const sellGangPerG = 4;
 	const sellGangTotal =
-		(selectedSeed?.strainYield ?? 0) * (selectedSeed?.hours ?? 0) * size * sellGangPerG;
+		(selectedSeed?.strainYield ?? 0) * (selectedSeed?.hours ?? 0) * cropSize * sellGangPerG;
 
 	const profitGangPerG =
-		sellGangPerG - cropCost / (selectedSeed.strainYield * selectedSeed.hours * size);
+		sellGangPerG - cropCost / (selectedSeed.strainYield * selectedSeed.hours * cropSize);
 	const profitGangTotal =
-		selectedSeed.strainYield * selectedSeed.hours * size * sellGangPerG - cropCost;
+		selectedSeed.strainYield * selectedSeed.hours * cropSize * sellGangPerG - cropCost;
 
-	const sellClientPerG = use$(cropPlannerState$.input.sellPrice);
 	const sellClientTotal =
-		(selectedSeed?.strainYield ?? 0) * (selectedSeed?.hours ?? 0) * size * sellClientPerG;
+		(selectedSeed?.strainYield ?? 0) * (selectedSeed?.hours ?? 0) * cropSize * sellPrice;
 
 	const profitClientPerG =
-		sellClientPerG - cropCost / (selectedSeed.strainYield * selectedSeed.hours * size);
+		sellPrice - cropCost / (selectedSeed.strainYield * selectedSeed.hours * cropSize);
 	const profitClientTotal =
-		selectedSeed.strainYield * selectedSeed.hours * size * sellClientPerG - cropCost;
+		selectedSeed.strainYield * selectedSeed.hours * cropSize * sellPrice - cropCost;
 
 	return (
 		<div className="card w-full  overflow-hidden xl:w-[50%] bg-surface-50-950/50 p-2">
@@ -72,7 +68,7 @@ export default function CropPlannerProfit() {
 									<TableCell className="text-primary-950-50 capitalize font-semibold">
 										sell client
 									</TableCell>
-									<TableCell>{formatUSD(sellClientPerG)}</TableCell>
+									<TableCell>{formatUSD(sellPrice)}</TableCell>
 									<TableCell>{formatUSD(sellClientTotal)}</TableCell>
 								</TableRow>
 								<TableRow className="border-surface-50-950/55 border-b-4">

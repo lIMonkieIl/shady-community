@@ -1,4 +1,4 @@
-import MenuDrawer from "@/components/layout/menuDrawer";
+import DDS1MenuDrawer from "@/components/dds1/dds1MenuDrawer";
 import MenuHeader from "@/components/layout/menuHeader";
 export default async function Layout({
 	children,
@@ -11,7 +11,7 @@ export default async function Layout({
 			<MenuHeader />
 			<div className="grid grid-cols-[auto_1fr_auto]">
 				{/* <!-- Sidebar (Left) --> */}
-				<MenuDrawer />
+				<DDS1MenuDrawer />
 
 				{/* <!-- Main --> */}
 				<main className="space-y-4 p-4 overflow-hidden">{children}</main>

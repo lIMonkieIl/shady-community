@@ -2,6 +2,7 @@
 
 import { signInSchema } from "@/lib/schemas/auth";
 import { signUpSchema } from "@/lib/schemas/auth";
+import { clearCloudStore } from "@/lib/state/helpers";
 import { createClient } from "@/lib/supabase/server";
 import { generateRandomUsername } from "@/lib/utils/helpers";
 import { actionClient } from "@/lib/utils/safe-action";
@@ -64,6 +65,7 @@ export const signOutAction = actionClient
 		if (siginOut.error) {
 			throw siginOut.error;
 		}
+		await clearCloudStore();
 		return { success: "Successfully signed out." };
 	});
 

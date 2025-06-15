@@ -7,7 +7,7 @@ import { uiState$ } from "@/lib/state/local/uiState";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { use$ } from "@legendapp/state/react";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { Cannabis, Sparkles } from "lucide-react";
+import type { LucideProps } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type React from "react";
@@ -17,37 +17,41 @@ import { useAuth } from "../auth/authProvider";
 import WordCommunitySVG from "../logos/WordCommunity";
 import WordShadySVG from "../logos/WordShady";
 import Form from "../shared/form";
+import GameSelect from "../shared/gameSelect";
 import { Avatar, AvatarFallback, AvatarImage } from "../shared/ui/avatar";
 import { Button } from "../shared/ui/button";
 import { Drawer, DrawerContent, DrawerTitle } from "../shared/ui/drawer";
 import { SubmitButton } from "../shared/ui/submitButton";
 import { toast } from "../toast/toast";
-const navigationItems = [
-	{
-		name: "Community",
-		description: "Find your next mix.",
-		href: "/",
-		Icon: Sparkles,
-	},
-	{
-		name: "Crop Planner",
-		description: "Plan your next crop.",
-		href: "/cropplanner",
-		Icon: Cannabis,
-	},
-];
 
-export default function NavigationDrawer() {
+export type TNavigationItem = {
+	name: string;
+	description: string;
+	href: string;
+	Icon: React.ForwardRefExoticComponent<
+		Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
+	>;
+};
+
+export default function NavigationDrawer({
+	navigationItems,
+}: { navigationItems: TNavigationItem[] }) {
 	const open = use$(uiState$.drawer.isOpen);
 	const { profile: profileState } = useAuth();
 	const profile = use$(profileState);
 	const pathname = usePathname();
 	const isMobile = useMediaQuery(`(max-width: ${BREAKPOINTS.sm}px)`);
+
+	// Create the return URL for auth
+	const createAuthUrl = () => {
+		const returnUrl = encodeURIComponent(pathname);
+		return `/auth/sign-in?returnUrl=${returnUrl}`;
+	};
 	// Set direction and styles based on screen size
 	const direction = isMobile ? "bottom" : "left";
 	const contentClassName = isMobile
-		? "bottom-0 fixed  bg-surface-50-950 left-0 h-[60%] right-0 outline-none flex"
-		: "top-0 bottom-0  bg-surface-50-950 fixed outline-none  w-[300px] flex";
+		? "bottom-0 fixed bg-surface-50-950 left-0 h-[80%] right-0 outline-none flex"
+		: "top-0 bottom-0 bg-surface-50-950 fixed outline-none  w-[300px] flex";
 	const innerDivClassName = isMobile
 		? "h-full w-full  grow flex flex-col rounded-tr-container rounded-tl-container"
 		: "h-full w-full grow flex flex-col rounded-tr-container rounded-br-container;";
@@ -60,10 +64,10 @@ export default function NavigationDrawer() {
 	} = useHookFormAction(signOutAction, zodResolver(z.object({})), {
 		actionProps: {
 			onSuccess: ({ data }) => {
-				toast({ type: "success", description: data?.success ?? "", title: "Success" });
+				toast({ variant: "tonal-success", description: data?.success ?? "", title: "Success" });
 			},
 			onError: ({ error }) => {
-				toast({ title: "Error", description: error.serverError ?? "", type: "error" });
+				toast({ title: "Error", description: error.serverError ?? "", variant: "tonal-error" });
 			},
 		},
 	});
@@ -79,14 +83,21 @@ export default function NavigationDrawer() {
 					}
 				>
 					<div className={`${innerDivClassName} ${mobileDrawerHeight}`}>
-						<div className="p-4 border-b border-primary-50-950">
+						<div className="p-4">
 							<DrawerTitle hidden className="font-medium  text-xl">
 								Menu
 							</DrawerTitle>
 							<WordShadySVG className="dark:fill-white/50 fill-black/50 right-3 -rotate-3 relative h-10 top-1 stroke-primary-950-50 " />
 							<WordCommunitySVG className="dark:fill-white/50 fill-black/50 rotate-2 relative h-8 bottom-1 stroke-primary-950-50 " />
 						</div>
+						<div className="flex space-y-2 px-2 flex-col items-center justify-center">
+							<hr className="hr border-tertiary-400-600" />
 
+							<div className="w-full px-1">
+								<GameSelect />
+							</div>
+							<hr className="hr border-tertiary-400-600" />
+						</div>
 						{/* Navigation Items */}
 						<nav className="px-3 py-2 flex-1 overflow-y-auto">
 							<ul className="space-y-1">
@@ -114,8 +125,10 @@ export default function NavigationDrawer() {
 								})}
 							</ul>
 						</nav>
-
-						<div className="p-4 border-t border-primary-50-950">
+						<div className="px-2">
+							<hr className="hr border-tertiary-400-600" />
+						</div>
+						<div className="p-4">
 							{profile ? (
 								<div className="flex items-center">
 									{/* <Avatar
@@ -152,11 +165,11 @@ export default function NavigationDrawer() {
 										className=" w-full"
 										asChild
 									>
-										<Link aria-disabled href={"/auth/sign-in"}>
+										<Link aria-disabled href={createAuthUrl()}>
 											Sign In / Register
 										</Link>
 									</Button>
-									<div className="absolute top-0 left-0 font-semibold animate-bounce -rotate-12 chip preset-filled">
+									<div className="absolute top-0 right-0 font-semibold animate-bounce rotate-12 chip preset-filled">
 										Soon
 									</div>
 								</div>

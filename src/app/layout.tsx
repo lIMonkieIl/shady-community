@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthPageBodyClass } from "@/components/auth/authPageBodyClass";
-import { ThemeManagerProvider } from "@/components/theme/themeManagerProvider";
+// import { ThemeManagerProvider } from "@/components/theme/themeManagerProvider";
 
+import { ThemeManagerProvider } from "@/components/theme/themeManagerProvider";
 import { Toaster } from "sonner";
 import { AuthProvider } from "../components/auth/authProvider";
 import { ToastListener } from "../components/layout/toast-notify";
@@ -44,15 +45,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
 	children,
-}: Readonly<{
+}: {
 	children: React.ReactNode;
-}>) {
+}) {
 	return (
 		<html
+			data-theme={"DDS"}
+			data-mode={"dark"}
+			theme-decoration={"none"}
 			suppressHydrationWarning
-			data-decoration="none"
-			data-mode="dark"
-			data-theme="DDS"
 			lang="en"
 		>
 			<head>

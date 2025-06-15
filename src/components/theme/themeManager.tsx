@@ -9,16 +9,13 @@ import {
 	ThemeModesList,
 	ThemeNameList,
 } from "@/lib/constants/theme/Themes";
-import { themePreferencesState$ } from "@/lib/state/cloud/themePreferences";
+import { user_themePreferencesState$ } from "@/lib/state/cloud/userThemePreferences";
+import { authState$ } from "@/lib/state/local/authState";
+import { local_themePreferencesState$ } from "@/lib/state/local/localThemePreferences";
+import type { ITheme } from "@/lib/types/app";
 import { use$, useObservable, useObserveEffect } from "@legendapp/state/react";
-import React from "react";
-import { script } from "./script.ts";
-
-export type TThemeManagerAttributes = {
-	mode: TThemeMode; // dark | light | system
-	name: TThemeName; // crimson | skeleton | vox
-	decoration: TThemeDecoration; // none | skull | hemp
-};
+import React, { useContext } from "react";
+// import { script } from "./script";
 
 export interface ThemeManagerProviderProps extends React.PropsWithChildren {
 	forcedThemeName?: TThemeName | undefined;
@@ -39,33 +36,16 @@ export interface UseThemeManagerProps {
 	defaultThemeMode?: TThemeMode | undefined;
 	forcedThemeDecoration?: TThemeDecoration | undefined;
 	defaultThemeDecoration?: TThemeDecoration | undefined;
-	setTheme: (theme: Partial<TThemeManagerAttributes>) => void;
-	currentThemeName: TThemeManagerAttributes["name"];
-	currentThemeMode: TThemeManagerAttributes["mode"];
-	currentThemeDecoration: TThemeManagerAttributes["decoration"];
-	resolvedSystemThemeMode?: TThemeManagerAttributes["mode"] | undefined;
+	setTheme: (theme: Partial<ITheme>) => void;
+	currentThemeName: ITheme["name"];
+	currentThemeMode: ITheme["mode"];
+	currentThemeDecoration: ITheme["decoration"];
+	resolvedSystemThemeMode?: ITheme["mode"] | undefined;
 	systemThemeMode?: "dark" | "light" | undefined;
 }
 const MEDIA = "(prefers-color-scheme: dark)";
 const isServer = typeof window === "undefined";
 const ThemeContext = React.createContext<UseThemeManagerProps | undefined>(undefined);
-
-// Default values
-const defaultThemeManagerAttrs: TThemeManagerAttributes = {
-	mode: "system",
-	name: "DDS",
-	decoration: "none",
-};
-
-const defaultThemeManagerContext: UseThemeManagerProps = {
-	setTheme: () => {},
-	currentThemeName: defaultThemeManagerAttrs.name,
-	currentThemeMode: defaultThemeManagerAttrs.mode,
-	currentThemeDecoration: defaultThemeManagerAttrs.decoration,
-	themeModes: ThemeModesList,
-	themeNames: ThemeNameList,
-	themeDecorations: ThemeDecorationList,
-};
 
 const getSystemTheme = (e?: MediaQueryList | MediaQueryListEvent): "dark" | "light" => {
 	// biome-ignore lint/style/noParameterAssign: <explanation>
@@ -73,22 +53,28 @@ const getSystemTheme = (e?: MediaQueryList | MediaQueryListEvent): "dark" | "lig
 	return e.matches ? "dark" : "light";
 };
 
-const getThemeTransitionStyle = () => {
-	const css = document.createElement("style");
-	css.appendChild(
-		document.createTextNode(
-			`html {
-				transition: background-color 1s ease, color 1s ease;
-			}
-			* {
-				transition: background-color 1s ease, border-color 1s ease, color 1s ease, fill 1s ease, stroke 1s ease, outline-color 1s ease;
-			}`,
-		),
-	);
-	return css;
-};
+// const getThemeTransitionStyle = () => {
+// 	const css = document.createElement("style");
+// 	css.appendChild(
+// 		document.createTextNode(
+// 			`html {
+// 				transition: background-color 1s ease, color 1s ease;
+// 			}
+// 			* {
+// 				transition: background-color 1s ease, border-color 1s ease, color 1s ease, fill 1s ease, stroke 1s ease, outline-color 1s ease;
+// 			}`,
+// 		),
+// 	);
+// 	return css;
+// };
 
-export const useThemeManager = () => React.useContext(ThemeContext) ?? defaultThemeManagerContext;
+export const useThemeManager = () => {
+	const context = useContext(ThemeContext);
+	if (context === undefined) {
+		throw new Error("useAuth must be used within an AuthProvider");
+	}
+	return context;
+};
 
 export const ThemeManager: React.FC<ThemeManagerProviderProps> = ({
 	defaultThemeDecoration,
@@ -99,32 +85,34 @@ export const ThemeManager: React.FC<ThemeManagerProviderProps> = ({
 	forcedThemeName,
 	children,
 }) => {
-	const themePreferences = use$(themePreferencesState$.value) as TThemeManagerAttributes;
+	const prefs = useObservable<ITheme>(() => {
+		if (authState$.isAuthed.get()) {
+			return user_themePreferencesState$.value.get() as ITheme;
+		}
+		return local_themePreferencesState$;
+	});
+	const themePreferences = use$(prefs) as ITheme;
 
 	const resolvedSystemThemeMode = useObservable(() =>
 		themePreferences.mode === "system"
 			? getSystemTheme()
 			: (themePreferences.mode as "light" | "dark"),
 	);
-	useObserveEffect(() => {
-		if (isServer) {
-			return;
-		}
+	// useMountOnce(() => {
+	// 	const transitionStyle = getThemeTransitionStyle();
+	// 	document.head.appendChild(transitionStyle);
 
-		const transitionStyle = getThemeTransitionStyle();
-		document.head.appendChild(transitionStyle);
-
-		return () => {
-			document.head.removeChild(transitionStyle);
-		};
-	});
+	// 	return () => {
+	// 		document.head.removeChild(transitionStyle);
+	// 	};
+	// });
 
 	useObserveEffect(() => {
 		if (isServer) return;
 
 		// Subscribe to changes in the observable
-		const subscription = themePreferencesState$.value.onChange((newValue) => {
-			applyTheme(newValue.value as TThemeManagerAttributes);
+		const subscription = local_themePreferencesState$.onChange((newValue) => {
+			applyTheme(newValue.value as ITheme);
 		});
 
 		return () => {
@@ -132,9 +120,31 @@ export const ThemeManager: React.FC<ThemeManagerProviderProps> = ({
 			subscription();
 		};
 	});
+	useObserveEffect(() => {
+		if (isServer) return;
+
+		// Subscribe to changes in the observable
+		const subscription = user_themePreferencesState$.onChange((newValue) => {
+			if (authState$.isAuthed.get()) {
+				applyTheme(newValue.value.value as ITheme);
+			}
+		});
+
+		return () => {
+			// Clean up subscription
+			subscription();
+		};
+	});
+	useObserveEffect(authState$.isAuthed, () => {
+		if (authState$.isAuthed.get()) {
+			prefs.set(user_themePreferencesState$.value.get() as ITheme);
+		} else {
+			prefs.set(local_themePreferencesState$);
+		}
+	});
 
 	// Apply theme attributes to document
-	const applyTheme = (themeAttrs: TThemeManagerAttributes) => {
+	const applyTheme = (themeAttrs: ITheme) => {
 		if (isServer) return;
 
 		const d = document.documentElement;
@@ -154,8 +164,12 @@ export const ThemeManager: React.FC<ThemeManagerProviderProps> = ({
 	};
 
 	// Update theme with new values
-	const setTheme = (value: Partial<TThemeManagerAttributes>) => {
-		themePreferencesState$.value.assign({ ...value });
+	const setTheme = (value: Partial<ITheme>) => {
+		if (authState$.isAuthed.get()) {
+			user_themePreferencesState$.value.assign({ ...value });
+		} else {
+			local_themePreferencesState$.assign({ ...value });
+		}
 	};
 
 	const handleMediaQuery = (e: MediaQueryListEvent | MediaQueryList) => {
@@ -163,7 +177,7 @@ export const ThemeManager: React.FC<ThemeManagerProviderProps> = ({
 		resolvedSystemThemeMode.set(resolved);
 
 		if (themePreferences.mode === "system" && !forcedThemeName) {
-			applyTheme({ ...(themePreferences as TThemeManagerAttributes), mode: resolved });
+			applyTheme({ ...(themePreferences as ITheme), mode: resolved });
 		}
 	};
 
@@ -202,20 +216,46 @@ export const ThemeManager: React.FC<ThemeManagerProviderProps> = ({
 
 	return (
 		<ThemeContext.Provider value={value}>
-			<ThemeScript themePreferences={themePreferences} />
+			{/* <ThemeScript
+				localStorageKey="local_theme_preferences"
+				userStorageKey="user_theme_preferences"
+				defaultTheme={{
+					name: defaultThemeName || "DDS",
+					mode: defaultThemeMode || "system",
+					decoration: defaultThemeDecoration || "none",
+				}}
+			/> */}
 			{children}
 		</ThemeContext.Provider>
 	);
 };
 
-const ThemeScript = ({ themePreferences }: { themePreferences: TThemeManagerAttributes }) => {
-	const scriptArgs = JSON.stringify(themePreferences);
+// export const ThemeScript = React.memo(
+// 	({
+// 		localStorageKey = "local_theme_preferences",
+// 		userStorageKey = "user_theme_preferences",
+// 		defaultTheme = {
+// 			name: "DDS",
+// 			mode: "system",
+// 			decoration: "none",
+// 		},
+// 		...scriptProps
+// 	}: {
+// 		localStorageKey?: string;
+// 		userStorageKey?: string;
+// 		defaultTheme?: ITheme;
+// 	}) => {
+// 		const scriptArgs = JSON.stringify([localStorageKey, userStorageKey, defaultTheme]).slice(1, -1);
 
-	return (
-		<script
-			suppressHydrationWarning
-			// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-			dangerouslySetInnerHTML={{ __html: `(${script.toString()})(${scriptArgs})` }}
-		/>
-	);
-};
+// 		return (
+// 			<script
+// 				{...scriptProps}
+// 				suppressHydrationWarning
+// 				// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+// 				dangerouslySetInnerHTML={{
+// 					__html: `(${script.toString()})(${scriptArgs})`,
+// 				}}
+// 			/>
+// 		);
+// 	},
+// );

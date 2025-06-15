@@ -1,7 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { prefixes, titles } from "../constants/theme/username-data";
-
+import QualitativeTable from "../data/qualitative_table.json";
 export function capitalizeWords(str: string): string {
 	return str
 		.split(" ")
@@ -81,3 +81,11 @@ export function getInitials(name: string | null): string {
 	}
 	return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
 }
+
+export function getColorForValue(value: number): string {
+	const match = QualitativeTable.find((entry) => value >= entry.min && value <= entry.max);
+	return match?.color || "preset-filled"; // fallback to white if not found
+}
+
+export const clampNumber = (val: number, min: number, max: number) =>
+	Math.min(Math.max(val, min), max);

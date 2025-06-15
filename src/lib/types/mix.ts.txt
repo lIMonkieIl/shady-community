@@ -1,4 +1,4 @@
-import type { IItem, TItemPurchaseOptionFrom } from "./item";
+import type { IItem, TItemPurchaseOptionFrom } from "./ingredient";
 
 export interface IMixComponent {
 	id: string;
