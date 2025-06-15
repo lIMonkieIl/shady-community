@@ -29,7 +29,7 @@ export default function CropPlannerActions() {
 			information,
 			recommended_sell_prices,
 			image,
-			gang: { isgangOrder },
+			gang: { isGangOrder },
 		},
 		actions: {
 			clearRecipe,
@@ -113,7 +113,7 @@ export default function CropPlannerActions() {
 								<nav className="btn-group preset-outlined-surface-200-800 p-1.5 flex w-fit">
 									<Button
 										size={"sm"}
-										variant={isgangOrder ? "filled-primary" : "tonal"}
+										variant={isGangOrder ? "filled-primary" : "tonal"}
 										className={"capitalize"}
 										onClick={() => setISGangMix(true)}
 									>
@@ -121,7 +121,7 @@ export default function CropPlannerActions() {
 									</Button>
 									<Button
 										size={"sm"}
-										variant={!isgangOrder ? "filled-primary" : "tonal"}
+										variant={!isGangOrder ? "filled-primary" : "tonal"}
 										className={"capitalize"}
 										onClick={() => setISGangMix(false)}
 									>

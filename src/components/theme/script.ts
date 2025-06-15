@@ -1,5 +1,5 @@
-// @ts-ignore
-
+// @ts-nocheck
+// eslint-disable
 // script.js - Export this function and use it in your ThemeManager
 export const script = (localStorageKey, userStorageKey, defaultTheme) => {
 	const el = document.documentElement;

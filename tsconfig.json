@@ -31,5 +31,5 @@
 		"scripts/patch-json-type.js",
 		"src/lib/state/cloud/ingredientsState.ts.tx"
 	],
-	"exclude": ["node_modules"]
+	"exclude": ["node_modules", "./src/components/theme/script.ts"]
 }

@@ -1,6 +1,6 @@
 import type { ISynced } from "@/hooks/useCropManager";
+import type { ICurrentMix } from "@/hooks/useMixManger";
 import type { MergeDeep } from "type-fest";
-import type { ICurrentMix } from "../state/local/localCurMix";
 import type { ITheme } from "./app";
 import type { Database as DatabaseGenerated, Tables } from "./supabase.types";
 export type Database = MergeDeep<
