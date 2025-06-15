@@ -1,6 +1,6 @@
 "use client";
 import MenuDrawer, { type TNavigationItem } from "@/components/layout/menuDrawer";
-import { CannabisIcon, FlaskRoundIcon, SparklesIcon } from "lucide-react";
+import { CannabisIcon, SparklesIcon } from "lucide-react";
 
 export const navigationItems: TNavigationItem[] = [
 	{

@@ -84,8 +84,8 @@ interface IIngredientRecipe {
 	totalPrice: number;
 }
 interface TGangInput {
-	isgangOrder: boolean;
-	gangeOrder: number;
+	isGangOrder: boolean;
+	gangOrder: number;
 	gangXP: number;
 }
 
@@ -250,8 +250,8 @@ const toxComputedData$ = observable<IToxComputedData>({
 	}),
 	status: computed(() => {
 		const relativeToxicity: number = toxComputedData$.relativeToxicity.get();
-		const relativeToxictyMax = 1.8;
-		const statusString: "Fail" | "Pass" = relativeToxicity >= relativeToxictyMax ? "Fail" : "Pass";
+		const relativeToxicityMax = 1.8;
+		const statusString: "Fail" | "Pass" = relativeToxicity >= relativeToxicityMax ? "Fail" : "Pass";
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		return statusString as any;
 	}),
@@ -340,7 +340,7 @@ const computedGangStats$ = observable<IComputedGangStats | undefined>(() => {
 		costTotal: computed(() => {
 			const costPerGram: number = computedState$.costPerGram.get();
 			const gangPackageSize = 50;
-			const gangOrder = synced$.gang.gangeOrder.get();
+			const gangOrder = synced$.gang.gangOrder.get();
 			const gangOrderTotal: number = gangOrder * gangPackageSize;
 			const costTotal: number = costPerGram * gangOrderTotal;
 			return costTotal;
@@ -358,7 +358,7 @@ const computedGangStats$ = observable<IComputedGangStats | undefined>(() => {
 			return sellPrice;
 		}),
 		sellTotal: computed(() => {
-			const gangOrder = synced$.gang.gangeOrder.get();
+			const gangOrder = synced$.gang.gangOrder.get();
 			const gangPackageSize = 50;
 
 			const gangOrderTotal: number = gangOrder * gangPackageSize;
@@ -368,7 +368,7 @@ const computedGangStats$ = observable<IComputedGangStats | undefined>(() => {
 		}),
 		profit: computed(() => {
 			const profitPerGram = computedGangStats$.profitPerGram.get();
-			const gangOrder = synced$.gang.gangeOrder.get();
+			const gangOrder = synced$.gang.gangOrder.get();
 			const gangPackageSize = 50;
 
 			const gangOrderTotal: number = gangOrder * gangPackageSize;
@@ -419,7 +419,7 @@ const computedGangStats$ = observable<IComputedGangStats | undefined>(() => {
 		}),
 	};
 
-	const returnedData = synced$.gang.isgangOrder.get() ? data : undefined;
+	const returnedData = synced$.gang.isGangOrder.get() ? data : undefined;
 	return returnedData;
 });
 
@@ -602,7 +602,7 @@ const computedState$ = observable<ICurrentMixComputed>({
 	recommended_sell_prices: computed(() => {
 		const recipe = synced$.recipe.get();
 		const category = synced$.category.get();
-		const isGangMix = synced$.gang.isgangOrder.get();
+		const isGangMix = synced$.gang.isGangOrder.get();
 		if (recipe.length === 0) {
 			return undefined;
 		}
@@ -669,7 +669,7 @@ const computedState$ = observable<ICurrentMixComputed>({
 // const computedClientExpectationAndSatisfaction$ =
 // 	observable<IComputedClientExpectationAndSatisfaction>({
 // 		boom: computed(() => {
-// 			const curMixStrengh = computedState$.strength.get();
+// 			const curMixStrength = computedState$.strength.get();
 // 			const recipe = synced$.recipe.get();
 // 			if (recipe.length === 0) {
 // 				return 0;
@@ -677,7 +677,7 @@ const computedState$ = observable<ICurrentMixComputed>({
 // 			const firstIngredientId = recipe[0].child_ingredient_id;
 // 			const firstIngredient = getIngredientById(firstIngredientId);
 // 			const firstIngredientStrength = firstIngredient.strength;
-// 			const requestedstrength: number = curMixStrengh / firstIngredientStrength;
+// 			const requestedStrength: number = curMixStrength / firstIngredientStrength;
 // 			return 100;
 // 		}),
 // 		// temp1: computed(() => {
@@ -745,11 +745,11 @@ const computedState$ = observable<ICurrentMixComputed>({
 // 		// 	const clientSatisfaction2 =
 // 		// 		computedClientExpectationAndSatisfaction$.clientSatisfaction2.get();
 // 		// 	const clientSatisfaction3MinClamp = -0.5;
-// 		// 	const clientSatisfaction3MaxClalmp = 0.25;
+// 		// 	const clientSatisfaction3MaxClamp = 0.25;
 // 		// 	const clamped = clampNumber(
 // 		// 		clientSatisfaction2,
 // 		// 		clientSatisfaction3MinClamp,
-// 		// 		clientSatisfaction3MaxClalmp,
+// 		// 		clientSatisfaction3MaxClamp,
 // 		// 	);
 // 		// 	const value = 3;
 // 		// 	const clientSatisfaction3: number = clamped / value;
@@ -791,8 +791,8 @@ const local_currentMixSyncedState$ = observable<ICurrentMix>(
 			maxAllowedWeight: 1000,
 			expectedQuality: 80,
 			gang: {
-				gangeOrder: 3,
-				isgangOrder: true,
+				gangOrder: 3,
+				isGangOrder: true,
 				gangXP: 500,
 			},
 
@@ -806,7 +806,7 @@ const local_currentMixSyncedState$ = observable<ICurrentMix>(
 
 const synced$ = computed(() => {
 	// return authState$.isAuthed.get()
-	// ? user_cropPlnnerState$.value.get()
+	// ? user_cropPlannerState$.value.get()
 	// : local_cropPlannerSyncedState$.get();
 	return local_currentMixSyncedState$;
 });
@@ -1142,7 +1142,7 @@ export const useMixManager = (): TUseMixManager => {
 			getMixPurity(ingredientWeight, totalWeight),
 
 		setISGangMix: (isGangMix) => {
-			return isAuthed ? null : local_currentMixSyncedState$.gang.isgangOrder.set(isGangMix);
+			return isAuthed ? null : local_currentMixSyncedState$.gang.isGangOrder.set(isGangMix);
 		},
 	};
 

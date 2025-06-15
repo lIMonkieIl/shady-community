@@ -1,8 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import type { NextRequest } from "next/server";
 
-export async function GET(_request: NextRequest, { params }: { params: { id: string } }) {
-	const { id } = params;
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+	const { id } = await params;
 	const supabase = await createClient();
 
 	// Fetch the ingredient with recipe

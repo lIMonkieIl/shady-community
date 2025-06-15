@@ -1,13 +1,16 @@
+Ballena
 Brainfuck
 catppuccin
 cropplanner
 Deadtown
 dicebear
 hamlindigo
+Kenji
 legendapp
 Monkie
 oklab
 Oldtown
+prefs
 skeletonlabs
 Skyscrapper
 sonner
