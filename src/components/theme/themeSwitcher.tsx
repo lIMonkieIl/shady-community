@@ -6,7 +6,7 @@ import { BREAKPOINTS } from "@/lib/constants/theme/Breakpoints";
 import type { TThemeDecoration, TThemeMode, TThemeName } from "@/lib/constants/theme/Themes";
 import { cn } from "@/lib/utils/helpers";
 import { observable } from "@legendapp/state";
-import { use$ } from "@legendapp/state/react";
+import { Show, use$ } from "@legendapp/state/react";
 import { ChevronDown, SwatchBook } from "lucide-react";
 import { Moon as IconMoon } from "lucide-react";
 import { Sun as IconSun } from "lucide-react";
@@ -28,8 +28,26 @@ export default function ThemeSwitcher() {
 	const isMobile = useMediaQuery(`(max-width: ${BREAKPOINTS.sm}px)`);
 	const open = use$(isOpen);
 
-	if (isMobile) {
-		return (
+	return (
+		<Show
+			if={isMobile}
+			else={
+				<Popover open={open} onOpenChange={(value) => isOpen.set(value)}>
+					<PopoverTrigger asChild>
+						<TriggerButton />
+					</PopoverTrigger>
+					<PopoverContent
+						side="bottom"
+						sideOffset={10}
+						className="card mr-4 w-fit preset-filled-surface-50-950  preset-outlined-primary-50-950 overflow-hidden overflow-y-scroll p-3"
+						style={{ maxHeight: "min(80vh, 600px)" }}
+					>
+						<div className="theme-decorated decorator-top-right " />
+						<ThemeManagerSelector />
+					</PopoverContent>
+				</Popover>
+			}
+		>
 			<Drawer onClose={() => isOpen.set(false)} open={open}>
 				<DrawerTrigger onClick={isOpen.toggle} asChild>
 					<TriggerButton />
@@ -44,24 +62,7 @@ export default function ThemeSwitcher() {
 					</div>
 				</DrawerContent>
 			</Drawer>
-		);
-	}
-
-	return (
-		<Popover open={open} onOpenChange={(value) => isOpen.set(value)}>
-			<PopoverTrigger asChild>
-				<TriggerButton />
-			</PopoverTrigger>
-			<PopoverContent
-				side="bottom"
-				sideOffset={10}
-				className="card mr-4 w-fit preset-filled-surface-50-950  preset-outlined-primary-50-950 overflow-hidden overflow-y-scroll p-3"
-				style={{ maxHeight: "min(80vh, 600px)" }}
-			>
-				<div className="theme-decorated decorator-top-right " />
-				<ThemeManagerSelector />
-			</PopoverContent>
-		</Popover>
+		</Show>
 	);
 }
 

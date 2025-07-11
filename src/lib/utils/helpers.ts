@@ -45,7 +45,10 @@ export function formatWeight(grams: number): string {
 	return `${(grams / 1_000_000).toFixed(2)} t`;
 }
 
+import type { IIngredient } from "@/hooks/useIngredientsManager";
+import type { IMix } from "@/hooks/useMixesManager";
 import { redirect } from "next/navigation";
+import type { z } from "zod";
 
 export function encodedRedirect(type: "error" | "success", path: string, message: string) {
 	return redirect(`${path}?${type}=${encodeURIComponent(message)}`);
@@ -82,10 +85,48 @@ export function getInitials(name: string | null): string {
 	return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
 }
 
+export function formatDiff(value: number): string {
+	const sign = value > 0 ? "+" : value < 0 ? "−" : "";
+	return `${sign} ${Math.abs(value).toFixed(2)}`;
+}
+
 export function getColorForValue(value: number): string {
 	const match = QualitativeTable.find((entry) => value >= entry.min && value <= entry.max);
-	return match?.color || "preset-filled"; // fallback to white if not found
+	return match?.color || "preset-tonal"; // fallback to white if not found
 }
 
 export const clampNumber = (val: number, min: number, max: number) =>
 	Math.min(Math.max(val, min), max);
+
+export function validateField<T>(schema: z.ZodType<T>, value: unknown) {
+	const result = schema.safeParse(value);
+
+	if (result.success) {
+		return {
+			ok: true,
+			errors: null,
+			data: result.data,
+		};
+	}
+
+	const errors = result.error.errors.map((e) => e.message);
+	return {
+		ok: false,
+		errors,
+		data: null,
+	};
+}
+export function isIngredient(i: IIngredient | IMix): i is IIngredient {
+	return "type" in i;
+}
+
+export function isMixIngredient(i: IIngredient | IMix): i is IMix {
+	return "parent_ingredient_id" in i;
+}
+
+export function getStringAndNumberKeys<T extends object>(obj: T): (keyof T)[] {
+	return Object.keys(obj).filter((key) => {
+		const value = obj[key as keyof T];
+		return typeof value === "string" || typeof value === "number";
+	}) as (keyof T)[];
+}

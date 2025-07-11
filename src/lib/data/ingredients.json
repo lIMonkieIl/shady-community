@@ -10,22 +10,7 @@
 		"toxicity": 25,
 		"strength": 4,
 		"addictiveness": 1,
-		"mix_strengthening": 3,
-		"purchase": [
-			{
-				"from": "Local Shop",
-				"price": 0.15
-			},
-			{
-				"from": "Gas Station",
-				"price": 0.15
-			}
-		],
-		"sell": {
-			"min": 0,
-			"max": 0
-		},
-		"demand": []
+		"mix_strengthening": 3
 	},
 	{
 		"id": "a82642a2-842c-44fc-9b35-64aacea47aa4",
@@ -38,97 +23,7 @@
 		"toxicity": 4,
 		"strength": 2.5,
 		"addictiveness": 1.7,
-		"mix_strengthening": 1.6,
-		"purchase": [
-			{
-				"from": "Eddie",
-				"price": 7
-			},
-			{
-				"from": "Small Lab",
-				"price": 6
-			},
-			{
-				"from": "Large Lab",
-				"price": 4.29
-			}
-		],
-		"sell": {
-			"min": 12,
-			"max": 23
-		},
-		"demand": [
-			{
-				"sector": "A",
-				"name": "East Oldtown",
-				"value": 10
-			},
-			{
-				"sector": "A",
-				"name": "West Oldtown",
-				"value": 12
-			},
-			{
-				"sector": "A",
-				"name": "Two Towers",
-				"value": 16
-			},
-			{
-				"sector": "A",
-				"name": "Old Market",
-				"value": 14
-			},
-			{
-				"sector": "A",
-				"name": "Stink",
-				"value": 15
-			},
-			{
-				"sector": "A",
-				"name": "Kennel",
-				"value": 17
-			},
-			{
-				"sector": "A",
-				"name": "Eastern Slums",
-				"value": 13
-			},
-			{
-				"sector": "B",
-				"name": "Supermarket",
-				"value": 3
-			},
-			{
-				"sector": "B",
-				"name": "Downtown",
-				"value": 6
-			},
-			{
-				"sector": "B",
-				"name": "West Deadtown",
-				"value": 8
-			},
-			{
-				"sector": "B",
-				"name": "Mid Deadtown",
-				"value": 5
-			},
-			{
-				"sector": "B",
-				"name": "Mid Deadtown",
-				"value": 2
-			},
-			{
-				"sector": "B",
-				"name": "Bad Asia",
-				"value": 14
-			},
-			{
-				"sector": "C",
-				"name": "Tower Blocks",
-				"value": 7
-			}
-		]
+		"mix_strengthening": 1.6
 	},
 	{
 		"id": "764e8e09-c264-42cf-900c-743df3f4d46f",
@@ -141,18 +36,7 @@
 		"toxicity": 0,
 		"strength": 0,
 		"addictiveness": 0,
-		"mix_strengthening": 0.9,
-		"purchase": [
-			{
-				"from": "Gas Station",
-				"price": 0.67
-			}
-		],
-		"sell": {
-			"min": 0,
-			"max": 0
-		},
-		"demand": []
+		"mix_strengthening": 0.9
 	},
 	{
 		"id": "af29564d-9cdc-4150-85f1-0961f1f538f3",
@@ -165,77 +49,7 @@
 		"toxicity": 5,
 		"strength": 4,
 		"addictiveness": 3,
-		"mix_strengthening": 2,
-		"purchase": [
-			{
-				"from": "Eddie",
-				"price": 25
-			},
-			{
-				"from": "Small Lab",
-				"price": 23
-			},
-			{
-				"from": "Large Lab",
-				"price": 16.43
-			}
-		],
-		"sell": {
-			"min": 45,
-			"max": 87
-		},
-		"demand": [
-			{
-				"sector": "B",
-				"name": "Downtown",
-				"value": 2
-			},
-			{
-				"sector": "B",
-				"name": "West Deadtown",
-				"value": 4
-			},
-			{
-				"sector": "B",
-				"name": "Mid Deadtown",
-				"value": 3
-			},
-			{
-				"sector": "B",
-				"name": "Bad Asia",
-				"value": 4
-			},
-			{
-				"sector": "C",
-				"name": "Tower Blocks",
-				"value": 12
-			},
-			{
-				"sector": "C",
-				"name": "Construction",
-				"value": 12
-			},
-			{
-				"sector": "C",
-				"name": "Fancy Hill",
-				"value": 30
-			},
-			{
-				"sector": "C",
-				"name": "Commune",
-				"value": 14
-			},
-			{
-				"sector": "C",
-				"name": "Factory South",
-				"value": 15
-			},
-			{
-				"sector": "C",
-				"name": "Factory North",
-				"value": 12
-			}
-		]
+		"mix_strengthening": 2
 	},
 	{
 		"id": "2a463845-528f-4dc8-9572-d6892fe3c3a6",
@@ -248,102 +62,7 @@
 		"toxicity": 5.5,
 		"strength": 3,
 		"addictiveness": 3,
-		"mix_strengthening": 2.4,
-		"purchase": [
-			{
-				"from": "Eddie",
-				"price": 9
-			},
-			{
-				"from": "Small Lab",
-				"price": 8
-			},
-			{
-				"from": "Large Lab",
-				"price": 5.71
-			}
-		],
-		"sell": {
-			"min": 14,
-			"max": 27
-		},
-		"demand": [
-			{
-				"sector": "A",
-				"name": "Two Towers",
-				"value": 15
-			},
-			{
-				"sector": "A",
-				"name": "Stink",
-				"value": 3
-			},
-			{
-				"sector": "A",
-				"name": "Kennel",
-				"value": 3
-			},
-			{
-				"sector": "A",
-				"name": "Eastern Slums",
-				"value": 3
-			},
-			{
-				"sector": "A",
-				"name": "Camp",
-				"value": 3
-			},
-			{
-				"sector": "B",
-				"name": "Supermarket",
-				"value": 13
-			},
-			{
-				"sector": "B",
-				"name": "Downtown",
-				"value": 22
-			},
-			{
-				"sector": "B",
-				"name": "West Deadtown",
-				"value": 20
-			},
-			{
-				"sector": "B",
-				"name": "Mid Deadtown",
-				"value": 19
-			},
-			{
-				"sector": "B",
-				"name": "East Deadtown",
-				"value": 22
-			},
-			{
-				"sector": "B",
-				"name": "Bad Asia",
-				"value": 18
-			},
-			{
-				"sector": "C",
-				"name": "Tower Blocks",
-				"value": 6
-			},
-			{
-				"sector": "C",
-				"name": "Construction",
-				"value": 5
-			},
-			{
-				"sector": "C",
-				"name": "Commune",
-				"value": 7
-			},
-			{
-				"sector": "C",
-				"name": "Factory North",
-				"value": 5
-			}
-		]
+		"mix_strengthening": 2.4
 	},
 	{
 		"id": "e368381f-213f-4f84-a5aa-04ced3802485",
@@ -356,53 +75,7 @@
 		"toxicity": 1.6,
 		"strength": 2.5,
 		"addictiveness": 3,
-		"mix_strengthening": 1.2,
-		"purchase": [
-			{
-				"from": "Eddie",
-				"price": 5
-			},
-			{
-				"from": "Walther",
-				"price": 5
-			}
-		],
-		"sell": {
-			"min": 7,
-			"max": 13
-		},
-		"demand": [
-			{
-				"sector": "A",
-				"name": "Eastern Slums",
-				"value": 8
-			},
-			{
-				"sector": "A",
-				"name": "Camp",
-				"value": 8
-			},
-			{
-				"sector": "B",
-				"name": "East Deadtown",
-				"value": 7
-			},
-			{
-				"sector": "B",
-				"name": "Bad Asia",
-				"value": 8
-			},
-			{
-				"sector": "C",
-				"name": "Fancy Hill",
-				"value": 5
-			},
-			{
-				"sector": "C",
-				"name": "Commune",
-				"value": 7
-			}
-		]
+		"mix_strengthening": 1.2
 	},
 	{
 		"id": "94cb0ae2-6d05-4aec-825c-b52b7e18c59f",
@@ -415,67 +88,7 @@
 		"toxicity": 3.5,
 		"strength": 2,
 		"addictiveness": 1.3,
-		"mix_strengthening": 1.3,
-		"purchase": [
-			{
-				"from": "Eddie",
-				"price": 7
-			},
-			{
-				"from": "Small Lab",
-				"price": 6
-			},
-			{
-				"from": "Large Lab",
-				"price": 4.29
-			}
-		],
-		"sell": {
-			"min": 10,
-			"max": 19
-		},
-		"demand": [
-			{
-				"sector": "A",
-				"name": "Two Towers",
-				"value": 12
-			},
-			{
-				"sector": "A",
-				"name": "Old Market",
-				"value": 4
-			},
-			{
-				"sector": "A",
-				"name": "Stink",
-				"value": 6
-			},
-			{
-				"sector": "A",
-				"name": "Kennel",
-				"value": 4
-			},
-			{
-				"sector": "B",
-				"name": "Supermarket",
-				"value": 5
-			},
-			{
-				"sector": "B",
-				"name": "West Deadtown",
-				"value": 8
-			},
-			{
-				"sector": "B",
-				"name": "Bad Asia",
-				"value": 13
-			},
-			{
-				"sector": "C",
-				"name": "Fancy Hill",
-				"value": 7
-			}
-		]
+		"mix_strengthening": 1.3
 	},
 	{
 		"id": "69eedaf5-f675-4af0-8efd-7140052f6056",
@@ -488,22 +101,7 @@
 		"toxicity": 18,
 		"strength": 6,
 		"addictiveness": 9,
-		"mix_strengthening": 3,
-		"purchase": [
-			{
-				"from": "Eddie",
-				"price": 20
-			},
-			{
-				"from": "Walther",
-				"price": 20
-			}
-		],
-		"sell": {
-			"min": 0,
-			"max": 0
-		},
-		"demand": []
+		"mix_strengthening": 3
 	},
 	{
 		"id": "d825cc42-0f08-40b7-973f-6ac4253b83c1",
@@ -516,87 +114,7 @@
 		"toxicity": 6,
 		"strength": 4,
 		"addictiveness": 4.5,
-		"mix_strengthening": 3,
-		"purchase": [
-			{
-				"from": "Eddie",
-				"price": 17
-			},
-			{
-				"from": "Small Lab",
-				"price": 16
-			},
-			{
-				"from": "Large Lab",
-				"price": 11.43
-			}
-		],
-		"sell": {
-			"min": 35,
-			"max": 77
-		},
-		"demand": [
-			{
-				"sector": "A",
-				"name": "Kennel",
-				"value": 2
-			},
-			{
-				"sector": "A",
-				"name": "Eastern Slums",
-				"value": 2
-			},
-			{
-				"sector": "B",
-				"name": "Supermarket",
-				"value": 6
-			},
-			{
-				"sector": "B",
-				"name": "Downtown",
-				"value": 3
-			},
-			{
-				"sector": "B",
-				"name": "Mid Deadtown",
-				"value": 5
-			},
-			{
-				"sector": "B",
-				"name": "East Deadtown",
-				"value": 7
-			},
-			{
-				"sector": "B",
-				"name": "Bad Asia",
-				"value": 2
-			},
-			{
-				"sector": "C",
-				"name": "Tower Blocks",
-				"value": 10
-			},
-			{
-				"sector": "C",
-				"name": "Construction",
-				"value": 7
-			},
-			{
-				"sector": "C",
-				"name": "Commune",
-				"value": 22
-			},
-			{
-				"sector": "C",
-				"name": "Factory South",
-				"value": 12
-			},
-			{
-				"sector": "C",
-				"name": "Factory North",
-				"value": 10
-			}
-		]
+		"mix_strengthening": 3
 	},
 	{
 		"id": "c9a61cb2-73fe-4c83-8c14-1629a65fce2e",
@@ -609,26 +127,7 @@
 		"toxicity": 12,
 		"strength": 3,
 		"addictiveness": 3,
-		"mix_strengthening": 1.3,
-		"purchase": [
-			{
-				"from": "Gas Station",
-				"price": 2.5
-			},
-			{
-				"from": "Drug Store",
-				"price": 2.75
-			},
-			{
-				"from": "Local Shop",
-				"price": 2.5
-			}
-		],
-		"sell": {
-			"min": 0,
-			"max": 0
-		},
-		"demand": []
+		"mix_strengthening": 1.3
 	},
 	{
 		"id": "cfc89861-bf2f-44b3-a4ed-b4861dad529b",
@@ -641,73 +140,7 @@
 		"toxicity": 1.2,
 		"strength": 2,
 		"addictiveness": 1,
-		"mix_strengthening": 1,
-		"purchase": [
-			{
-				"from": "Eddie",
-				"price": 4
-			},
-			{
-				"from": "Walther",
-				"price": 4
-			}
-		],
-		"sell": {
-			"min": 7,
-			"max": 13
-		},
-		"demand": [
-			{
-				"sector": "A",
-				"name": "Two Towers",
-				"value": 5
-			},
-			{
-				"sector": "B",
-				"name": "Supermarket",
-				"value": 6
-			},
-			{
-				"sector": "B",
-				"name": "Downtown",
-				"value": 5
-			},
-			{
-				"sector": "B",
-				"name": "West Deadtown",
-				"value": 6
-			},
-			{
-				"sector": "B",
-				"name": "East Deadtown",
-				"value": 6
-			},
-			{
-				"sector": "B",
-				"name": "Bad Asia",
-				"value": 6
-			},
-			{
-				"sector": "C",
-				"name": "Tower Blocks",
-				"value": 4
-			},
-			{
-				"sector": "C",
-				"name": "Construction",
-				"value": 5
-			},
-			{
-				"sector": "C",
-				"name": "Factory South",
-				"value": 6
-			},
-			{
-				"sector": "C",
-				"name": "Factory North",
-				"value": 6
-			}
-		]
+		"mix_strengthening": 1
 	},
 	{
 		"id": "ae9cb95f-9099-4977-b3a7-c668bdfd4912",
@@ -720,120 +153,7 @@
 		"toxicity": 0.5,
 		"strength": 2,
 		"addictiveness": 0.8,
-		"mix_strengthening": 1,
-		"purchase": [
-			{
-				"from": "Eddie",
-				"price": 5
-			},
-			{
-				"from": "Small Lab",
-				"price": 5
-			},
-			{
-				"from": "Large Lab",
-				"price": 3.57
-			},
-			{
-				"from": "Ghetto Kush",
-				"price": 0.61
-			},
-			{
-				"from": "Bong Breaker",
-				"price": 0.28
-			},
-			{
-				"from": "Firecracker",
-				"price": 0.32
-			},
-			{
-				"from": "Stoner Haze",
-				"price": 0.4
-			},
-			{
-				"from": "AK-420",
-				"price": 0.33
-			},
-			{
-				"from": "Brainfuck",
-				"price": 0.32
-			},
-			{
-				"from": "Dubai Sativa",
-				"price": 0.32
-			}
-		],
-		"sell": {
-			"min": 10,
-			"max": 19
-		},
-		"demand": [
-			{
-				"sector": "A",
-				"name": "East Oldtown",
-				"value": 15
-			},
-			{
-				"sector": "A",
-				"name": "West Oldtown",
-				"value": 13
-			},
-			{
-				"sector": "A",
-				"name": "Two Towers",
-				"value": 10
-			},
-			{
-				"sector": "A",
-				"name": "Old Market",
-				"value": 10
-			},
-			{
-				"sector": "A",
-				"name": "Stink",
-				"value": 13
-			},
-			{
-				"sector": "A",
-				"name": "Kennel",
-				"value": 13
-			},
-			{
-				"sector": "A",
-				"name": "Eastern Slums",
-				"value": 17
-			},
-			{
-				"sector": "A",
-				"name": "Camp",
-				"value": 15
-			},
-			{
-				"sector": "B",
-				"name": "Supermarket",
-				"value": 13
-			},
-			{
-				"sector": "B",
-				"name": "Downtown",
-				"value": 4
-			},
-			{
-				"sector": "B",
-				"name": "West Deadtown",
-				"value": 4
-			},
-			{
-				"sector": "B",
-				"name": "Mid Deadtown",
-				"value": 3
-			},
-			{
-				"sector": "B",
-				"name": "East Deadtown",
-				"value": 3
-			}
-		]
+		"mix_strengthening": 1
 	},
 	{
 		"id": "5e5eaccc-00a4-440f-ba95-4140ea0c6ea0",
@@ -846,68 +166,7 @@
 		"toxicity": 0.6,
 		"strength": 1.5,
 		"addictiveness": 1,
-		"mix_strengthening": 1,
-		"purchase": [
-			{
-				"from": "Eddie",
-				"price": 4
-			},
-			{
-				"from": "Walther",
-				"price": 4
-			}
-		],
-		"sell": {
-			"min": 8,
-			"max": 15
-		},
-		"demand": [
-			{
-				"sector": "A",
-				"name": "Two Towers",
-				"value": 5
-			},
-			{
-				"sector": "A",
-				"name": "Old Market",
-				"value": 4
-			},
-			{
-				"sector": "A",
-				"name": "Stink",
-				"value": 6
-			},
-			{
-				"sector": "A",
-				"name": "Eastern Slums",
-				"value": 8
-			},
-			{
-				"sector": "A",
-				"name": "Camp",
-				"value": 8
-			},
-			{
-				"sector": "B",
-				"name": "East Deadtown",
-				"value": 7
-			},
-			{
-				"sector": "C",
-				"name": "Tower Blocks",
-				"value": 4
-			},
-			{
-				"sector": "C",
-				"name": "Commune",
-				"value": 6
-			},
-			{
-				"sector": "C",
-				"name": "Factory North",
-				"value": 6
-			}
-		]
+		"mix_strengthening": 1
 	},
 	{
 		"id": "374987aa-ca21-47eb-85b5-08cf11db02db",
@@ -920,18 +179,7 @@
 		"toxicity": 15,
 		"strength": 2,
 		"addictiveness": 1.4,
-		"mix_strengthening": 2,
-		"purchase": [
-			{
-				"from": "Drug Store",
-				"price": 6
-			}
-		],
-		"sell": {
-			"min": 0,
-			"max": 0
-		},
-		"demand": []
+		"mix_strengthening": 2
 	},
 	{
 		"id": "6bf182b9-5a5c-4b9b-a5a2-def933499940",
@@ -944,18 +192,7 @@
 		"toxicity": 12,
 		"strength": 3,
 		"addictiveness": 4,
-		"mix_strengthening": 1.3,
-		"purchase": [
-			{
-				"from": "Drug Store",
-				"price": 2.25
-			}
-		],
-		"sell": {
-			"min": 0,
-			"max": 0
-		},
-		"demand": []
+		"mix_strengthening": 1.3
 	},
 	{
 		"id": "91acd46d-89f0-4c6a-986e-7529c052e1a5",
@@ -968,22 +205,7 @@
 		"toxicity": 2,
 		"strength": 0.5,
 		"addictiveness": 0,
-		"mix_strengthening": 1,
-		"purchase": [
-			{
-				"from": "Local Shop",
-				"price": 0.18
-			},
-			{
-				"from": "Gas Station",
-				"price": 0.18
-			}
-		],
-		"sell": {
-			"min": 0,
-			"max": 0
-		},
-		"demand": []
+		"mix_strengthening": 1
 	},
 	{
 		"id": "6226c760-a1e1-43bd-85dd-a63047fe53f4",
@@ -996,22 +218,7 @@
 		"toxicity": 1.3,
 		"strength": 0,
 		"addictiveness": 0,
-		"mix_strengthening": 1,
-		"purchase": [
-			{
-				"from": "Local Shop",
-				"price": 0.15
-			},
-			{
-				"from": "Gas Station",
-				"price": 0.15
-			}
-		],
-		"sell": {
-			"min": 0,
-			"max": 0
-		},
-		"demand": []
+		"mix_strengthening": 1
 	},
 	{
 		"id": "e51c4415-317d-439b-8c64-af578e0945a0",
@@ -1024,18 +231,7 @@
 		"toxicity": 3,
 		"strength": 2,
 		"addictiveness": 7,
-		"mix_strengthening": 1.6,
-		"purchase": [
-			{
-				"from": "Drug Store",
-				"price": 4.66
-			}
-		],
-		"sell": {
-			"min": 0,
-			"max": 0
-		},
-		"demand": []
+		"mix_strengthening": 1.6
 	},
 	{
 		"id": "be0b2be7-41f8-4232-805e-da24d108c293",
@@ -1048,21 +244,6 @@
 		"toxicity": 9,
 		"strength": 0,
 		"addictiveness": 0,
-		"mix_strengthening": 1.1,
-		"purchase": [
-			{
-				"from": "Local Shop",
-				"price": 0.25
-			},
-			{
-				"from": "Gas Station",
-				"price": 0.25
-			}
-		],
-		"sell": {
-			"min": 0,
-			"max": 0
-		},
-		"demand": []
+		"mix_strengthening": 1.1
 	}
 ]

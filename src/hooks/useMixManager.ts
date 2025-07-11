@@ -1,16 +1,21 @@
 import { toast } from "@/components/toast/toast";
-import { getDemandsByIngredientId } from "@/lib/state/cloud/ingredientDemandState";
-import { getPurchaseById } from "@/lib/state/cloud/ingredientPurchasesState";
-import { getSellPriceByIngredientId } from "@/lib/state/cloud/ingredientsSellState";
-import { getIngredientById } from "@/lib/state/cloud/ingredientsState";
+import { user_currentMixSyncedState$ } from "@/lib/state/cloud/userCurrentMixSyncedState";
 import { authState$ } from "@/lib/state/local/authState";
-import { localPersist } from "@/lib/state/local/persister";
-import { clampNumber } from "@/lib/utils/helpers";
-import { computed, observable } from "@legendapp/state";
+import { local_currentMixSyncedState$ } from "@/lib/state/local/localCurrentMixSyncedState";
+import { clampNumber, isIngredient, isMixIngredient, validateField } from "@/lib/utils/helpers";
+import { type Observable, computed, observable } from "@legendapp/state";
 import { use$, useObserve } from "@legendapp/state/react";
+import { z } from "zod";
+import {
+	type IIngredientDemand,
+	allDemands$,
+	allIngredients$,
+	allPurchases$,
+	allSellPrices$,
+} from "./useIngredientsManager";
 
-type TIngredientCategory = "Mix" | "Pre-mix";
-type TIngredientType =
+export type TIngredientCategory = "Mix" | "Pre-mix";
+export type TIngredientType =
 	| "Liquid"
 	| "Powder"
 	| "Crystal"
@@ -48,13 +53,8 @@ type TIngredientDemandLocation =
 
 type TIngredientDemandSector = "A" | "B" | "C";
 
-interface IIngredientDemand {
-	sector: TIngredientDemandSector;
-	location: TIngredientDemandLocation;
-	demand_value: number;
-}
-
 interface ICurrentMixComputed {
+	parent_ingredient_id: string;
 	totalVolume: number;
 	purity: number;
 	cost: number;
@@ -131,12 +131,14 @@ interface IUseMixManagerActions {
 	setRecipeIngredientAmount: (ingredientId: string, amount: number) => void;
 	setRecipeIngredientPurchaseOption: (ingredientId: string, purchaseOptionId: string) => void;
 	clearRecipe: () => void;
+	resetMix: () => Promise<void>;
 	getIngredientPurity: (ingredientWeight: number, totalWeight: number) => number;
 	setMaxAllowedWeight: (weight: number) => void;
 	scaleMix: (value: number, method: "multiply" | "divide") => void;
 	scaleToLowest: () => void;
 	scaleToMax: () => void;
 	setISGangMix: (isGangMix: boolean) => void;
+	loadMixFromShareink: (data: ICurrentMix) => void;
 }
 
 interface IComputedClientODData {
@@ -241,8 +243,11 @@ const toxComputedData$ = observable<IToxComputedData>({
 		if (category === "Pre-mix") {
 			return 0;
 		}
-		const firstIngredientId = recipe[0].child_ingredient_id;
-		const firstIngredient = getIngredientById(firstIngredientId);
+		const firstIngredientId = recipe[0]?.child_ingredient_id;
+		const firstIngredient = allIngredients$[firstIngredientId].get();
+		if (!firstIngredient) {
+			return 0;
+		}
 		const tox = computedState$.toxicity.get();
 		const firstIngredientTox = firstIngredient.toxicity;
 		const relativeToxicity: number = tox / firstIngredientTox;
@@ -260,8 +265,11 @@ const toxComputedData$ = observable<IToxComputedData>({
 		if (recipe.length === 0) {
 			return 0;
 		}
-		const firstIngredientId = recipe[0].child_ingredient_id;
-		const firstIngredient = getIngredientById(firstIngredientId);
+		const firstIngredientId = recipe[0]?.child_ingredient_id;
+		const firstIngredient = allIngredients$[firstIngredientId].get();
+		if (!firstIngredient) {
+			return 0;
+		}
 		const strength = computedState$.strength.get();
 		const firstIngredientStrength = firstIngredient.strength;
 		const relativeStrength: number = strength / firstIngredientStrength;
@@ -322,8 +330,11 @@ const computedGangStats$ = observable<IComputedGangStats | undefined>(() => {
 			if (category === "Pre-mix") {
 				return undefined;
 			}
-			const firstIngredientId = recipe[0].child_ingredient_id;
-			const firstIngredient = getIngredientById(firstIngredientId);
+			const firstIngredientId = recipe[0]?.child_ingredient_id;
+			const firstIngredient = allIngredients$[firstIngredientId].get();
+			if (!firstIngredient) {
+				return 0;
+			}
 			if (firstIngredient.name.toLowerCase() === "cocaine") {
 				return "La Ballena";
 			}
@@ -501,7 +512,7 @@ const computedState$ = observable<ICurrentMixComputed>({
 		if (recipe.length === 0) {
 			return 0;
 		}
-		const firstAmount = recipe[0].amount;
+		const firstAmount = recipe[0]?.amount;
 		const purity = getMixPurity(firstAmount, total);
 		return purity;
 	}),
@@ -562,15 +573,22 @@ const computedState$ = observable<ICurrentMixComputed>({
 		if (recipe.length === 0) {
 			return null;
 		}
-		const firstIngredientId = recipe[0].child_ingredient_id;
-		const firstIngredient = getIngredientById(firstIngredientId);
+		const firstIngredientId = recipe[0]?.child_ingredient_id;
+		const firstIngredient = allIngredients$[firstIngredientId].get();
 		if (!firstIngredient) {
 			return null;
 		}
 
+		let returnType: TIngredientType | null = null;
+		if (isIngredient(firstIngredient)) {
+			returnType = firstIngredient.type;
+		}
+		if (isMixIngredient(firstIngredient)) {
+			const parent = allIngredients$[firstIngredient.parent_ingredient_id].get();
+			returnType = isIngredient(parent) ? parent.type : null;
+		}
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		const type = firstIngredient.type as any;
-		return type;
+		return returnType as any;
 	}),
 	toxicity: computed(() => {
 		const recipe = synced$.recipe.get();
@@ -613,8 +631,8 @@ const computedState$ = observable<ICurrentMixComputed>({
 			return undefined;
 		}
 
-		const firstIngredientId = recipe[0].child_ingredient_id;
-		const sell = getSellPriceByIngredientId(firstIngredientId);
+		const firstIngredientId = recipe[0]?.child_ingredient_id;
+		const sell = allSellPrices$[firstIngredientId].get();
 		if (!sell) {
 			return undefined;
 		}
@@ -634,8 +652,21 @@ const computedState$ = observable<ICurrentMixComputed>({
 			return null;
 		}
 
-		const firstIngredientId = recipe[0].child_ingredient_id;
-		const demands = getDemandsByIngredientId(firstIngredientId);
+		const firstIngredientId = recipe[0]?.child_ingredient_id;
+
+		const fullIng = allIngredients$[firstIngredientId].get();
+
+		let demands = null;
+		if (isIngredient(fullIng)) {
+			demands = Object.values(allDemands$.get()).filter(
+				(demand) => demand.ingredient_id === firstIngredientId,
+			);
+		} else {
+			demands = Object.values(allDemands$.get()).filter(
+				(demand) => demand.ingredient_id === fullIng.parent_ingredient_id,
+			);
+		}
+
 		if (!demands) {
 			return null;
 		}
@@ -658,6 +689,24 @@ const computedState$ = observable<ICurrentMixComputed>({
 		const clientODChance4 = computedClientODData$.clientODChance4.get();
 		const chance = clientODChance4 * 100;
 		return chance;
+	}),
+	parent_ingredient_id: computed(() => {
+		const recipe = synced$.recipe.get();
+		if (recipe.length === 0) {
+			return "";
+		}
+		const firstIngredientId = recipe[0]?.child_ingredient_id;
+		const firstIngredient = allIngredients$[firstIngredientId].get();
+		if (!firstIngredient) {
+			return "";
+		}
+		let id: string;
+		if (isMixIngredient(firstIngredient)) {
+			id = firstIngredient.parent_ingredient_id;
+		} else {
+			id = firstIngredient.id;
+		}
+		return id;
 	}),
 	// satisfiedWithMix: computed(() => {
 	// 	const clientSatisfaction4 = computedClientExpectationAndSatisfaction$.clientSatisfaction4.get();
@@ -779,248 +828,277 @@ const computedState$ = observable<ICurrentMixComputed>({
 // 		// }),
 // 	});
 
-const local_currentMixSyncedState$ = observable<ICurrentMix>(
-	localPersist({
-		initial: {
-			name: "",
-			description: null,
-			information: null,
-			image: "",
-			category: "Mix",
-			sellPrice: 0,
-			maxAllowedWeight: 1000,
-			expectedQuality: 80,
-			gang: {
-				gangOrder: 3,
-				isGangOrder: true,
-				gangXP: 500,
-			},
-
-			recipe: [],
-		},
-		persist: {
-			name: "local_cur_mix",
-		},
-	}),
-);
-
 const synced$ = computed(() => {
-	// return authState$.isAuthed.get()
-	// ? user_cropPlannerState$.value.get()
-	// : local_cropPlannerSyncedState$.get();
-	return local_currentMixSyncedState$;
+	const isAuthed = authState$.isAuthed.get();
+	return isAuthed
+		? (user_currentMixSyncedState$.value as Observable<ICurrentMix>)
+		: local_currentMixSyncedState$;
 });
 
-interface IUseMixManagerState extends ICurrentMixComputed, ICurrentMix {
-	gangData: IComputedGangStats | undefined;
-	mixData: IClientAddicted & IComputedClientODData & IToxComputedData;
-	// computedClientExpectationAndSatisfaction: IComputedClientExpectationAndSatisfaction;
+export interface ICurrentMix {
+	name: string;
+	image: string;
+	sellPrice: number;
+	category: TIngredientCategory;
+	description: string | null;
+	information: string | null;
+	maxAllowedWeight: number;
+
+	recipe: IIngredientRecipe[];
+	gang: TGangInput;
+	expectedQuality: number;
+}
+type FieldErrors<T> = {
+	[P in keyof T]?: string[] | null;
+};
+
+interface IErrorState {
+	canSave: boolean;
+	errors: FieldErrors<ICurrentMix> | null;
 }
 
+export const mixManagerErrorState$ = observable<IErrorState>({
+	canSave: false,
+	errors: null,
+});
+export interface IUseMixManagerState extends IErrorState {
+	currentMixData: ICurrentMix &
+		ICurrentMixComputed & {
+			gangData: IComputedGangStats | undefined;
+			miscData: IClientAddicted & IComputedClientODData & IToxComputedData;
+		};
+}
 interface TUseMixManager {
 	actions: IUseMixManagerActions;
 	state: IUseMixManagerState;
 }
 
 export const useMixManager = (): TUseMixManager => {
-	observeCheckForAcetone();
-	observeRecipeItemTotalPrice();
-	const isAuthed = use$(authState$.isAuthed);
-	const state = use$(synced$);
+	const currentMix = use$(synced$);
 	const computedState = use$(computedState$);
 	const computedGangStats = use$(computedGangStats$);
 	const computedClientAddicted = use$(computedClientAddicted$);
 	const computedClientODData = use$(computedClientODData$);
-	// const computedClientExpectationAndSatisfaction = use$(computedClientExpectationAndSatisfaction$);
+	const mixManagerErrorState = use$(mixManagerErrorState$);
 	const toxComputedData = use$(toxComputedData$);
+	observeCheckForAcetone();
+	observeRecipeItemTotalPrice();
+	observeCheckForCanSave();
+	observeCheckForErrors();
+	const isAuthed = use$(authState$.isAuthed);
+	// const computedClientExpectationAndSatisfaction = use$(computedClientExpectationAndSatisfaction$);
 	const actions: IUseMixManagerActions = {
 		scaleToMax: () => {
-			console.log("scaling to max");
-			const targetMax = state.maxAllowedWeight;
-			const maxAllowedWeight = state.maxAllowedWeight;
-			const recipe = state.recipe;
+			const targetMax = currentMix.maxAllowedWeight;
+			const maxAllowedWeight = currentMix.maxAllowedWeight;
+			const recipe = currentMix.recipe;
+
 			if (!recipe.length || targetMax <= 0) return recipe.map(() => 0);
 
-			// Find the maximum amount in the recipe
-			const maxAmount = Math.max(...recipe.map((val) => val.amount));
-			if (maxAmount <= 0) return recipe.map(() => 0);
+			// Calculate current total weight
+			const currentTotal = recipe.reduce((a, b) => a + b.amount, 0);
+			if (currentTotal <= 0) return recipe.map(() => 0);
 
-			// Calculate scaling factor
-			let value = targetMax / maxAmount;
+			// Scale proportionally to reach target max weight
+			// This preserves ratios, maintaining toxicity/strength
+			let scalingFactor = targetMax / currentTotal;
 
-			// Check if scaling exceeds maxAllowedWeight
-			const originalTotal = recipe.reduce((a, b) => a + b.amount, 0);
-			let targetTotal = Math.floor(originalTotal * value);
-			if (targetTotal > maxAllowedWeight) {
-				value = maxAllowedWeight / originalTotal;
-				targetTotal = Math.floor(originalTotal * value);
+			// Ensure we don't exceed maxAllowedWeight
+			if (targetMax > maxAllowedWeight) {
+				scalingFactor = maxAllowedWeight / currentTotal;
 			}
 
-			// Step 1: Scale each value
+			const targetTotal = Math.floor(currentTotal * scalingFactor);
+
+			// Step 1: Scale each ingredient proportionally
 			const scaled = recipe.map((val) => {
-				const raw = val.amount * value;
-				return { ...val, amount: Math.floor(raw) }; // Always floor to whole number
+				const raw = val.amount * scalingFactor;
+				return { ...val, amount: Math.floor(raw) };
 			});
 
-			// Step 2: Compute diff between intended total and current total
-			const currentTotal = scaled.reduce((a, b) => a + b.amount, 0);
-			const diff = targetTotal - currentTotal;
+			// Step 2: Handle rounding differences
+			const scaledTotal = scaled.reduce((a, b) => a + b.amount, 0);
+			const diff = targetTotal - scaledTotal;
 
-			// Step 3: Distribute remainder fairly
+			// Step 3: Distribute remainder to preserve ratios
 			if (diff > 0) {
 				const remainders = recipe.map((val, i) => ({
 					index: i,
-					remainder: val.amount * value - scaled[i].amount,
+					remainder: val.amount * scalingFactor - scaled[i].amount,
 				}));
 
-				// Sort by who has the biggest fractional part
 				remainders.sort((a, b) => b.remainder - a.remainder);
 
-				for (let i = 0; i < diff; i++) {
-					const index = remainders[i % recipe.length].index;
+				for (let i = 0; i < diff && i < remainders.length; i++) {
+					const index = remainders[i].index;
 					if (scaled.reduce((a, b) => a + b.amount, 0) < maxAllowedWeight) {
 						scaled[index].amount++;
 					}
 				}
 			}
 
-			return isAuthed ? null : local_currentMixSyncedState$.recipe.set(scaled);
+			return isAuthed
+				? user_currentMixSyncedState$.value.recipe.set(scaled)
+				: local_currentMixSyncedState$.recipe.set(scaled);
 		},
 
 		scaleToLowest: () => {
 			console.log("scaling to lowest");
 			const targetMin = 1;
-			const maxAllowedWeight = state.maxAllowedWeight;
-			const recipe = state.recipe;
+			const maxAllowedWeight = currentMix.maxAllowedWeight;
+			const recipe = currentMix.recipe;
+
 			if (!recipe.length || targetMin <= 0) return recipe.map(() => 0);
 
-			// Find the minimum non-zero amount in the recipe
+			// Calculate current total weight
+			const currentTotal = recipe.reduce((a, b) => a + b.amount, 0);
+			if (currentTotal <= 0) return recipe.map(() => 0);
+
+			// Find the minimum non-zero amount to determine scaling needed
 			const validAmounts = recipe.map((val) => val.amount).filter((amount) => amount > 0);
 			if (!validAmounts.length) return recipe.map(() => 0);
 			const minAmount = Math.min(...validAmounts);
 
-			// Calculate scaling factor
-			let value = targetMin / minAmount;
+			// Calculate scaling factor to make smallest ingredient = targetMin
+			let scalingFactor = targetMin / minAmount;
 
 			// Check if scaling exceeds maxAllowedWeight
-			const originalTotal = recipe.reduce((a, b) => a + b.amount, 0);
-			let targetTotal = Math.floor(originalTotal * value);
+			let targetTotal = Math.floor(currentTotal * scalingFactor);
 			if (targetTotal > maxAllowedWeight) {
-				value = maxAllowedWeight / originalTotal;
-				targetTotal = Math.floor(originalTotal * value);
+				scalingFactor = maxAllowedWeight / currentTotal;
+				targetTotal = Math.floor(currentTotal * scalingFactor);
 			}
 
-			// Step 1: Scale each value
+			// Step 1: Scale each ingredient proportionally
 			const scaled = recipe.map((val) => {
-				const raw = val.amount * value;
-				return { ...val, amount: Math.floor(raw) }; // Always floor to whole number
+				const raw = val.amount * scalingFactor;
+				return { ...val, amount: Math.floor(raw) };
 			});
 
-			// Step 2: Compute diff between intended total and current total
-			const currentTotal = scaled.reduce((a, b) => a + b.amount, 0);
-			const diff = targetTotal - currentTotal;
+			// Step 2: Handle rounding differences
+			const scaledTotal = scaled.reduce((a, b) => a + b.amount, 0);
+			const diff = targetTotal - scaledTotal;
 
-			// Step 3: Distribute remainder fairly
+			// Step 3: Distribute remainder to preserve ratios
 			if (diff > 0) {
 				const remainders = recipe.map((val, i) => ({
 					index: i,
-					remainder: val.amount * value - scaled[i].amount,
+					remainder: val.amount * scalingFactor - scaled[i].amount,
 				}));
 
-				// Sort by who has the biggest fractional part
 				remainders.sort((a, b) => b.remainder - a.remainder);
 
-				for (let i = 0; i < diff; i++) {
-					const index = remainders[i % recipe.length].index;
+				for (let i = 0; i < diff && i < remainders.length; i++) {
+					const index = remainders[i].index;
 					if (scaled.reduce((a, b) => a + b.amount, 0) < maxAllowedWeight) {
 						scaled[index].amount++;
 					}
 				}
 			}
 
-			return isAuthed ? null : local_currentMixSyncedState$.recipe.set(scaled);
+			return isAuthed
+				? user_currentMixSyncedState$.value.recipe.set(scaled)
+				: local_currentMixSyncedState$.recipe.set(scaled);
 		},
+
 		scaleMix: (value, method) => {
 			console.log("scaling mix");
-			const maxAllowedWeight = state.maxAllowedWeight;
-			const recipe = state.recipe;
+			const maxAllowedWeight = currentMix.maxAllowedWeight;
+			const recipe = currentMix.recipe;
+
 			if (!recipe.length || value <= 0) return recipe.map(() => 0);
 
-			// Adjust scaling factor if target total exceeds maxAllowedWeight
+			// Calculate current total weight
 			const originalTotal = recipe.reduce((a, b) => a + b.amount, 0);
-			let adjustedValue = value;
-			let targetTotal =
-				method === "multiply"
-					? Math.floor(originalTotal * value)
-					: Math.floor(originalTotal / value);
+			if (originalTotal <= 0) return recipe.map(() => 0);
 
-			if (method === "multiply" && targetTotal > maxAllowedWeight) {
-				adjustedValue = maxAllowedWeight / originalTotal;
-				targetTotal = Math.floor(originalTotal * adjustedValue);
+			// Calculate scaling factor based on method
+			let scalingFactor = method === "multiply" ? value : 1 / value;
+
+			// Check if scaling exceeds maxAllowedWeight
+			let targetTotal = Math.floor(originalTotal * scalingFactor);
+			if (targetTotal > maxAllowedWeight) {
+				scalingFactor = maxAllowedWeight / originalTotal;
+				targetTotal = Math.floor(originalTotal * scalingFactor);
 			}
 
-			// Step 1: Scale each value
+			// Step 1: Scale each ingredient proportionally
 			const scaled = recipe.map((val) => {
-				const raw = method === "multiply" ? val.amount * adjustedValue : val.amount / value;
-				return { ...val, amount: Math.floor(raw) }; // Always floor to whole number
+				const raw = val.amount * scalingFactor;
+				return { ...val, amount: Math.floor(raw) };
 			});
 
-			// Step 2: Compute diff between intended total and current total
+			// Step 2: Handle rounding differences
 			const currentTotal = scaled.reduce((a, b) => a + b.amount, 0);
 			const diff = targetTotal - currentTotal;
 
-			// Step 3: Distribute remainder fairly
+			// Step 3: Distribute remainder to preserve ratios
 			if (diff > 0) {
 				const remainders = recipe.map((val, i) => ({
 					index: i,
-					remainder:
-						method === "multiply"
-							? val.amount * adjustedValue - scaled[i].amount
-							: val.amount / value - scaled[i].amount,
+					remainder: val.amount * scalingFactor - scaled[i].amount,
 				}));
 
-				// Sort by who has the biggest fractional part
 				remainders.sort((a, b) => b.remainder - a.remainder);
 
-				for (let i = 0; i < diff; i++) {
-					const index = remainders[i % recipe.length].index;
+				for (let i = 0; i < diff && i < remainders.length; i++) {
+					const index = remainders[i].index;
 					if (scaled.reduce((a, b) => a + b.amount, 0) < maxAllowedWeight) {
 						scaled[index].amount++;
 					}
 				}
 			}
 
-			return isAuthed ? null : local_currentMixSyncedState$.recipe.set(scaled);
+			return isAuthed
+				? user_currentMixSyncedState$.value.recipe.set(scaled)
+				: local_currentMixSyncedState$.recipe.set(scaled);
 		},
 		setRecipeImage: (imageURL) => {
-			return isAuthed ? null : local_currentMixSyncedState$.image.set(imageURL);
+			return isAuthed
+				? user_currentMixSyncedState$.value.image.set(imageURL)
+				: local_currentMixSyncedState$.image.set(imageURL);
 		},
 		setMaxAllowedWeight: (weight) => {
-			return isAuthed ? null : local_currentMixSyncedState$.maxAllowedWeight.set(weight);
+			return isAuthed
+				? user_currentMixSyncedState$.value.maxAllowedWeight.set(weight)
+				: local_currentMixSyncedState$.maxAllowedWeight.set(weight);
 		},
 		setRecipeName: (name) => {
-			return isAuthed ? null : local_currentMixSyncedState$.name.set(name);
+			return isAuthed
+				? user_currentMixSyncedState$.value.name.set(name)
+				: local_currentMixSyncedState$.name.set(name);
 		},
 		setRecipeDescription: (description) => {
-			return isAuthed ? null : local_currentMixSyncedState$.description.set(description);
+			return isAuthed
+				? user_currentMixSyncedState$.value.description.set(description)
+				: local_currentMixSyncedState$.description.set(description);
 		},
 		setRecipeInformation: (information) => {
-			return isAuthed ? null : local_currentMixSyncedState$.information.set(information);
+			return isAuthed
+				? user_currentMixSyncedState$.value.information.set(information)
+				: local_currentMixSyncedState$.information.set(information);
 		},
 		setRecipeCategory: (category) => {
-			return isAuthed ? null : local_currentMixSyncedState$.category.set(category);
+			return isAuthed
+				? user_currentMixSyncedState$.value.category.set(category)
+				: local_currentMixSyncedState$.category.set(category);
 		},
 		setRecipeSellPrice: (price) => {
-			return isAuthed ? null : local_currentMixSyncedState$.sellPrice.set(price);
+			return isAuthed
+				? user_currentMixSyncedState$.value.sellPrice.set(price)
+				: local_currentMixSyncedState$.sellPrice.set(price);
 		},
 		recipeAdd: (ingredientId) => {
-			const recipe = state.recipe;
+			const recipe = currentMix.recipe;
+			const sellPrice = currentMix.sellPrice;
 
 			const found = recipe.find((ingredient) => ingredient.key === ingredientId);
-			if (recipe.length === 0 && state.sellPrice === 0) {
-				const sellPrices = getSellPriceByIngredientId(ingredientId);
+			if (recipe.length === 0 && sellPrice === 0) {
+				const sellPrices = allSellPrices$[ingredientId];
 				if (sellPrices) {
-					isAuthed ? null : local_currentMixSyncedState$.sellPrice.set(sellPrices.min_price);
+					isAuthed
+						? user_currentMixSyncedState$.value.sellPrice.set(sellPrices.min_price)
+						: local_currentMixSyncedState$.sellPrice.set(sellPrices.min_price);
 				}
 			}
 			if (found) {
@@ -1037,15 +1115,21 @@ export const useMixManager = (): TUseMixManager => {
 				selected_purchase_option_id: null,
 				totalPrice: 0,
 			};
-			return isAuthed ? null : local_currentMixSyncedState$.recipe.push(itemToAdd);
+			return isAuthed
+				? user_currentMixSyncedState$.value.recipe.push(itemToAdd)
+				: local_currentMixSyncedState$.recipe.push(itemToAdd);
 		},
 		recipeRemove: (ingredientId) => {
-			const filtered = state.recipe.filter((item) => item.child_ingredient_id !== ingredientId);
+			const filtered = currentMix.recipe.filter(
+				(item) => item.child_ingredient_id !== ingredientId,
+			);
 
-			return isAuthed ? null : local_currentMixSyncedState$.recipe.set(filtered);
+			return isAuthed
+				? user_currentMixSyncedState$.value.recipe.set([...filtered])
+				: local_currentMixSyncedState$.recipe.set([...filtered]);
 		},
 		setRecipeOrderIndex: (ingredientId: string, newIndex: number) => {
-			const recipe = state.recipe; // Get plain array
+			const recipe = currentMix.recipe; // Get plain array
 			const currentIndex = recipe.findIndex((i) => i.child_ingredient_id === ingredientId);
 			if (currentIndex === -1 || newIndex < 0 || newIndex >= recipe.length) return;
 
@@ -1053,39 +1137,47 @@ export const useMixManager = (): TUseMixManager => {
 			const [item] = newRecipe.splice(currentIndex, 1); // Remove item
 			newRecipe.splice(newIndex, 0, item); // Insert at new index
 
-			return isAuthed ? null : local_currentMixSyncedState$.recipe.set(newRecipe);
+			return isAuthed
+				? user_currentMixSyncedState$.value.recipe.set(newRecipe)
+				: local_currentMixSyncedState$.recipe.set(newRecipe);
 		},
 		setRecipeMainIngredient: (ingredientId: string) => {
-			const recipe = state.recipe;
+			const recipe = currentMix.recipe;
 			const index = recipe.findIndex((i) => i.child_ingredient_id === ingredientId);
 			if (index === -1) return;
 
 			const newRecipe = [recipe[index], ...recipe.slice(0, index), ...recipe.slice(index + 1)];
 
-			return isAuthed ? null : local_currentMixSyncedState$.recipe.set(newRecipe);
+			return isAuthed
+				? user_currentMixSyncedState$.value.recipe.set(newRecipe)
+				: local_currentMixSyncedState$.recipe.set(newRecipe);
 		},
 		moveUpRecipeIngredient: (ingredientId: string) => {
-			const recipe = state.recipe;
+			const recipe = currentMix.recipe;
 			const index = recipe.findIndex((i) => i.child_ingredient_id === ingredientId);
 			if (index <= 0) return; // Already at the top or not found
 
 			const newRecipe = [...recipe];
 			[newRecipe[index - 1], newRecipe[index]] = [newRecipe[index], newRecipe[index - 1]];
 
-			return isAuthed ? null : local_currentMixSyncedState$.recipe.set(newRecipe);
+			return isAuthed
+				? user_currentMixSyncedState$.value.recipe.set(newRecipe)
+				: local_currentMixSyncedState$.recipe.set(newRecipe);
 		},
 		moveDownRecipeIngredient: (ingredientId: string) => {
-			const recipe = state.recipe;
+			const recipe = currentMix.recipe;
 			const index = recipe.findIndex((i) => i.child_ingredient_id === ingredientId);
 			if (index === -1 || index >= recipe.length - 1) return; // Not found or already at the bottom
 
 			const newRecipe = [...recipe];
 			[newRecipe[index], newRecipe[index + 1]] = [newRecipe[index + 1], newRecipe[index]];
 
-			return isAuthed ? null : local_currentMixSyncedState$.recipe.set(newRecipe);
+			return isAuthed
+				? user_currentMixSyncedState$.value.recipe.set(newRecipe)
+				: local_currentMixSyncedState$.recipe.set(newRecipe);
 		},
 		swapRecipeIngredient: (ingredientId1: string, ingredientId2: string) => {
-			const recipe = state.recipe;
+			const recipe = currentMix.recipe;
 			const index1 = recipe.findIndex((i) => i.child_ingredient_id === ingredientId1);
 			const index2 = recipe.findIndex((i) => i.child_ingredient_id === ingredientId2);
 			if (index1 === -1 || index2 === -1) return;
@@ -1093,16 +1185,20 @@ export const useMixManager = (): TUseMixManager => {
 			const newRecipe = [...recipe];
 			[newRecipe[index1], newRecipe[index2]] = [newRecipe[index2], newRecipe[index1]];
 
-			return isAuthed ? null : local_currentMixSyncedState$.recipe.set(newRecipe);
+			return isAuthed
+				? user_currentMixSyncedState$.value.recipe.set(newRecipe)
+				: local_currentMixSyncedState$.recipe.set(newRecipe);
 		},
 		setRecipeIngredientAmount: (ingredientId: string, amount: number) => {
-			const maxAllowedWeight = state.maxAllowedWeight;
-			const recipe = state.recipe;
+			const maxAllowedWeight = currentMix.maxAllowedWeight;
+			const recipe = currentMix.recipe;
 
 			const safeAmount =
 				Number.isNaN(amount) || typeof amount !== "number" || amount < 1 ? 1 : amount;
 
-			const index = state.recipe.findIndex((recipe) => recipe.child_ingredient_id === ingredientId);
+			const index = currentMix.recipe.findIndex(
+				(recipe) => recipe.child_ingredient_id === ingredientId,
+			);
 			if (index === -1) return;
 
 			// Calculate new total weight if this amount were set
@@ -1124,41 +1220,76 @@ export const useMixManager = (): TUseMixManager => {
 				return;
 			}
 
-			return isAuthed ? null : local_currentMixSyncedState$.recipe[index].amount.set(safeAmount);
+			return isAuthed
+				? user_currentMixSyncedState$.value.recipe[index].amount.set(safeAmount)
+				: local_currentMixSyncedState$.recipe[index].amount.set(safeAmount);
 		},
 		setRecipeIngredientPurchaseOption: (ingredientId: string, purchaseOptionId: string) => {
-			const index = state.recipe.findIndex((recipe) => recipe.child_ingredient_id === ingredientId);
+			const index = currentMix.recipe.findIndex(
+				(recipe) => recipe.child_ingredient_id === ingredientId,
+			);
 
 			return isAuthed
-				? []
+				? user_currentMixSyncedState$.value.recipe[index].selected_purchase_option_id.set(
+						purchaseOptionId,
+					)
 				: local_currentMixSyncedState$.recipe[index].selected_purchase_option_id.set(
 						purchaseOptionId,
 					);
 		},
 		clearRecipe: () => {
-			return isAuthed ? null : local_currentMixSyncedState$.recipe.set([]);
+			return isAuthed
+				? user_currentMixSyncedState$.value.recipe.set([])
+				: local_currentMixSyncedState$.recipe.set([]);
 		},
+
 		getIngredientPurity: (ingredientWeight, totalWeight) =>
 			getMixPurity(ingredientWeight, totalWeight),
 
 		setISGangMix: (isGangMix) => {
-			return isAuthed ? null : local_currentMixSyncedState$.gang.isGangOrder.set(isGangMix);
+			return isAuthed
+				? user_currentMixSyncedState$.value.gang.isGangOrder.set(isGangMix)
+				: local_currentMixSyncedState$.gang.isGangOrder.set(isGangMix);
+		},
+		resetMix: async () => {
+			if (isAuthed) {
+				user_currentMixSyncedState$.value.assign({
+					category: "Mix",
+					description: "",
+					image: "",
+					information: "",
+					name: "",
+					sellPrice: 0,
+					recipe: [],
+				});
+				return;
+			}
+			local_currentMixSyncedState$.assign({
+				category: "Mix",
+				description: "",
+				image: "",
+				information: "",
+				name: "",
+				sellPrice: 0,
+				recipe: [],
+			});
+		},
+		loadMixFromShareink: (data) => {
+			const mix = data as ICurrentMix;
+			synced$.assign({ ...mix });
 		},
 	};
 
 	return {
 		actions,
 		state: {
-			...state,
-			...computedState,
-			gangData: computedGangStats,
-			mixData: {
-				...computedClientAddicted,
-				...computedClientODData,
-
-				...toxComputedData,
+			currentMixData: {
+				...currentMix,
+				...computedState,
+				gangData: computedGangStats,
+				miscData: { ...computedClientAddicted, ...computedClientODData, ...toxComputedData },
 			},
-			// computedClientExpectationAndSatisfaction,
+			...mixManagerErrorState,
 		},
 	};
 };
@@ -1171,14 +1302,16 @@ function observeRecipeItemTotalPrice() {
 			if (!r.selected_purchase_option_id) {
 				return;
 			}
-			const purchase = getPurchaseById(r.selected_purchase_option_id);
+			const purchase = allPurchases$[r.selected_purchase_option_id].get();
 			if (!purchase) {
 				return;
 			}
 			if (isAuthed) {
-				null;
+				user_currentMixSyncedState$.value.recipe[index].totalPrice?.set(
+					Number.parseFloat((purchase.price * r.amount).toFixed(2)),
+				);
 			} else {
-				local_currentMixSyncedState$.recipe[index].totalPrice.set(
+				local_currentMixSyncedState$.recipe[index].totalPrice?.set(
 					Number.parseFloat((purchase.price * r.amount).toFixed(2)),
 				);
 			}
@@ -1188,7 +1321,7 @@ function observeRecipeItemTotalPrice() {
 
 function observeCheckForAcetone() {
 	useObserve(() => {
-		// const isAuthed = authState$.isAuthed.get();
+		const isAuthed = authState$.isAuthed.get();
 		const recipe = synced$.recipe.get();
 
 		let foundLiquid = false;
@@ -1196,17 +1329,28 @@ function observeCheckForAcetone() {
 
 		for (const item of recipe) {
 			const childId = item.child_ingredient_id; // Ensure reactivity
-			const ing = getIngredientById(childId);
-			if (ing?.type === "Liquid") {
-				foundLiquid = true;
-				id = ing.id;
-				break;
+			const ing = allIngredients$[childId].get();
+
+			if (isIngredient(ing)) {
+				if (ing?.type === "Liquid") {
+					foundLiquid = true;
+					id = ing.id;
+					break;
+				}
+			} else {
+				const ingParent = allIngredients$[ing.parent_ingredient_id].get();
+
+				if (isIngredient(ingParent) && ingParent?.type === "Liquid") {
+					foundLiquid = true;
+					id = ing.id;
+					break;
+				}
 			}
 		}
 
-		const targetState$ =
-			// isAuthed ? user_currentMixSyncedState$:
-			local_currentMixSyncedState$;
+		const targetState$ = isAuthed
+			? user_currentMixSyncedState$.value
+			: local_currentMixSyncedState$;
 
 		// Force tracking of relevant observables
 		const targetItem = targetState$.recipe.find((item) => item.child_ingredient_id.get() === id);
@@ -1237,7 +1381,7 @@ function getMixStrengthMultiplier(recipe: IIngredientRecipe[], totalMixWeight: n
 	return Number.parseFloat(
 		(
 			recipe.reduce((sum, comp) => {
-				const ingredient = getIngredientById(comp.child_ingredient_id);
+				const ingredient = allIngredients$[comp.child_ingredient_id].get();
 				return sum + (ingredient?.mix_strengthening || 0) * comp.amount;
 			}, 0) / totalMixWeight
 		).toFixed(2),
@@ -1254,11 +1398,36 @@ function calculateProperty(
 		(
 			(mixStrengthMultiplier / totalMixWeight) *
 			recipe.reduce((sum, comp) => {
-				const ingredient = getIngredientById(comp.child_ingredient_id);
+				const ingredient = allIngredients$[comp.child_ingredient_id].get();
 				return (
 					sum + ((ingredient?.[property] || 0) / (ingredient?.mix_strengthening || 1)) * comp.amount
 				);
 			}, 0)
 		).toFixed(2),
 	);
+}
+
+function observeCheckForErrors() {
+	useObserve(() => {
+		mixManagerErrorState$.errors.name.set(
+			validateField(z.string().min(3, "Name must be longer"), synced$.name.get()).errors,
+		);
+		mixManagerErrorState$.errors.recipe.set(
+			validateField(
+				z.array(z.object({})).min(2, "Recipe must have at least two ingredients"),
+				synced$.recipe.get(),
+			).errors,
+		);
+	});
+}
+
+function observeCheckForCanSave() {
+	useObserve(() => {
+		const currentErrors = mixManagerErrorState$.errors.get(); // Determine if all error fields are null or empty
+		const hasErrors = currentErrors
+			? Object.values(currentErrors).some((error) => error !== null && error.length > 0)
+			: false;
+
+		mixManagerErrorState$.canSave.set(!hasErrors);
+	});
 }

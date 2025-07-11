@@ -1,0 +1,47 @@
+[
+    {
+        "ingredient_id": "2a463845-528f-4dc8-9572-d6892fe3c3a6",
+        "min_price": 14,
+        "max_price": 27
+    },
+    {
+        "ingredient_id": "5e5eaccc-00a4-440f-ba95-4140ea0c6ea0",
+        "min_price": 8,
+        "max_price": 15
+    },
+    {
+        "ingredient_id": "94cb0ae2-6d05-4aec-825c-b52b7e18c59f",
+        "min_price": 10,
+        "max_price": 19
+    },
+    {
+        "ingredient_id": "a82642a2-842c-44fc-9b35-64aacea47aa4",
+        "min_price": 12,
+        "max_price": 23
+    },
+    {
+        "ingredient_id": "ae9cb95f-9099-4977-b3a7-c668bdfd4912",
+        "min_price": 10,
+        "max_price": 19
+    },
+    {
+        "ingredient_id": "af29564d-9cdc-4150-85f1-0961f1f538f3",
+        "min_price": 45,
+        "max_price": 87
+    },
+    {
+        "ingredient_id": "cfc89861-bf2f-44b3-a4ed-b4861dad529b",
+        "min_price": 7,
+        "max_price": 13
+    },
+    {
+        "ingredient_id": "d825cc42-0f08-40b7-973f-6ac4253b83c1",
+        "min_price": 35,
+        "max_price": 77
+    },
+    {
+        "ingredient_id": "e368381f-213f-4f84-a5aa-04ced3802485",
+        "min_price": 7,
+        "max_price": 13
+    }
+]

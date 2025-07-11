@@ -10,7 +10,7 @@ import Link from "next/link";
 import WordShadySVG from "../../logos/WordShady";
 
 export default function AuthContainer({ children }: React.ComponentProps<"div">) {
-	const isDisabled = useObservable(true);
+	const isDisabled = useObservable(false);
 
 	return (
 		<div className="grid min-h-svh lg:grid-cols-2">

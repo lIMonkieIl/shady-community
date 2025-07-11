@@ -3,7 +3,7 @@ import { useCropManager } from "@/hooks/useCropManager";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { BREAKPOINTS } from "@/lib/constants/theme/Breakpoints";
 import { cn } from "@/lib/utils/helpers";
-import { use$, useObservable } from "@legendapp/state/react";
+import { Show, observer, useObservable } from "@legendapp/state/react";
 import { Check, ChevronDown } from "lucide-react";
 import { Button } from "../shared/ui/button";
 import {
@@ -15,20 +15,68 @@ import {
 } from "../shared/ui/drawer";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../shared/ui/select";
 
-export default function SelectStrain() {
+const SelectStrain = observer(() => {
 	const { selectedSeedIndex, selectedSeed, seeds, setSelectedSeedIndex } = useCropManager();
 	const isMobile = useMediaQuery(`(max-width: ${BREAKPOINTS.sm}px)`);
 	const isOpen = useObservable(false);
-	const open = use$(isOpen);
 
 	const handleSelect = (value: string) => {
 		setSelectedSeedIndex(Number.parseInt(value));
 		isOpen.set(false);
 	};
 
-	if (isMobile) {
-		return (
-			<Drawer onClose={() => isOpen.set(false)} open={open}>
+	return (
+		<Show
+			if={isMobile}
+			else={
+				<Select
+					value={selectedSeedIndex.toString()}
+					onValueChange={handleSelect}
+					open={isOpen.get()}
+					onOpenChange={(value) => isOpen.set(value)}
+				>
+					<SelectTrigger className="btn w-full justify-between flex preset-outlined-surface-200-800 theme-decorated decorator-top-right focus:preset-outlined-primary-500 hover:preset-tonal">
+						<span className="capitalize">{selectedSeed.strain}</span>
+						<ChevronDown className="h-4 w-4 text-primary-500 opacity-50" />
+					</SelectTrigger>
+					<SelectContent
+						className="card preset-filled-surface-50-950 preset-outlined-primary-50-950 overflow-y-auto"
+						style={{ maxHeight: "min(50vh, 345px)" }}
+					>
+						<div className="pl-3 py-1 font-bold">
+							<span>Strains</span>
+						</div>
+						{seeds.map((seed, index) => (
+							<SelectItem
+								key={seed.strain}
+								value={index.toString()}
+								className="capitalize hover:preset-tonal card"
+							>
+								{selectedSeedIndex === index && (
+									<span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+										<Check className="h-4 w-4 text-primary-300-700" />
+									</span>
+								)}
+								<div className="flex justify-between items-center w-full gap-2">
+									<div className=" flex flex-col grow items-start">
+										<span className="font-bold capitalize truncate">{seed.strain}</span>
+										<div className="font-light text-surface-500 text-sm">
+											<span>environment: </span>
+											<span className="text-primary-300-700 font-semibold">{seed.environment}</span>
+										</div>
+									</div>
+									<div className="badge preset-filled-primary-400-600">
+										<span className="font-light">price:</span>
+										<span className="font-semibold">${seed.price}</span>
+									</div>
+								</div>
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
+			}
+		>
+			<Drawer onClose={() => isOpen.set(false)} open={isOpen.get()}>
 				<DrawerTrigger
 					className={cn(
 						"flex h-10 w-full items-center justify-between px-3 py-2 rounded-base text-sm data-[placeholder]:text-surface-950-50/70 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
@@ -79,54 +127,8 @@ export default function SelectStrain() {
 					</div>
 				</DrawerContent>
 			</Drawer>
-		);
-	}
-
-	return (
-		<Select
-			value={selectedSeedIndex.toString()}
-			onValueChange={handleSelect}
-			open={open}
-			onOpenChange={(value) => isOpen.set(value)}
-		>
-			<SelectTrigger className="btn w-full justify-between flex preset-outlined-surface-200-800 theme-decorated decorator-top-right focus:preset-outlined-primary-500 hover:preset-tonal">
-				<span className="capitalize">{selectedSeed.strain}</span>
-				<ChevronDown className="h-4 w-4 text-primary-500 opacity-50" />
-			</SelectTrigger>
-			<SelectContent
-				className="card preset-filled-surface-50-950 preset-outlined-primary-50-950 overflow-y-auto"
-				style={{ maxHeight: "min(50vh, 345px)" }}
-			>
-				<div className="pl-3 py-1 font-bold">
-					<span>Strains</span>
-				</div>
-				{seeds.map((seed, index) => (
-					<SelectItem
-						key={seed.strain}
-						value={index.toString()}
-						className="capitalize hover:preset-tonal card"
-					>
-						{selectedSeedIndex === index && (
-							<span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-								<Check className="h-4 w-4 text-primary-300-700" />
-							</span>
-						)}
-						<div className="flex justify-between items-center w-full gap-2">
-							<div className=" flex flex-col grow items-start">
-								<span className="font-bold capitalize truncate">{seed.strain}</span>
-								<div className="font-light text-surface-500 text-sm">
-									<span>environment: </span>
-									<span className="text-primary-300-700 font-semibold">{seed.environment}</span>
-								</div>
-							</div>
-							<div className="badge preset-filled-primary-400-600">
-								<span className="font-light">price:</span>
-								<span className="font-semibold">${seed.price}</span>
-							</div>
-						</div>
-					</SelectItem>
-				))}
-			</SelectContent>
-		</Select>
+		</Show>
 	);
-}
+});
+
+export default SelectStrain;

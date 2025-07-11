@@ -1,37 +1,37 @@
 [
 	{
 		"min": 0,
-		"max": 0.9,
+		"max": 0.99,
 		"qualitative": "Very Low",
 		"color": "preset-glass-surface"
 	},
 	{
 		"min": 1,
-		"max": 1.9,
+		"max": 1.99,
 		"qualitative": "Low",
 		"color": "preset-glass-success"
 	},
 	{
 		"min": 2,
-		"max": 2.9,
+		"max": 2.99,
 		"qualitative": "Medium",
 		"color": "preset-glass-primary"
 	},
 	{
 		"min": 3,
-		"max": 3.9,
+		"max": 3.99,
 		"qualitative": "High",
 		"color": "preset-glass-secondary"
 	},
 	{
 		"min": 4,
-		"max": 5.9,
+		"max": 5.99,
 		"qualitative": "Very High",
 		"color": "preset-glass-tertiary"
 	},
 	{
 		"min": 6,
-		"max": 9.9,
+		"max": 9.99,
 		"qualitative": "Dangerous",
 		"color": "preset-glass-warning"
 	},

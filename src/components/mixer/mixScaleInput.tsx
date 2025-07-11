@@ -1,4 +1,4 @@
-import { useMixManager } from "@/hooks/useMixManger";
+import { useMixManager } from "@/hooks/useMixManager";
 import { useState } from "react";
 import { Button } from "../shared/ui/button";
 

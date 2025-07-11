@@ -1,15 +1,12 @@
+import { useIngredientsManager } from "@/hooks/useIngredientsManager";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { BREAKPOINTS } from "@/lib/constants/theme/Breakpoints";
-import { getDemandsByIngredientId } from "@/lib/state/cloud/ingredientDemandState";
-import { getPurchasesByIngredientId } from "@/lib/state/cloud/ingredientPurchasesState";
-import { getSellPriceByIngredientId } from "@/lib/state/cloud/ingredientsSellState";
-import { getIngredientById } from "@/lib/state/cloud/ingredientsState";
 import { Show, use$ } from "@legendapp/state/react";
 import { useObservable } from "@legendapp/state/react";
 import { CircleHelpIcon, InfoIcon } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import { cn, formatUSD, getColorForValue } from "../../lib/utils/helpers";
+import { cn, formatUSD, getColorForValue, isIngredient } from "../../lib/utils/helpers";
 import { Button } from "../shared/ui/button";
 import {
 	Drawer,
@@ -26,21 +23,23 @@ export default function MixIngredientCardInfo({
 	ingredientId,
 	size,
 }: { ingredientId: string; size: "sm" | "base" }) {
+	const {
+		actions: { getIngredientById },
+	} = useIngredientsManager();
 	const isMobile = useMediaQuery(`(max-width: ${BREAKPOINTS.sm}px)`);
 	const isOpen = useObservable(false);
 	const open = use$(isOpen);
 	const ingredient = getIngredientById(ingredientId);
+	if (!ingredient) {
+		return <div>Ingredient not found</div>;
+	}
 	return (
 		<Show
 			if={isMobile}
 			else={
 				<Popover open={open} onOpenChange={isOpen.set}>
 					<PopoverTrigger asChild>
-						<Button
-							className="p-1.5"
-							size={size === "sm" ? "icon" : "base"}
-							variant="tonal-tertiary"
-						>
+						<Button className="p-1.5" size={size === "sm" ? "icon" : "sm"} variant="tonal-tertiary">
 							<InfoIcon />
 							{size === "base" && <span>Info</span>}
 						</Button>
@@ -57,7 +56,7 @@ export default function MixIngredientCardInfo({
 		>
 			<Drawer onClose={() => isOpen.set(false)} open={open}>
 				<DrawerTrigger asChild onClick={() => isOpen.set(true)}>
-					<Button size={size === "sm" ? "icon" : "base"} className="p-1.5" variant="tonal-tertiary">
+					<Button size={size === "sm" ? "icon" : "sm"} className="p-1.5" variant="tonal-tertiary">
 						<InfoIcon />
 						{size === "base" && <span>Info</span>}
 					</Button>
@@ -76,17 +75,31 @@ export default function MixIngredientCardInfo({
 }
 
 function IngredientInfo({ ingredientId }: { ingredientId: string }) {
+	const {
+		actions: {
+			getIngredientById,
+			getIngredientPurchasesByIngredientId,
+			getIngredientDemandsByIngredientId,
+			getIngredientSellPriceByIngredientId,
+		},
+	} = useIngredientsManager();
 	const ingredient = getIngredientById(ingredientId);
-	const purchaseOptions = getPurchasesByIngredientId(ingredientId);
-	const demand = getDemandsByIngredientId(ingredientId);
-	const sellPrices = getSellPriceByIngredientId(ingredientId);
-	const minPurchasePrice = Math.min(
-		...Object.values(purchaseOptions).map((option) => option.price),
-	);
-	const maxPurchasePrice = Math.max(
-		...Object.values(purchaseOptions).map((option) => option.price),
-	);
-	const uniqueSectors = Array.from(new Set(Object.values(demand).map((d) => d.sector)));
+	const purchaseOptions = getIngredientPurchasesByIngredientId(ingredientId);
+	const demand = getIngredientDemandsByIngredientId(ingredientId);
+	const sellPrices = getIngredientSellPriceByIngredientId(ingredientId);
+
+	if (!ingredient) {
+		return <div>Not all data found</div>;
+	}
+
+	const minPurchasePrice: number | undefined = purchaseOptions
+		? Math.min(...purchaseOptions.map((option) => option.price))
+		: undefined;
+
+	const maxPurchasePrice: number | undefined = purchaseOptions
+		? Math.max(...purchaseOptions.map((option) => option.price))
+		: undefined;
+	const uniqueSectors = Array.from(new Set(demand?.map((d) => d.sector)));
 	const [open, setOpen] = useState(false);
 	return (
 		<div className="grid gap-4">
@@ -134,11 +147,15 @@ function IngredientInfo({ ingredientId }: { ingredientId: string }) {
 					</div>
 				</div>
 
-				<div className="card preset-tonal shrink-0">
+				<div className="card preset-tonal shrink-0 overflow-hidden">
 					<Image
 						width={75}
 						height={75}
-						src={`/images/${ingredient.image}`}
+						src={
+							ingredient.image?.startsWith("https:")
+								? ingredient.image
+								: `/images/${ingredient.image}`
+						}
 						alt={`${ingredient.category} image`}
 					/>
 				</div>
@@ -149,10 +166,12 @@ function IngredientInfo({ ingredientId }: { ingredientId: string }) {
 						Category:
 						<span>{ingredient.category}</span>
 					</Label>
-					<Label className="flex flex-col gap-2 items-start">
-						Type:
-						<span>{ingredient.type}</span>
-					</Label>
+					{isIngredient(ingredient) && (
+						<Label className="flex flex-col gap-2 items-start">
+							Type:
+							<span>{ingredient.type}</span>
+						</Label>
+					)}
 					<Label className="flex flex-col gap-2 items-start">
 						Demand in sectors:
 						<span>{uniqueSectors.join(", ")}</span>
@@ -170,7 +189,7 @@ function IngredientInfo({ ingredientId }: { ingredientId: string }) {
 					<Label className="flex flex-col gap-2 items-start">
 						Purchase/Production Price:
 						<span>
-							{formatUSD(minPurchasePrice)} - {formatUSD(maxPurchasePrice)}
+							{formatUSD(minPurchasePrice ?? 0)} - {formatUSD(maxPurchasePrice ?? 0)}
 						</span>
 					</Label>
 				</div>

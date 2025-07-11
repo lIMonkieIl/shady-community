@@ -1,6 +1,6 @@
 "use client";
-import MenuDrawer, { type TNavigationItem } from "@/components/layout/menuDrawer";
-import { CannabisIcon, SparklesIcon } from "lucide-react";
+import { NavigationDrawer, type TNavigationItem } from "@/components/layout/menuDrawer";
+import { CannabisIcon, FlaskRoundIcon, SparklesIcon } from "lucide-react";
 
 export const navigationItems: TNavigationItem[] = [
 	{
@@ -15,14 +15,14 @@ export const navigationItems: TNavigationItem[] = [
 		href: "/dds1/cropplanner",
 		Icon: CannabisIcon,
 	},
-	// {
-	// 	name: "Mixer",
-	// 	description: "Create your next mix",
-	// 	href: "/dds1/mixer",
-	// 	Icon: FlaskRoundIcon,
-	// },
+	{
+		name: "Mixer",
+		description: "Create your next mix",
+		href: "/dds1/mixer",
+		Icon: FlaskRoundIcon,
+	},
 ];
 
 export default function DDS1MenuDrawer() {
-	return <MenuDrawer navigationItems={navigationItems} />;
+	return <NavigationDrawer navigationItems={navigationItems} />;
 }

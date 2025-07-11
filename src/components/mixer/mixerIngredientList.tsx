@@ -1,37 +1,24 @@
 "use client";
-import { useMixManager } from "@/hooks/useMixManger";
-import { formatWeight } from "@/lib/utils/helpers";
-import { Show } from "@legendapp/state/react";
+import { useMixManager } from "@/hooks/useMixManager";
+import { Show, observer } from "@legendapp/state/react";
 import { CircleAlertIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "../shared/ui/alert";
 import MixIngredientCard from "./mixIngredientCard";
 
-export default function MixerIngredientList() {
+const MixerIngredientList = observer(() => {
 	const {
-		state: { recipe, totalVolume, purity },
+		state: { currentMixData, errors },
 	} = useMixManager();
+	const recipe = currentMixData.recipe;
 	return (
-		<div className="w-full bg-surface-50-950/50 p-2 max-h-[calc(100vh-5rem)] card flex flex-col space-y-2 overflow-hidden">
+		<div className="w-full bg-surface-50-950/50 p-2 max-h-[calc(100vh-5rem)] card flex flex-col space-y-2 overflow-hidden flex-1">
 			<div className="space-x-2 flex items-center justify-between">
 				<div className="flex items-center">
 					<span className="h6">Recipe:</span>
-				</div>
-				<div className="flex space-x-2">
-					<div className="flex items-center">
-						<span className="h6">Purity:</span>
-						<span className="badge font-bold text-xs preset-filled-secondary-400-600">
-							{purity}%
-						</span>
-					</div>
-					<div className="flex items-center">
-						<span className="h6">Weight:</span>
-						<span className="badge font-bold text-xs preset-filled-secondary-400-600">
-							{formatWeight(totalVolume)}
-						</span>
-					</div>
+					{errors?.recipe && <span className="text-error-400-600/60 text-sm">{errors.recipe}</span>}
 				</div>
 			</div>
-			<div className="flex-1 overflow-y-auto space-y-2 p-2">
+			<div className=" grid grid-cols-1 items-center md:grid-cols-2 gap-2 overflow-y-auto space-y-2 p-2">
 				<Show
 					if={recipe.length}
 					else={
@@ -60,4 +47,6 @@ export default function MixerIngredientList() {
 			</div>
 		</div>
 	);
-}
+});
+
+export default MixerIngredientList;

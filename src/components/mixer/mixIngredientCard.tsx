@@ -9,16 +9,14 @@ import {
 	ContextMenuItem,
 	ContextMenuTrigger,
 } from "@/components/shared/ui/context-menu";
-import { useMixManager } from "@/hooks/useMixManger";
-import {
-	getPurchaseById,
-	getPurchasesByIngredientId,
-} from "@/lib/state/cloud/ingredientPurchasesState";
-import { getIngredientById } from "@/lib/state/cloud/ingredientsState";
-import { cn } from "@/lib/utils/helpers";
+import { useIngredientsManager } from "@/hooks/useIngredientsManager";
+import { useMixManager } from "@/hooks/useMixManager";
+import { cn, isIngredient } from "@/lib/utils/helpers";
 import { formatUSD } from "@/lib/utils/helpers";
 import { use$, useObservable, useObserveEffect } from "@legendapp/state/react";
 import { ChevronDownIcon, MoveDownIcon, MoveUpIcon, StarIcon, Trash2Icon } from "lucide-react";
+import { useMixesManager } from "../../hooks/useMixesManager";
+import { formatWeight } from "../../lib/utils/helpers";
 import MixIngredientCardInfo from "./mixIngredientCardInfo";
 
 export default function MixIngredientCard({
@@ -35,16 +33,25 @@ export default function MixIngredientCard({
 			moveUpRecipeIngredient,
 			moveDownRecipeIngredient,
 			recipeRemove,
+			clearRecipe,
 		},
-		state: { recipe, totalVolume },
+		state: { currentMixData },
 	} = useMixManager();
+	const {
+		actions: { getIngredientById },
+	} = useIngredientsManager();
+	const recipe = currentMixData.recipe;
+	const totalVolume = currentMixData.totalVolume;
 	const ingredient = getIngredientById(ingredientId);
+	if (!ingredient) {
+		return <div>ingredient not found</div>;
+	}
 	return (
 		<ContextMenu>
 			<ContextMenuTrigger asChild>
 				<div
 					className={cn(
-						"card bg-surface-200-800/30 border-3 flex",
+						"card h-fit w-fit bg-surface-200-800/30 border-3 flex",
 						isMain ? "border-primary-400-600 border-4" : "border-surface-500/50",
 					)}
 				>
@@ -62,15 +69,26 @@ export default function MixIngredientCard({
 							</span>
 						</div>
 						<div className="grid grid-cols-[2fr_1fr] gap-4">
-							<div>
-								<span className="text-nowrap text-sm">Purchase from:</span>
-								<PurchaseSelect index={index} ingredientId={ingredient.id} />
-							</div>
+							{ingredient &&
+							(ingredient.category.toLowerCase() === "mix" ||
+								ingredient.category.toLowerCase() === "pre-mix") ? (
+								<div>
+									<span className="text-nowrap text-sm">Recipe:</span>
+									<RecipeShow ingredientId={ingredient.id} />
+								</div>
+							) : (
+								ingredient && (
+									<div>
+										<span className="text-nowrap text-sm">Purchase from:</span>
+										<PurchaseSelect index={index} ingredientId={ingredient.id} />
+									</div>
+								)
+							)}
 
 							<div>
 								<span className="text-sm text-nowrap">Grams:</span>
 								<Input
-									disabled={ingredient.type === "Liquid"}
+									disabled={isIngredient(ingredient) ? ingredient.type === "Liquid" : false}
 									type="number"
 									className="disabled:cursor-not-allowed"
 									onFocus={(event) => {
@@ -116,6 +134,10 @@ export default function MixIngredientCard({
 					<Trash2Icon />
 					Remove From Mix
 				</ContextMenuItem>
+				<ContextMenuItem variant="destructive" onClick={clearRecipe} className="items-center">
+					<Trash2Icon />
+					Clear Recipe
+				</ContextMenuItem>
 			</ContextMenuContent>
 		</ContextMenu>
 	);
@@ -125,20 +147,27 @@ function PurchaseSelect({ ingredientId, index }: { ingredientId: string; index: 
 	const open = useObservable(false);
 	const isOpen = use$(open);
 	const {
-		state: { recipe },
+		state: { currentMixData },
 		actions: { setRecipeIngredientPurchaseOption },
 	} = useMixManager();
+
+	const recipe = currentMixData.recipe;
 	const currentSelectedId = recipe[index].selected_purchase_option_id;
-	const purchaseOptions = getPurchasesByIngredientId(ingredientId);
-	const currentSelected = getPurchaseById(currentSelectedId ?? "");
+	const {
+		actions: { getIngredientPurchasesByIngredientId, getIngredientPurchaseById },
+	} = useIngredientsManager();
+	const purchaseOptions = getIngredientPurchasesByIngredientId(ingredientId)?.sort(
+		(a, b) => b.price - a.price,
+	);
+	const currentSelected = getIngredientPurchaseById(currentSelectedId ?? "");
 
 	useObserveEffect(recipe[index].selected_purchase_option_id, () => {
-		const purchaseOptionsArray = Object.values(purchaseOptions);
-		const mostExpensiveOption = purchaseOptionsArray.reduce(
-			(max, option) => (option.price > max.price ? option : max),
-			purchaseOptionsArray[0],
-		);
-		if (!recipe[index].selected_purchase_option_id) {
+		if (!purchaseOptions) {
+			return;
+		}
+		const mostExpensiveOption = purchaseOptions[0];
+
+		if (mostExpensiveOption && !recipe[index].selected_purchase_option_id) {
 			setRecipeIngredientPurchaseOption(ingredientId, mostExpensiveOption.id);
 		}
 	});
@@ -163,7 +192,7 @@ function PurchaseSelect({ ingredientId, index }: { ingredientId: string; index: 
 				<div className="pl-3 py-1 font-bold">
 					<span>Purchase From</span>
 				</div>
-				{Object.values(purchaseOptions).map((option) => (
+				{purchaseOptions?.map((option) => (
 					<SelectItem
 						onPointerDown={(e) => e.stopPropagation()}
 						onClick={(e) => e.stopPropagation()}
@@ -179,6 +208,63 @@ function PurchaseSelect({ ingredientId, index }: { ingredientId: string; index: 
 							<div className="badge preset-filled-primary-400-600">
 								<span className="font-light">price:</span>
 								<span className="font-semibold">${option.price}</span>
+							</div>
+						</div>
+					</SelectItem>
+				))}
+			</SelectContent>
+		</Select>
+	);
+}
+
+function RecipeShow({ ingredientId }: { ingredientId: string }) {
+	const open = useObservable(false);
+	const isOpen = use$(open);
+	const {
+		actions: { getIngredientById },
+	} = useIngredientsManager();
+	const {
+		actions: { getMixRecipe },
+	} = useMixesManager();
+	const recipe = getMixRecipe(ingredientId)?.map((item) => {
+		const ing = getIngredientById(item.child_ingredient_id);
+		if (ing) return { ...item, ...ing };
+	});
+	if (!recipe?.length) {
+		return <div>no recipe data</div>;
+	}
+	return (
+		<Select value={recipe[0]?.id} open={isOpen} onOpenChange={(value) => open.set(value)}>
+			<SelectTrigger className="btn w-full justify-between flex preset-outlined-surface-200-800 theme-decorated decorator-top-right focus:preset-outlined-primary-500 hover:preset-tonal">
+				<div className="flex justify-between w-full">
+					<span>{recipe[0]?.name}</span>
+					<span>{formatWeight(recipe[0]?.amount ?? 0)}</span>
+				</div>
+				<ChevronDownIcon className="h-4 w-4 text-primary-500 opacity-50" />
+			</SelectTrigger>
+			<SelectContent
+				className="card preset-filled-surface-50-950 preset-outlined-primary-50-950 overflow-y-auto"
+				style={{ maxHeight: "min(50vh, 345px)" }}
+			>
+				<div className="pl-3 py-1 font-bold">
+					<span>Recipe</span>
+				</div>
+				{recipe?.map((option) => (
+					<SelectItem
+						onPointerDown={(e) => e.stopPropagation()}
+						onClick={(e) => e.stopPropagation()}
+						onContextMenu={(e) => e.stopPropagation()}
+						key={option?.id}
+						value={option?.id ?? ""}
+						className="capitalize p-2 hover:preset-tonal card"
+					>
+						<div className="flex justify-between items-center w-full gap-2">
+							<div className=" flex flex-col grow items-start">
+								<span className="font-bold capitalize truncate">{option?.name}</span>
+							</div>
+							<div className="badge preset-filled-primary-400-600">
+								<span className="font-light">amount:</span>
+								<span className="font-semibold">{formatWeight(option?.amount ?? 0)}</span>
 							</div>
 						</div>
 					</SelectItem>

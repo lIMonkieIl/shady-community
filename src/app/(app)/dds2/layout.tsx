@@ -1,5 +1,6 @@
 import DDS2MenuDrawer from "@/components/dds2/dds2MenuDrawer";
 import MenuHeader from "@/components/layout/menuHeader";
+import PageContainer from "@/components/layout/pageContainer";
 export default async function Layout({
 	children,
 }: {
@@ -14,7 +15,7 @@ export default async function Layout({
 				<DDS2MenuDrawer />
 
 				{/* <!-- Main --> */}
-				<main className="space-y-4 p-4 overflow-hidden">{children}</main>
+				<PageContainer>{children}</PageContainer>
 			</div>
 		</>
 	);

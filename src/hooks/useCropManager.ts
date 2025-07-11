@@ -77,7 +77,7 @@ interface IUseCropManagerActions {
 	setIncludeSetup: (include: boolean) => void;
 	updateAlreadyOwnedItems: (item: "dryers" | "lights" | "filters" | "pots", owned: number) => void;
 }
-type TUseCropManager = IUseCropManagerActions & TUseCropManagerState;
+interface IUseCropManager extends IUseCropManagerActions, TUseCropManagerState {}
 
 const computedState$ = observable<IComputed>({
 	cropCost: 0,
@@ -151,7 +151,7 @@ const cropPlannerState$ = computed(() => {
 	};
 });
 
-export const useCropManager = (): TUseCropManager => {
+export const useCropManager = (): IUseCropManager => {
 	const seeds: ISeedData[] = SeedData.map((data) => ({
 		...data,
 		strain: data.strain as TStrain,
