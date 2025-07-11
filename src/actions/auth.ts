@@ -31,8 +31,8 @@ export const signUpAction = actionClient
 		if (signUp.error) {
 			throw signUp.error;
 		}
-		const { data: user } = await supabase.auth.getUser();
-		if (user) {
+
+		if (signUp.data.session) {
 			return { success: "Successfully authenticated." };
 		}
 		return { success: "Thanks for signing up! Please check your email for a verification link." };
