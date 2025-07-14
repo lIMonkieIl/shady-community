@@ -584,7 +584,7 @@ const computedState$ = observable<ICurrentMixComputed>({
 			returnType = firstIngredient.type;
 		}
 		if (isMixIngredient(firstIngredient)) {
-			const parent = allIngredients$[firstIngredient.parent_ingredient_id].get();
+			const parent = allIngredients$[firstIngredient.parent_ingredient_id ?? ""].get();
 			returnType = isIngredient(parent) ? parent.type : null;
 		}
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -702,7 +702,7 @@ const computedState$ = observable<ICurrentMixComputed>({
 		}
 		let id: string;
 		if (isMixIngredient(firstIngredient)) {
-			id = firstIngredient.parent_ingredient_id;
+			id = firstIngredient.parent_ingredient_id ?? "";
 		} else {
 			id = firstIngredient.id;
 		}
@@ -1338,7 +1338,7 @@ function observeCheckForAcetone() {
 					break;
 				}
 			} else {
-				const ingParent = allIngredients$[ing.parent_ingredient_id].get();
+				const ingParent = allIngredients$[ing.parent_ingredient_id ?? ""].get();
 
 				if (isIngredient(ingParent) && ingParent?.type === "Liquid") {
 					foundLiquid = true;

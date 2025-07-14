@@ -3,7 +3,7 @@ import { user_mixes$ } from "@/lib/state/cloud/userMixesState";
 // import { authState$ } from "@/lib/state/local/authState";
 // import { local_mixesRecipes$ } from "@/lib/state/local/localMixRecipes";
 // import { local_mixes$ } from "@/lib/state/local/localMixes";
-import type { Tables } from "@/lib/types/supabase.types";
+import type { Database, Tables } from "@/lib/types/supabase.types";
 import { batch } from "@legendapp/state";
 import { use$ } from "@legendapp/state/react";
 import { v4 as uuidv4 } from "uuid";
@@ -46,7 +46,7 @@ export interface Purchase {
 export interface MixItem {
 	name: string;
 	addiction: number;
-	category: "mix" | "premix";
+	category: "Mix" | "Pre-Mix";
 	id: number;
 	isWet: boolean;
 	mixStrength: number;
@@ -229,14 +229,14 @@ export const useMixesManager = (): IUseMixesManager => {
 					mix_strengthening: Number.parseFloat(data.mixStrength.toFixed(2)),
 					category,
 					description: null,
-					image: null,
+					type: parent.type,
+					image: "",
 					information: null,
 					name: data.name,
 					id: mixId,
 					visibility: "Private",
 					created_at: now,
 					updated_at: now,
-					isDeleted: false,
 				};
 
 				const { created_at, updated_at, ...restMix } = mix;
@@ -296,7 +296,9 @@ const convertCurMix = (curMix: IUseMixManagerState) => {
 		toxicity: curMix.currentMixData.toxicity,
 		strength: curMix.currentMixData.strength,
 		mix_strengthening: curMix.currentMixData.mix_strengthening,
-		category: curMix.currentMixData.category ?? "Mix",
+		type: curMix.currentMixData.type ?? "Powder",
+		category:
+			(curMix.currentMixData.category as Database["public"]["Enums"]["mix_category_enum"]) ?? "Mix",
 		description: curMix.currentMixData.description,
 		image: curMix.currentMixData.image,
 		information: curMix.currentMixData.information,
@@ -305,7 +307,6 @@ const convertCurMix = (curMix: IUseMixManagerState) => {
 		visibility: "Private",
 		created_at: now,
 		updated_at: now,
-		isDeleted: false,
 	};
 	const recipe: IMixRecipe[] = curMix.currentMixData.recipe.map((ing, index) => {
 		return {
