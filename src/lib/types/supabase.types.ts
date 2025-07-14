@@ -12,10 +12,10 @@ export type Database = {
     Functions: {
       graphql: {
         Args: {
-          operationName?: string
           query?: string
           variables?: Json
           extensions?: Json
+          operationName?: string
         }
         Returns: Json
       }
@@ -33,29 +33,29 @@ export type Database = {
         Row: {
           amount: number
           child_ingredient_id: string
-          created_at: string | null
+          created_at: string
           id: string
           order_index: number
-          parent_ingredient_id: string
-          updated_at: string | null
+          parent_ingredient_id: string | null
+          updated_at: string
         }
         Insert: {
           amount: number
           child_ingredient_id: string
-          created_at?: string | null
+          created_at?: string
           id?: string
           order_index: number
-          parent_ingredient_id: string
-          updated_at?: string | null
+          parent_ingredient_id?: string | null
+          updated_at?: string
         }
         Update: {
           amount?: number
           child_ingredient_id?: string
-          created_at?: string | null
+          created_at?: string
           id?: string
           order_index?: number
-          parent_ingredient_id?: string
-          updated_at?: string | null
+          parent_ingredient_id?: string | null
+          updated_at?: string
         }
         Relationships: [
           {
@@ -70,78 +70,75 @@ export type Database = {
       mixes: {
         Row: {
           addictiveness: number
-          category: string
+          category: Database["public"]["Enums"]["mix_category_enum"]
           created_at: string
-          created_by: string
+          created_by: string | null
           description: string | null
           id: string
-          image: string | null
+          image: string
           information: string | null
-          isDeleted: boolean
           mix_strengthening: number
           name: string
-          parent_ingredient_id: string
+          parent_ingredient_id: string | null
           strength: number
           toxicity: number
+          type: Database["public"]["Enums"]["mix_type_enum"]
           updated_at: string
-          visibility: string
+          visibility: Database["public"]["Enums"]["mix_visibility_enum"]
         }
         Insert: {
           addictiveness: number
-          category: string
+          category: Database["public"]["Enums"]["mix_category_enum"]
           created_at?: string
-          created_by?: string
+          created_by?: string | null
           description?: string | null
           id?: string
-          image?: string | null
+          image: string
           information?: string | null
-          isDeleted?: boolean
           mix_strengthening: number
           name: string
-          parent_ingredient_id: string
+          parent_ingredient_id?: string | null
           strength: number
           toxicity: number
+          type: Database["public"]["Enums"]["mix_type_enum"]
           updated_at?: string
-          visibility?: string
+          visibility?: Database["public"]["Enums"]["mix_visibility_enum"]
         }
         Update: {
           addictiveness?: number
-          category?: string
+          category?: Database["public"]["Enums"]["mix_category_enum"]
           created_at?: string
-          created_by?: string
+          created_by?: string | null
           description?: string | null
           id?: string
-          image?: string | null
+          image?: string
           information?: string | null
-          isDeleted?: boolean
           mix_strengthening?: number
           name?: string
-          parent_ingredient_id?: string
+          parent_ingredient_id?: string | null
           strength?: number
           toxicity?: number
+          type?: Database["public"]["Enums"]["mix_type_enum"]
           updated_at?: string
-          visibility?: string
+          visibility?: Database["public"]["Enums"]["mix_visibility_enum"]
         }
         Relationships: []
       }
       profiles: {
         Row: {
           avatar_url: string | null
-          created_at: string | null
           id: string
           updated_at: string | null
           username: string | null
         }
         Insert: {
           avatar_url?: string | null
-          created_at?: string | null
           id: string
           updated_at?: string | null
           username?: string | null
         }
         Update: {
           avatar_url?: string | null
-          created_at?: string | null
           id?: string
           updated_at?: string | null
           username?: string | null
@@ -150,27 +147,27 @@ export type Database = {
       }
       user_preferences: {
         Row: {
-          created_at: string | null
+          created_at: string
           id: string
           preference_type: string
-          updated_at: string | null
-          user_id: string
+          updated_at: string
+          user_id: string | null
           value: Json
         }
         Insert: {
-          created_at?: string | null
+          created_at?: string
           id?: string
           preference_type: string
-          updated_at?: string | null
-          user_id?: string
+          updated_at?: string
+          user_id?: string | null
           value: Json
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           id?: string
           preference_type?: string
-          updated_at?: string | null
-          user_id?: string
+          updated_at?: string
+          user_id?: string | null
           value?: Json
         }
         Relationships: []
@@ -183,7 +180,16 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      mix_category_enum: "Drug" | "Pre-Mix"
+      mix_type_enum:
+        | "Liquid"
+        | "Powder"
+        | "Crystal"
+        | "Pills"
+        | "Granulate"
+        | "Dried Plant"
+        | "Mushrooms"
+      mix_visibility_enum: "Public" | "Private"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -301,7 +307,19 @@ export const Constants = {
     Enums: {},
   },
   public: {
-    Enums: {},
+    Enums: {
+      mix_category_enum: ["Drug", "Pre-Mix"],
+      mix_type_enum: [
+        "Liquid",
+        "Powder",
+        "Crystal",
+        "Pills",
+        "Granulate",
+        "Dried Plant",
+        "Mushrooms",
+      ],
+      mix_visibility_enum: ["Public", "Private"],
+    },
   },
 } as const
 

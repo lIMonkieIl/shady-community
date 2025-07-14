@@ -24,7 +24,7 @@ export const signUpAction = actionClient
 			email,
 			password,
 			options: {
-				emailRedirectTo: `${origin}/auth/confirm`,
+				emailRedirectTo: `${origin}/api/auth/confirm`,
 				data: { username: generateRandomUsername() },
 			},
 		});

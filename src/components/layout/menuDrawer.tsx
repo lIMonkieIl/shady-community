@@ -168,9 +168,9 @@ export const NavigationDrawer = observer(
 												Sign In / Register
 											</Link>
 										</Button>
-										<div className="absolute top-0 right-0 font-semibold animate-bounce rotate-12 chip preset-filled">
+										{/* <div className="absolute top-0 right-0 font-semibold animate-bounce rotate-12 chip preset-filled">
 											Soon
-										</div>
+										</div> */}
 									</div>
 								)}
 							</div>
